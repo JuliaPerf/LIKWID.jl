@@ -1,0 +1,4 @@
+name = "LIKWID"
+uuid = "bf22376a-e803-4184-b2ed-56326e3bff83"
+authors = ["Valentin Churavy <v.churavy@gmail.com>"]
+version = "0.1.0"
