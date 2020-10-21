@@ -8,7 +8,7 @@ Installation
 ------------
 
 First install `likwid` following https://github.com/RRZE-HPC/likwid#download-build-and-install,
-and then use the Julia package manger to install `]add https://github.com/JuliaPerf/LIKWID.jl`.
+and then use the Julia package manger to install `]add LIKWID`.
 
 Example
 -------
