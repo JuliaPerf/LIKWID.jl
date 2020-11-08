@@ -26,6 +26,8 @@ mul!(C, A, B)
 LIKWID.Marker.stopregion("matmul")
 ```
 
+Then run `likwid-perfctr` with `--marker` like: `likwid-perfctr ... --marker julia ...`.
+
 License
 -------
 
