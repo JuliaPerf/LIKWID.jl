@@ -1,6 +1,5 @@
 LIKWID.jl
 =========
-
 [![Build Status](https://github.com/JuliaPerf/LIKWID.jl/workflows/CI/badge.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
 [![Coverage](https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaPerf/LIKWID.jl)
 
