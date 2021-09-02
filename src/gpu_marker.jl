@@ -2,7 +2,7 @@ module GPUMarker
     import ..LIKWID: liblikwid
     using Libdl
 
-    const gpusupport = Ref{Union{Nothing, Bool}}()
+    const gpusupport = Ref{Union{Nothing, Bool}}(nothing)
 
     function issupported()
         if isnothing(gpusupport[])
