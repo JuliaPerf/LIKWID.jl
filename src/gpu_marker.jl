@@ -2,10 +2,15 @@ module GPUMarker
     import ..LIKWID: liblikwid
     using Libdl
 
+    const gpusupport = Ref{Union{Nothing, Bool}}()
+
     function issupported()
-        dlopen(liblikwid) do handle
-            return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+        if isnothing(gpusupport[])
+            gpusupport[] = dlopen(liblikwid) do handle
+                !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+            end
         end
+        return gpusupport[]
     end
 
     function init()
