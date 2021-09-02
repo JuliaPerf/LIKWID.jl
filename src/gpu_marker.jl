@@ -1,5 +1,12 @@
 module GPUMarker
     import ..LIKWID: liblikwid
+    using Libdl
+
+    function issupported()
+        dlopen(liblikwid) do handle
+            return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+        end
+    end
 
     function init()
         ccall((:likwid_gpuMarkerInit, liblikwid), Cvoid, ())

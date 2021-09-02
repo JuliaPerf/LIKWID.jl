@@ -11,13 +11,13 @@ module LIKWID
 
    function __init__()
       Marker.init()
-      GPUMarker.init()
+      GPUMarker.issupported() && GPUMarker.init()
       Threads.@threads for i in 1:Threads.nthreads()
          Marker.threadinit()
       end
       atexit() do
          Marker.close()
-         GPUMarker.close()
+         GPUMarker.issupported() && GPUMarker.close()
       end
    end
 end
