@@ -1,11 +1,17 @@
 using Test
 using LIKWID
-using LinearAlgebra
 
-A = rand(128, 64)
-B = rand(64, 128)
-C = zeros(128, 128)
+const perfctr = `likwid-perfctr`
+const julia = Base.julia_cmd()
+const testdir = @__DIR__
 
-LIKWID.Marker.startregion("matmul")
-mul!(C, A, B)
-LIKWID.Marker.stopregion("matmul")
+@testset "Marker API (CPU)" begin
+    @testset "$f" for f in ["test_marker.jl"]
+        # without marker api
+        run(`$julia $(joinpath(testdir, f))`)
+        @test true
+        # with marker api
+        run(`$perfctr -C 0 -g MEM -m $julia $(joinpath(testdir, f))`)
+        @test true
+    end
+end
