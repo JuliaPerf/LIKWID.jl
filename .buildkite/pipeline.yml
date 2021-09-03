@@ -14,9 +14,10 @@ steps:
       mkdir likwid
       tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
       cd likwid
+      sed -i "s/NVIDIA_INTERFACE = false/NVIDIA_INTERFACE = true/" config.mk
+      cat config.mk | grep NVIDIA_INTERFACE
       make
       make install
-      /usr/sbin/modprobe msr
       /usr/local/bin/likwid-topology -c -C -g
       /usr/local/bin/likwid-perfctr -i
       /usr/local/bin/likwid-perfctr -a
