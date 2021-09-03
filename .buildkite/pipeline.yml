@@ -3,9 +3,9 @@ steps:
     plugins:
       - JuliaCI/julia#v1:
           version: "1"
-      # - JuliaCI/julia-test#v1: ~
-      # - JuliaCI/julia-coverage#v1:
-          # codecov: true
+      - JuliaCI/julia-test#v1: ~
+      - JuliaCI/julia-coverage#v1:
+          codecov: true
     agents:
       queue: "juliagpu"
       cuda: "*"
@@ -16,9 +16,9 @@ steps:
       tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
       cd likwid
       make
-      sudo make install
+      make install
       /usr/local/bin/likwid-topology -c -C -g
-      sudo modprobe msr
+      modprobe msr
       /usr/local/bin/likwid-perfctr -i
       /usr/local/bin/likwid-perfctr -a
     if: build.message !~ /\[skip tests\]/
