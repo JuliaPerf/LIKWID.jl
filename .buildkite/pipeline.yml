@@ -16,7 +16,6 @@ steps:
       cd likwid
       make
       make install
-      which modprobe
       /usr/sbin/modprobe msr
       /usr/local/bin/likwid-topology -c -C -g
       /usr/local/bin/likwid-perfctr -i
