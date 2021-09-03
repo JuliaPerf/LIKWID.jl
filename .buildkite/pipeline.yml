@@ -9,5 +9,17 @@ steps:
     agents:
       queue: "juliagpu"
       cuda: "*"
+    command: |
+      echo "---- Installing LIKWID
+      wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
+      mkdir likwid
+      tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
+      cd likwid
+      make
+      sudo make install
+      /usr/local/bin/likwid-topology -c -C -g
+      sudo modprobe msr
+      /usr/local/bin/likwid-perfctr -i
+      /usr/local/bin/likwid-perfctr -a
     if: build.message !~ /\[skip tests\]/
     timeout_in_minutes: 60
