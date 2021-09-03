@@ -1,5 +1,6 @@
 steps:
   - label: "Installing LIKWID"
+    key: "likwid"
     command: |
       echo "---- Installing LIKWID"
       wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
@@ -11,7 +12,12 @@ steps:
       /usr/local/bin/likwid-topology -c -C -g
       /usr/local/bin/likwid-perfctr -i
       /usr/local/bin/likwid-perfctr -a
+    agents:
+      queue: "juliagpu"
+      cuda: "*"
   - label: "Julia v1"
+    key: "julia"
+    depends_on: "likwid"
     plugins:
       - JuliaCI/julia#v1:
           version: "1"
