@@ -1,14 +1,5 @@
 steps:
   - label: "Julia v1"
-    plugins:
-      - JuliaCI/julia#v1:
-          version: "1"
-      - JuliaCI/julia-test#v1: ~
-      - JuliaCI/julia-coverage#v1:
-          codecov: true
-    agents:
-      queue: "juliagpu"
-      cuda: "*"
     command: |
       echo "---- Installing LIKWID"
       wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
@@ -21,5 +12,14 @@ steps:
       sudo modprobe msr
       /usr/local/bin/likwid-perfctr -i
       /usr/local/bin/likwid-perfctr -a
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "1"
+      - JuliaCI/julia-test#v1: ~
+      - JuliaCI/julia-coverage#v1:
+          codecov: true
+    agents:
+      queue: "juliagpu"
+      cuda: "*"
     if: build.message !~ /\[skip tests\]/
     timeout_in_minutes: 60
