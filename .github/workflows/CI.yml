@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install LIKWID
         run: |
-          sudo apt-get install lib32gcc-4.8-dev
+          sudo apt-get install lib32gcc-9-dev
           wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
           mkdir likwid
           tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
