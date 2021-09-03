@@ -24,6 +24,8 @@ steps:
       - JuliaCI/julia-test#v1: ~
       - JuliaCI/julia-coverage#v1:
           codecov: true
+    env:
+      LD_LIBRARY_PATH: "/usr/local/lib"
     agents:
       queue: "juliagpu"
       cuda: "*"
