@@ -1,6 +1,13 @@
 steps:
-  - label: "Installing LIKWID"
-    key: "likwid"
+  - label: "Julia v1.6"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "1.6"
+      # - JuliaCI/julia-test#v1: ~
+      # - JuliaCI/julia-coverage#v1:
+      #     codecov: true
+    env:
+      LD_LIBRARY_PATH: "/usr/local/lib"
     command: |
       echo "---- Installing LIKWID"
       wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
@@ -12,20 +19,14 @@ steps:
       /usr/local/bin/likwid-topology -c -C -g
       /usr/local/bin/likwid-perfctr -i
       /usr/local/bin/likwid-perfctr -a
-    agents:
-      queue: "juliagpu"
-      cuda: "*"
-  - label: "Julia v1"
-    key: "julia"
-    depends_on: "likwid"
-    plugins:
-      - JuliaCI/julia#v1:
-          version: "1"
-      - JuliaCI/julia-test#v1: ~
-      - JuliaCI/julia-coverage#v1:
-          codecov: true
-    env:
-      LD_LIBRARY_PATH: "/usr/local/lib"
+      cd ..
+      echo "---- Starting Julia"
+      julia --project -e '
+        println("--- :julia: Instantiating project")
+        using Pkg
+        Pkg.instantiate()
+        println("--- :julia: Running tests")
+        Pkg.test()'
     agents:
       queue: "juliagpu"
       cuda: "*"
