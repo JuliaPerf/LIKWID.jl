@@ -25,6 +25,8 @@ jobs:
           mkdir likwid
           tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
           cd likwid
+          sed -i "s/GCC/GCCX86/" config.mk
+          cat config.mk | grep COMPILER
           make
           sudo make install
           /usr/local/bin/likwid-topology -c -C -g
