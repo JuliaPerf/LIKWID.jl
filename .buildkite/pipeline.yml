@@ -18,7 +18,6 @@ steps:
       make
       make install
       /usr/local/bin/likwid-topology -c -C -g
-      modprobe msr
       /usr/local/bin/likwid-perfctr -i
       /usr/local/bin/likwid-perfctr -a
     if: build.message !~ /\[skip tests\]/
