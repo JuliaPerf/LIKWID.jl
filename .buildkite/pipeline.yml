@@ -26,5 +26,8 @@ steps:
           codecov: true
     env:
       LD_LIBRARY_PATH: "/usr/local/lib"
+    agents:
+      queue: "juliagpu"
+      cuda: "*"
     if: build.message !~ /\[skip tests\]/
     timeout_in_minutes: 60
