@@ -10,7 +10,7 @@ steps:
       queue: "juliagpu"
       cuda: "*"
     command: |
-      echo "---- Installing LIKWID
+      echo "---- Installing LIKWID"
       wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
       mkdir likwid
       tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
