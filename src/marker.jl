@@ -1,41 +1,14 @@
 module Marker
-    import ..LIKWID: liblikwid
+    import ..LIKWID: LibLikwid
 
-    function init()
-        ccall((:likwid_markerInit, liblikwid), Cvoid, ())
-    end
-
-    function threadinit()
-        ccall((:likwid_markerThreadInit, liblikwid), Cvoid, ())
-    end
-
-    function registerregion(regiontag)
-        ccall((:likwid_markerRegisterRegion, liblikwid),
-               Cint, (Cstring,), regiontag)
-    end
-
-    function startregion(regiontag)
-        ccall((:likwid_markerStartRegion, liblikwid),
-               Cint, (Cstring,), regiontag)
-    end
-
-    function stopregion(regiontag)
-        ccall((:likwid_markerStopRegion, liblikwid),
-               Cint, (Cstring,), regiontag)
-    end
-
+    init() = LibLikwid.likwid_markerInit()
+    threadinit() = LibLikwid.likwid_markerThreadInit()
+    registerregion(regiontag) = LibLikwid.likwid_markerRegisterRegion(regiontag)
+    startregion(regiontag) = LibLikwid.likwid_markerStartRegion(regiontag)
+    startregion(regiontag) = LibLikwid.likwid_markerStartRegion(regiontag)
+    stopregion(regiontag) = LibLikwid.likwid_markerStopRegion(regiontag)
     # markerGetRegion
-
-    function nextgroup()
-         ccall((:likwid_markerNextGroup, liblikwid), Cvoid,())
-    end
-
-    function resetregion(regiontag)
-        ccall((:likwid_markerResetRegion, liblikwid),
-               Cint, (Cstring,), regiontag)
-    end
-
-    function close()
-        ccall((:likwid_markerClose, liblikwid), Cvoid, ())
-    end
+    nextgroup() = LibLikwid.likwid_markerNextGroup()
+    resetregion(regiontag) = LibLikwid.likwid_markerResetRegion(regiontag)
+    close() = LibLikwid.likwid_markerClose()    
 end

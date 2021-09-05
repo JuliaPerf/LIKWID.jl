@@ -1,7 +1,17 @@
 name = "LIKWID"
 uuid = "bf22376a-e803-4184-b2ed-56326e3bff83"
-authors = ["Valentin Churavy <v.churavy@gmail.com>"]
+authors = ["Valentin Churavy <v.churavy@gmail.com>", "Carsten Bauer <crstnbr@gmail.com>"]
 version = "0.1.1"
+
+[deps]
+CEnum = "fa961155-64e5-5f13-b03f-caf6b980ea82"
 
 [compat]
 julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[targets]
+test = ["Test", "LinearAlgebra"]

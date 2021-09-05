@@ -2,11 +2,8 @@ module LIKWID
    import Base.Threads
 
    const liblikwid = "liblikwid"
+   include("LibLikwid.jl")
    include("marker.jl")
-
-   function getProcessorId()
-      ccall((:likwid_getProcessorId, liblikwid), Cint, ())
-   end
 
    function __init__()
       Marker.init()
