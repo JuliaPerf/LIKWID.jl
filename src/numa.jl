@@ -25,8 +25,8 @@ function _build_jl_numa()
     for (i, n) in enumerate(_nodes)
         nodes[i] = NumaNode(
             n.id,
-            n.totalMemory,
-            n.freeMemory,
+            n.totalMemory, # kB
+            n.freeMemory, # kB
             n.numberOfProcessors,
             unsafe_wrap(Array, n.processors, n.numberOfProcessors),
             n.numberOfDistances,

@@ -106,4 +106,14 @@ function get_cpu_topology()
     return cputopo[]
 end
 
+function get_cpu_info()
+    if !_topo_initialized[]
+        init_topology() || error("Couldn't init topology.")
+    end
+    if !_numa_initialized[]
+        init_numa() || error("Couldn't init numa.")
+    end
+    return cpuinfo[]
+end
+
 print_supported_cpus() = LibLikwid.print_supportedCPUs()

@@ -1,35 +1,57 @@
 struct HWThread
-    threadId::Int32
-    coreId::Int32
-    packageId::Int32
-    apicId::Int32
-    # dieId::Int32
-    inCpuSet::Int32
+    threadId::Int
+    coreId::Int
+    packageId::Int
+    apicId::Int
+    # dieId::Int
+    inCpuSet::Int
 end
+
+# function Base.show(io::IO, hwt::HWThread)
+#     print("HWThread()")
+# end
 
 struct CacheLevel
-    level::Int32
+    level::Int
     type::Symbol
-    associativity::Int32
-    sets::Int32
-    lineSize::Int32
-    size::Int32
-    threads::Int32
-    inclusive::Int32
+    associativity::Int
+    sets::Int
+    lineSize::Int
+    size::Int
+    threads::Int
+    inclusive::Int
 end
 
+# function Base.show(io::IO, clvl::CacheLevel)
+#     print(io, "CacheLevel($(clvl.level), ...)")
+# end
 
 struct CpuTopology
-    numHWThreads::Int32
-    activeHWThreads::Int32
-    numSockets::Int32
-    # numDies::Int32
-    numCoresPerSocket::Int32
-    numThreadsPerCore::Int32
-    numCacheLevels::Int32
+    numHWThreads::Int
+    activeHWThreads::Int
+    numSockets::Int
+    # numDies::Int
+    numCoresPerSocket::Int
+    numThreadsPerCore::Int
+    numCacheLevels::Int
     threadPool::Vector{HWThread}
     cacheLevels::Vector{CacheLevel}
     # topologyTree::Vector{LibLikwid.treeNode} # useless?
+end
+
+function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, ct::CpuTopology)
+    summary(io, ct); println(io)
+    T = typeof(ct)
+    nfields = length(fieldnames(T))
+    for (i,field) in enumerate(fieldnames(T))
+        char = i == nfields ? "└" : "├"
+        if field == :threadPool || field == :cacheLevels
+            print(io, char, " ", field, ": ... (", length(getproperty(ct, field)), " elements)")
+        else
+            print(io, char, " ", field, ": ", getproperty(ct, field))
+        end
+        i !== nfields && println(io)
+    end
 end
 
 # struct Likwid_Configuration
@@ -43,12 +65,12 @@ end
 # end
 
 struct CpuInfo
-    family::Int32
-    model::Int32
-    stepping::Int32
-    vendor::Int32
-    part::Int32
-    clock::Int64
+    family::Int
+    model::Int
+    stepping::Int
+    vendor::Int
+    part::Int
+    clock::Int
     turbo::Bool
     osname::String
     name::String
@@ -58,24 +80,69 @@ struct CpuInfo
     architecture::String
     supportUncore::Bool
     supportClientmem::Bool
-    featureFlags::UInt64
-    perf_version::Int32
-    perf_num_ctr::Int32
-    perf_width_ctr::Int32
-    perf_num_fixed_ctr::Int32
+    featureFlags::UInt
+    perf_version::Int
+    perf_num_ctr::Int
+    perf_width_ctr::Int
+    perf_num_fixed_ctr::Int
+end
+
+function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, ci::CpuInfo)
+    summary(io, ci); println(io)
+    T = typeof(ci)
+    nfields = length(fieldnames(T))
+    for (i,field) in enumerate(fieldnames(T))
+        char = i == nfields ? "└" : "├"
+        print(io, char, " ", field, ": ", getproperty(ci, field))
+        i !== nfields && println(io)
+    end
 end
 
 struct NumaNode
-    id::Int32
-    totalMemory::Int64
-    freeMemory::Int64
-    numberOfProcessors::Int32
-    processors::Vector{Int32}
-    numberOfDistances::UInt32
-    distances::Vector{Int32}
+    id::Int
+    totalMemory::Int # kB
+    freeMemory::Int # kB
+    numberOfProcessors::Int
+    processors::Vector{Int}
+    numberOfDistances::Int
+    distances::Vector{Int}
+end
+
+function Base.show(io::IO, nn::NumaNode)
+    print(io, "NumaNode()")
+end
+function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, nn::NumaNode)
+    summary(io, nn); println(io)
+    T = typeof(nn)
+    nfields = length(fieldnames(T))
+    for (i,field) in enumerate(fieldnames(T))
+        char = i == nfields ? "└" : "├"
+        if field == :totalMemory || field == :freeMemory
+            # print(io, char, " ", field, ": ", round(getproperty(nn, field) / 1024, digits=2), " MB")
+            print(io, char, " ", field, ": ", round(getproperty(nn, field) / 1024 / 1024, digits=2), " GB")
+        else
+            print(io, char, " ", field, ": ", getproperty(nn, field))
+        end
+        i !== nfields && println(io)
+    end
 end
 
 struct NumaTopology
-    numberOfNodes::Int32
+    numberOfNodes::Int
     nodes::Vector{NumaNode}
+end
+
+function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, nt::NumaTopology)
+    summary(io, nt); println(io)
+    T = typeof(nt)
+    nfields = length(fieldnames(T))
+    for (i,field) in enumerate(fieldnames(T))
+        char = i == nfields ? "└" : "├"
+        if field == :nodes
+            print(io, char, " ", field, ": ... (", length(getproperty(nt, field)), " elements)")
+        else
+            print(io, char, " ", field, ": ", getproperty(nt, field))
+        end
+        i !== nfields && println(io)
+    end
 end
