@@ -1,5 +1,8 @@
 # LIKWID.jl
 
+[![Build Status](https://github.com/JuliaPerf/LIKWID.jl/workflows/CI/badge.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
+[![Coverage](https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/master/graph/badge.svg?token=Ze61CbGoO5)](https://codecov.io/gh/JuliaPerf/LIKWID.jl)
+
 *Like I Knew What I am Doing*
 
 LIKWID.jl is a Julia wrapper for [LIKWID](https://github.com/RRZE-HPC/likwid), in particular its [Marker API](https://github.com/RRZE-HPC/likwid/wiki/TutorialMarkerC).

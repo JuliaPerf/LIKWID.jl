@@ -1,20 +1,17 @@
 using Test
 using LIKWID
-using LinearAlgebra
 
-@testset "Marker API" begin
-    N = 100_000_000
-    a = 3.141f0
-    z = zeros(Float32, N)
-    x = rand(Float32, N)
-    y = rand(Float32, N)
+const perfctr = `likwid-perfctr`
+const julia = Base.julia_cmd()
+const testdir = @__DIR__
 
-    function saxpy_cpu!(z,a,x,y)
-        z .= a .* x .+ y
+@testset "Marker API (CPU)" begin
+    @testset "$f" for f in ["test_marker.jl"]
+        # without marker api
+        run(`$julia $(joinpath(testdir, f))`)
+        @test true
+        # with marker api
+        run(`$perfctr -C 0 -g MEM -m $julia $(joinpath(testdir, f))`)
+        @test true
     end
-
-    saxpy_cpu!(z,a,x,y)
-    LIKWID.Marker.startregion("saxpy_cpu!")
-    saxpy_cpu!(z,a,x,y)
-    LIKWID.Marker.stopregion("saxpy_cpu!")
 end
