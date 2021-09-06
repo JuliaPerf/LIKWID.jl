@@ -5,7 +5,6 @@ module Marker
     threadinit() = LibLikwid.likwid_markerThreadInit()
     registerregion(regiontag) = LibLikwid.likwid_markerRegisterRegion(regiontag)
     startregion(regiontag) = LibLikwid.likwid_markerStartRegion(regiontag)
-    startregion(regiontag) = LibLikwid.likwid_markerStartRegion(regiontag)
     stopregion(regiontag) = LibLikwid.likwid_markerStopRegion(regiontag)
     # markerGetRegion
     nextgroup() = LibLikwid.likwid_markerNextGroup()
