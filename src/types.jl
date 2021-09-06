@@ -1,66 +1,66 @@
 struct HWThread
-    threadId::Int
-    coreId::Int
-    packageId::Int
-    apicId::Int
-    # dieId::Int
-    inCpuSet::Int
+    threadId::Int32
+    coreId::Int32
+    packageId::Int32
+    apicId::Int32
+    # dieId::Int32
+    inCpuSet::Int32
 end
 
 struct CacheLevel
-    level::Int
+    level::Int32
     type::Symbol
-    associativity::Int
-    sets::Int
-    lineSize::Int
-    size::Int
-    threads::Int
-    inclusive::Int
+    associativity::Int32
+    sets::Int32
+    lineSize::Int32
+    size::Int32
+    threads::Int32
+    inclusive::Int32
 end
 
 
 struct CpuTopology
-    numHWThreads::Int
-    activeHWThreads::Int
-    numSockets::Int
-    # numDies::Int
-    numCoresPerSocket::Int
-    numThreadsPerCore::Int
-    numCacheLevels::Int
+    numHWThreads::Int32
+    activeHWThreads::Int32
+    numSockets::Int32
+    # numDies::Int32
+    numCoresPerSocket::Int32
+    numThreadsPerCore::Int32
+    numCacheLevels::Int32
     threadPool::Vector{HWThread}
     cacheLevels::Vector{CacheLevel}
-    # topologyTree::Vector{LibLikwid.treeNode}
+    # topologyTree::Vector{LibLikwid.treeNode} # useless?
 end
 
 # struct Likwid_Configuration
-#     configFileName::Ptr{Cchar}
-#     topologyCfgFileName::Ptr{Cchar}
-#     daemonPath::Ptr{Cchar}
-#     groupPath::Ptr{Cchar}
+#     configFileName::String
+#     topologyCfgFileName::String
+#     daemonPath::String
+#     groupPath::String
 #     daemonMode::AccessMode
 #     maxNumThreads::Cint
 #     maxNumNodes::Cint
 # end
 
-# struct CpuInfo
-#     family::UInt32
-#     model::UInt32
-#     stepping::UInt32
-#     vendor::UInt32
-#     part::UInt32
-#     clock::UInt64
-#     turbo::Cint
-#     osname::Ptr{Cchar}
-#     name::Ptr{Cchar}
-#     short_name::Ptr{Cchar}
-#     features::Ptr{Cchar}
-#     isIntel::Cint
-#     architecture::NTuple{20, Cchar}
-#     supportUncore::Cint
-#     supportClientmem::Cint
-#     featureFlags::UInt64
-#     perf_version::UInt32
-#     perf_num_ctr::UInt32
-#     perf_width_ctr::UInt32
-#     perf_num_fixed_ctr::UInt32
-# end
+struct CpuInfo
+    family::Int32
+    model::Int32
+    stepping::Int32
+    vendor::Int32
+    part::Int32
+    clock::Int64
+    turbo::Bool
+    osname::String
+    name::String
+    short_name::String
+    features::String
+    isIntel::Bool
+    architecture::String
+    supportUncore::Bool
+    supportClientmem::Bool
+    featureFlags::UInt64
+    perf_version::Int32
+    perf_num_ctr::Int32
+    perf_width_ctr::Int32
+    perf_num_fixed_ctr::Int32
+end

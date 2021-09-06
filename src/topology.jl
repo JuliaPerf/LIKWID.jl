@@ -2,7 +2,9 @@ function init_topology()
     ret = LibLikwid.topology_init()
     if ret == 0
         _cputopo[] = unsafe_load(LibLikwid.get_cpuTopology())
+        _cpuinfo[] = unsafe_load(LibLikwid.get_cpuInfo())
         _build_jl_cputopo()
+        _build_jl_cpuinfo()
         _topo_initialized[] = true
         return true
     end
@@ -17,39 +19,39 @@ function _build_jl_cputopo()
     threads = Vector{HWThread}(undef, nhwthreads)
     for (i, tp) in enumerate(threadpools)
         threads[i] = HWThread(
-            Int(tp.threadId),
-            Int(tp.coreId),
-            Int(tp.packageId),
-            Int(tp.apicId),
-            Int(tp.inCpuSet),
+            tp.threadId,
+            tp.coreId,
+            tp.packageId,
+            tp.apicId,
+            tp.inCpuSet,
         )
     end
     cachelvls = unsafe_wrap(Array, ct.cacheLevels, ncachelvls)
     caches = Vector{CacheLevel}(undef, ncachelvls)
     for (i, clvl) in enumerate(cachelvls)
         caches[i] = CacheLevel(
-            Int(clvl.level),
+            clvl.level,
             clvl.type == LibLikwid.DATACACHE ? :data :
                           clvl.type == LibLikwid.INSTRUCTIONCACHE ? :instruction :
                           clvl.type == LibLikwid.UNIFIEDCACHE ? :unified :
                           clvl.type == LibLikwid.ITLB ? :itlb :
                           clvl.type == LibLikwid.DTLB ? :dtlb : :nocache,
-            Int(clvl.associativity),
-            Int(clvl.sets),
-            Int(clvl.lineSize),
-            Int(clvl.size),
-            Int(clvl.threads),
-            Int(clvl.inclusive),
+            clvl.associativity,
+            clvl.sets,
+            clvl.lineSize,
+            clvl.size,
+            clvl.threads,
+            clvl.inclusive,
         )
     end
 
     cputopo[] = CpuTopology(
         nhwthreads,
-        Int(ct.activeHWThreads),
-        Int(ct.numSockets),
-        # Int(ct.numDies),
-        Int(ct.numCoresPerSocket),
-        Int(ct.numThreadsPerCore),
+        ct.activeHWThreads,
+        ct.numSockets,
+        # ct.numDies,
+        ct.numCoresPerSocket,
+        ct.numThreadsPerCore,
         ncachelvls,
         threads,
         caches,
@@ -60,6 +62,8 @@ end
 function finalize_topology()
     LibLikwid.topology_finalize()
     _topo_initialized[] = false
+    _cputopo[] = nothing
+    _cpuinfo[] = nothing
     cputopo[] = nothing
     cpuinfo[] = nothing
     return nothing
@@ -75,3 +79,32 @@ function get_cpu_topology()
     end
     return cputopo[]
 end
+
+function _build_jl_cpuinfo()
+    ci = _cpuinfo[]
+    cpuinfo[] = CpuInfo(
+        ci.family,
+        ci.model,
+        ci.stepping,
+        ci.vendor,
+        ci.part,
+        ci.clock,
+        ci.turbo,
+        unsafe_string(ci.osname),
+        unsafe_string(ci.name),
+        unsafe_string(ci.short_name),
+        unsafe_string(ci.features),
+        ci.isIntel,
+        join(Char(c) for c in ci.architecture if !iszero(c)),
+        ci.supportUncore,
+        ci.supportClientmem,
+        ci.featureFlags,
+        ci.perf_version,
+        ci.perf_num_ctr,
+        ci.perf_width_ctr,
+        ci.perf_num_fixed_ctr,
+    )
+    return nothing
+end
+
+print_supported_cpus() = LibLikwid.print_supportedCPUs()
