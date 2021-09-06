@@ -69,17 +69,6 @@ function finalize_topology()
     return nothing
 end
 
-function get_cpu_topology()
-    if !_topo_initialized[]
-        init_topology() || error("Couldn't init topology.")
-    end
-    if !_numa_initialized[]
-        init_numa() || error("Couldn't init numa.")
-        _numainfo[] = unsafe_load(LibLikwid.get_numaTopology())
-    end
-    return cputopo[]
-end
-
 function _build_jl_cpuinfo()
     ci = _cpuinfo[]
     cpuinfo[] = CpuInfo(
@@ -105,6 +94,16 @@ function _build_jl_cpuinfo()
         ci.perf_num_fixed_ctr,
     )
     return nothing
+end
+
+function get_cpu_topology()
+    if !_topo_initialized[]
+        init_topology() || error("Couldn't init topology.")
+    end
+    if !_numa_initialized[]
+        init_numa() || error("Couldn't init numa.")
+    end
+    return cputopo[]
 end
 
 print_supported_cpus() = LibLikwid.print_supportedCPUs()

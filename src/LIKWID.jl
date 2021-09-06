@@ -13,11 +13,12 @@ module LIKWID
    const _timer_initialized = Ref{Bool}(false)
    const _numa_initialized = Ref{Bool}(false) # NUMA module of liblikwid
    const _numainfo = Ref{Union{LibLikwid.NumaTopology, Nothing}}(nothing) # (Julia) API struct
+   const numainfo = Ref{Union{NumaTopology, Nothing}}(nothing) # Julia struct
    const _topo_initialized = Ref{Bool}(false) # Topo module of liblikwid
    const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
    const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
-   const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing)
-   const cpuinfo = Ref{Union{CpuInfo, Nothing}}(nothing)
+   const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
+   const cpuinfo = Ref{Union{CpuInfo, Nothing}}(nothing) # Julia struct
 
    # functions
    include("numa.jl")

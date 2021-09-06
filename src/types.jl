@@ -64,3 +64,18 @@ struct CpuInfo
     perf_width_ctr::Int32
     perf_num_fixed_ctr::Int32
 end
+
+struct NumaNode
+    id::Int32
+    totalMemory::Int64
+    freeMemory::Int64
+    numberOfProcessors::Int32
+    processors::Vector{Int32}
+    numberOfDistances::UInt32
+    distances::Vector{Int32}
+end
+
+struct NumaTopology
+    numberOfNodes::Int32
+    nodes::Vector{NumaNode}
+end
