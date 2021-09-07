@@ -20,6 +20,7 @@ function _build_jl_affinity()
     _domains = unsafe_wrap(Array, af.domains, ndomains)
     domains = Vector{AffinityDomain}(undef, ndomains)
     for (i, d) in enumerate(_domains)
+        # bstring: http://mike.steinert.ca/bstring/doc/
         bstr = unsafe_load(d.tag)
         domains[i] = AffinityDomain(
             unsafe_string(bstr.data),

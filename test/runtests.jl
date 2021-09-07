@@ -36,6 +36,7 @@ end
     @test typeof(affinity.domains) == Vector{LIKWID.AffinityDomain}
     @test length(affinity.domains) == affinity.numberOfAffinityDomains
     d = first(affinity.domains)
+    @test typeof(d) == LIKWID.AffinityDomain
     @test typeof(d.tag) == String
     @test typeof(d.processorList) == Vector{Int}
     @test length(d.processorList) == d.numberOfProcessors
