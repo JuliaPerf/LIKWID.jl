@@ -23,6 +23,7 @@ function _build_jl_cputopo()
             tp.coreId,
             tp.packageId,
             tp.apicId,
+            tp.dieId,
             tp.inCpuSet,
         )
     end
@@ -49,7 +50,7 @@ function _build_jl_cputopo()
         nhwthreads,
         ct.activeHWThreads,
         ct.numSockets,
-        # ct.numDies,
+        ct.numDies,
         ct.numCoresPerSocket,
         ct.numThreadsPerCore,
         ncachelvls,

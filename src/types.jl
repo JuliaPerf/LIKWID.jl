@@ -3,7 +3,7 @@ struct HWThread
     coreId::Int
     packageId::Int
     apicId::Int
-    # dieId::Int
+    dieId::Int
     inCpuSet::Int
 end
 
@@ -30,7 +30,7 @@ struct CpuTopology
     numHWThreads::Int
     activeHWThreads::Int
     numSockets::Int
-    # numDies::Int
+    numDies::Int
     numCoresPerSocket::Int
     numThreadsPerCore::Int
     numCacheLevels::Int

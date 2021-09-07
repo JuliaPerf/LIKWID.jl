@@ -486,7 +486,7 @@ module LibLikwid
         coreId::UInt32
         packageId::UInt32
         apicId::UInt32
-        # dieId::UInt32
+        dieId::UInt32
         inCpuSet::UInt32
     end
 
@@ -516,7 +516,7 @@ module LibLikwid
         numHWThreads::UInt32
         activeHWThreads::UInt32
         numSockets::UInt32
-        # numDies::UInt32
+        numDies::UInt32
         numCoresPerSocket::UInt32
         numThreadsPerCore::UInt32
         numCacheLevels::UInt32
