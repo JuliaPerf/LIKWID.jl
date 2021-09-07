@@ -5,7 +5,7 @@ function init_topology()
         _cpuinfo[] = unsafe_load(LibLikwid.get_cpuInfo())
         _build_jl_cputopo()
         _build_jl_cpuinfo()
-        _topo_initialized[] = true
+        topo_initialized[] = true
         return true
     end
     return false
@@ -62,7 +62,7 @@ end
 
 function finalize_topology()
     LibLikwid.topology_finalize()
-    _topo_initialized[] = false
+    topo_initialized[] = false
     _cputopo[] = nothing
     _cpuinfo[] = nothing
     cputopo[] = nothing
@@ -98,20 +98,20 @@ function _build_jl_cpuinfo()
 end
 
 function get_cpu_topology()
-    if !_topo_initialized[]
+    if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
     end
-    if !_numa_initialized[]
+    if !numa_initialized[]
         init_numa() || error("Couldn't init numa.")
     end
     return cputopo[]
 end
 
 function get_cpu_info()
-    if !_topo_initialized[]
+    if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
     end
-    if !_numa_initialized[]
+    if !numa_initialized[]
         init_numa() || error("Couldn't init numa.")
     end
     return cpuinfo[]

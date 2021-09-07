@@ -146,3 +146,21 @@ function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, nt::NumaTopology)
         i !== nfields && println(io)
     end
 end
+
+struct AffinityDomain
+    tag::String
+    numberOfProcessors::Int
+    numberOfCores::Int
+    processorList::Vector{Int}
+end
+
+struct AffinityDomains
+    numberOfSocketDomains::Int
+    numberOfNumaDomains::Int
+    numberOfProcessorsPerSocket::Int
+    numberOfCacheDomains::Int
+    numberOfCoresPerCache::Int
+    numberOfProcessorsPerCache::Int
+    numberOfAffinityDomains::Int
+    domains::Vector{AffinityDomain}
+end

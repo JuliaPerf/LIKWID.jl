@@ -5,30 +5,30 @@ module LibLikwid
 
     using CEnum
 
-    struct tagbstring
+    struct bstring
         mlen::Cint
         slen::Cint
         data::Ptr{Cuchar}
     end
 
-    const bstring = Ptr{tagbstring}
+    const bstring_t = Ptr{bstring}
 
-    const const_bstring = Ptr{tagbstring}
+    const const_bstring_t = Ptr{bstring}
 
     function bfromcstr(str)
-        ccall((:bfromcstr, liblikwid), bstring, (Ptr{Cchar},), str)
+        ccall((:bfromcstr, liblikwid), bstring_t, (Ptr{Cchar},), str)
     end
 
     function bfromcstralloc(mlen, str)
-        ccall((:bfromcstralloc, liblikwid), bstring, (Cint, Ptr{Cchar}), mlen, str)
+        ccall((:bfromcstralloc, liblikwid), bstring_t, (Cint, Ptr{Cchar}), mlen, str)
     end
 
     function blk2bstr(blk, len)
-        ccall((:blk2bstr, liblikwid), bstring, (Ptr{Cvoid}, Cint), blk, len)
+        ccall((:blk2bstr, liblikwid), bstring_t, (Ptr{Cvoid}, Cint), blk, len)
     end
 
     function bstr2cstr(s, z)
-        ccall((:bstr2cstr, liblikwid), Ptr{Cchar}, (const_bstring, Cchar), s, z)
+        ccall((:bstr2cstr, liblikwid), Ptr{Cchar}, (const_bstring_t, Cchar), s, z)
     end
 
     function bcstrfree(s)
@@ -36,173 +36,173 @@ module LibLikwid
     end
 
     function bstrcpy(b1)
-        ccall((:bstrcpy, liblikwid), bstring, (const_bstring,), b1)
+        ccall((:bstrcpy, liblikwid), bstring_t, (const_bstring_t,), b1)
     end
 
     function bassign(a, b)
-        ccall((:bassign, liblikwid), Cint, (bstring, const_bstring), a, b)
+        ccall((:bassign, liblikwid), Cint, (bstring_t, const_bstring_t), a, b)
     end
 
     function bassignmidstr(a, b, left, len)
-        ccall((:bassignmidstr, liblikwid), Cint, (bstring, const_bstring, Cint, Cint), a, b, left, len)
+        ccall((:bassignmidstr, liblikwid), Cint, (bstring_t, const_bstring_t, Cint, Cint), a, b, left, len)
     end
 
     function bassigncstr(a, str)
-        ccall((:bassigncstr, liblikwid), Cint, (bstring, Ptr{Cchar}), a, str)
+        ccall((:bassigncstr, liblikwid), Cint, (bstring_t, Ptr{Cchar}), a, str)
     end
 
     function bassignblk(a, s, len)
-        ccall((:bassignblk, liblikwid), Cint, (bstring, Ptr{Cvoid}, Cint), a, s, len)
+        ccall((:bassignblk, liblikwid), Cint, (bstring_t, Ptr{Cvoid}, Cint), a, s, len)
     end
 
     function bdestroy(b)
-        ccall((:bdestroy, liblikwid), Cint, (bstring,), b)
+        ccall((:bdestroy, liblikwid), Cint, (bstring_t,), b)
     end
 
     function balloc(s, len)
-        ccall((:balloc, liblikwid), Cint, (bstring, Cint), s, len)
+        ccall((:balloc, liblikwid), Cint, (bstring_t, Cint), s, len)
     end
 
     function ballocmin(b, len)
-        ccall((:ballocmin, liblikwid), Cint, (bstring, Cint), b, len)
+        ccall((:ballocmin, liblikwid), Cint, (bstring_t, Cint), b, len)
     end
 
     function bmidstr(b, left, len)
-        ccall((:bmidstr, liblikwid), bstring, (const_bstring, Cint, Cint), b, left, len)
+        ccall((:bmidstr, liblikwid), bstring_t, (const_bstring_t, Cint, Cint), b, left, len)
     end
 
     function bconcat(b0, b1)
-        ccall((:bconcat, liblikwid), Cint, (bstring, const_bstring), b0, b1)
+        ccall((:bconcat, liblikwid), Cint, (bstring_t, const_bstring_t), b0, b1)
     end
 
     function bconchar(b0, c)
-        ccall((:bconchar, liblikwid), Cint, (bstring, Cchar), b0, c)
+        ccall((:bconchar, liblikwid), Cint, (bstring_t, Cchar), b0, c)
     end
 
     function bcatcstr(b, s)
-        ccall((:bcatcstr, liblikwid), Cint, (bstring, Ptr{Cchar}), b, s)
+        ccall((:bcatcstr, liblikwid), Cint, (bstring_t, Ptr{Cchar}), b, s)
     end
 
     function bcatblk(b, s, len)
-        ccall((:bcatblk, liblikwid), Cint, (bstring, Ptr{Cvoid}, Cint), b, s, len)
+        ccall((:bcatblk, liblikwid), Cint, (bstring_t, Ptr{Cvoid}, Cint), b, s, len)
     end
 
     function binsert(s1, pos, s2, fill)
-        ccall((:binsert, liblikwid), Cint, (bstring, Cint, const_bstring, Cuchar), s1, pos, s2, fill)
+        ccall((:binsert, liblikwid), Cint, (bstring_t, Cint, const_bstring_t, Cuchar), s1, pos, s2, fill)
     end
 
     function binsertch(s1, pos, len, fill)
-        ccall((:binsertch, liblikwid), Cint, (bstring, Cint, Cint, Cuchar), s1, pos, len, fill)
+        ccall((:binsertch, liblikwid), Cint, (bstring_t, Cint, Cint, Cuchar), s1, pos, len, fill)
     end
 
     function breplace(b1, pos, len, b2, fill)
-        ccall((:breplace, liblikwid), Cint, (bstring, Cint, Cint, const_bstring, Cuchar), b1, pos, len, b2, fill)
+        ccall((:breplace, liblikwid), Cint, (bstring_t, Cint, Cint, const_bstring_t, Cuchar), b1, pos, len, b2, fill)
     end
 
     function bdelete(s1, pos, len)
-        ccall((:bdelete, liblikwid), Cint, (bstring, Cint, Cint), s1, pos, len)
+        ccall((:bdelete, liblikwid), Cint, (bstring_t, Cint, Cint), s1, pos, len)
     end
 
     function bsetstr(b0, pos, b1, fill)
-        ccall((:bsetstr, liblikwid), Cint, (bstring, Cint, const_bstring, Cuchar), b0, pos, b1, fill)
+        ccall((:bsetstr, liblikwid), Cint, (bstring_t, Cint, const_bstring_t, Cuchar), b0, pos, b1, fill)
     end
 
     function btrunc(b, n)
-        ccall((:btrunc, liblikwid), Cint, (bstring, Cint), b, n)
+        ccall((:btrunc, liblikwid), Cint, (bstring_t, Cint), b, n)
     end
 
     function bstricmp(b0, b1)
-        ccall((:bstricmp, liblikwid), Cint, (const_bstring, const_bstring), b0, b1)
+        ccall((:bstricmp, liblikwid), Cint, (const_bstring_t, const_bstring_t), b0, b1)
     end
 
     function bstrnicmp(b0, b1, n)
-        ccall((:bstrnicmp, liblikwid), Cint, (const_bstring, const_bstring, Cint), b0, b1, n)
+        ccall((:bstrnicmp, liblikwid), Cint, (const_bstring_t, const_bstring_t, Cint), b0, b1, n)
     end
 
     function biseqcaseless(b0, b1)
-        ccall((:biseqcaseless, liblikwid), Cint, (const_bstring, const_bstring), b0, b1)
+        ccall((:biseqcaseless, liblikwid), Cint, (const_bstring_t, const_bstring_t), b0, b1)
     end
 
     function bisstemeqcaselessblk(b0, blk, len)
-        ccall((:bisstemeqcaselessblk, liblikwid), Cint, (const_bstring, Ptr{Cvoid}, Cint), b0, blk, len)
+        ccall((:bisstemeqcaselessblk, liblikwid), Cint, (const_bstring_t, Ptr{Cvoid}, Cint), b0, blk, len)
     end
 
     function biseq(b0, b1)
-        ccall((:biseq, liblikwid), Cint, (const_bstring, const_bstring), b0, b1)
+        ccall((:biseq, liblikwid), Cint, (const_bstring_t, const_bstring_t), b0, b1)
     end
 
     function bisstemeqblk(b0, blk, len)
-        ccall((:bisstemeqblk, liblikwid), Cint, (const_bstring, Ptr{Cvoid}, Cint), b0, blk, len)
+        ccall((:bisstemeqblk, liblikwid), Cint, (const_bstring_t, Ptr{Cvoid}, Cint), b0, blk, len)
     end
 
     function biseqcstr(b, s)
-        ccall((:biseqcstr, liblikwid), Cint, (const_bstring, Ptr{Cchar}), b, s)
+        ccall((:biseqcstr, liblikwid), Cint, (const_bstring_t, Ptr{Cchar}), b, s)
     end
 
     function biseqcstrcaseless(b, s)
-        ccall((:biseqcstrcaseless, liblikwid), Cint, (const_bstring, Ptr{Cchar}), b, s)
+        ccall((:biseqcstrcaseless, liblikwid), Cint, (const_bstring_t, Ptr{Cchar}), b, s)
     end
 
     function bstrcmp(b0, b1)
-        ccall((:bstrcmp, liblikwid), Cint, (const_bstring, const_bstring), b0, b1)
+        ccall((:bstrcmp, liblikwid), Cint, (const_bstring_t, const_bstring_t), b0, b1)
     end
 
     function bstrncmp(b0, b1, n)
-        ccall((:bstrncmp, liblikwid), Cint, (const_bstring, const_bstring, Cint), b0, b1, n)
+        ccall((:bstrncmp, liblikwid), Cint, (const_bstring_t, const_bstring_t, Cint), b0, b1, n)
     end
 
     function binstr(s1, pos, s2)
-        ccall((:binstr, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos, s2)
+        ccall((:binstr, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), s1, pos, s2)
     end
 
     function binstrr(s1, pos, s2)
-        ccall((:binstrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos, s2)
+        ccall((:binstrr, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), s1, pos, s2)
     end
 
     function binstrcaseless(s1, pos, s2)
-        ccall((:binstrcaseless, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos, s2)
+        ccall((:binstrcaseless, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), s1, pos, s2)
     end
 
     function binstrrcaseless(s1, pos, s2)
-        ccall((:binstrrcaseless, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos, s2)
+        ccall((:binstrrcaseless, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), s1, pos, s2)
     end
 
     function bstrchrp(b, c, pos)
-        ccall((:bstrchrp, liblikwid), Cint, (const_bstring, Cint, Cint), b, c, pos)
+        ccall((:bstrchrp, liblikwid), Cint, (const_bstring_t, Cint, Cint), b, c, pos)
     end
 
     function bstrrchrp(b, c, pos)
-        ccall((:bstrrchrp, liblikwid), Cint, (const_bstring, Cint, Cint), b, c, pos)
+        ccall((:bstrrchrp, liblikwid), Cint, (const_bstring_t, Cint, Cint), b, c, pos)
     end
 
     function binchr(b0, pos, b1)
-        ccall((:binchr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1)
+        ccall((:binchr, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), b0, pos, b1)
     end
 
     function binchrr(b0, pos, b1)
-        ccall((:binchrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1)
+        ccall((:binchrr, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), b0, pos, b1)
     end
 
     function bninchr(b0, pos, b1)
-        ccall((:bninchr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1)
+        ccall((:bninchr, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), b0, pos, b1)
     end
 
     function bninchrr(b0, pos, b1)
-        ccall((:bninchrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1)
+        ccall((:bninchrr, liblikwid), Cint, (const_bstring_t, Cint, const_bstring_t), b0, pos, b1)
     end
 
     function bfindreplace(b, find, repl, pos)
-        ccall((:bfindreplace, liblikwid), Cint, (bstring, const_bstring, const_bstring, Cint), b, find, repl, pos)
+        ccall((:bfindreplace, liblikwid), Cint, (bstring_t, const_bstring_t, const_bstring_t, Cint), b, find, repl, pos)
     end
 
     function bfindreplacecaseless(b, find, repl, pos)
-        ccall((:bfindreplacecaseless, liblikwid), Cint, (bstring, const_bstring, const_bstring, Cint), b, find, repl, pos)
+        ccall((:bfindreplacecaseless, liblikwid), Cint, (bstring_t, const_bstring_t, const_bstring_t, Cint), b, find, repl, pos)
     end
 
     struct bstrList
         qty::Cint
         mlen::Cint
-        entry::Ptr{bstring}
+        entry::Ptr{bstring_t}
     end
 
     function bstrListCreate()
@@ -222,55 +222,55 @@ module LibLikwid
     end
 
     function bsplit(str, splitChar)
-        ccall((:bsplit, liblikwid), Ptr{bstrList}, (const_bstring, Cuchar), str, splitChar)
+        ccall((:bsplit, liblikwid), Ptr{bstrList}, (const_bstring_t, Cuchar), str, splitChar)
     end
 
     function bsplits(str, splitStr)
-        ccall((:bsplits, liblikwid), Ptr{bstrList}, (const_bstring, const_bstring), str, splitStr)
+        ccall((:bsplits, liblikwid), Ptr{bstrList}, (const_bstring_t, const_bstring_t), str, splitStr)
     end
 
     function bsplitstr(str, splitStr)
-        ccall((:bsplitstr, liblikwid), Ptr{bstrList}, (const_bstring, const_bstring), str, splitStr)
+        ccall((:bsplitstr, liblikwid), Ptr{bstrList}, (const_bstring_t, const_bstring_t), str, splitStr)
     end
 
     function bjoin(bl, sep)
-        ccall((:bjoin, liblikwid), bstring, (Ptr{bstrList}, const_bstring), bl, sep)
+        ccall((:bjoin, liblikwid), bstring_t, (Ptr{bstrList}, const_bstring_t), bl, sep)
     end
 
     function bsplitcb(str, splitChar, pos, cb, parm)
-        ccall((:bsplitcb, liblikwid), Cint, (const_bstring, Cuchar, Cint, Ptr{Cvoid}, Ptr{Cvoid}), str, splitChar, pos, cb, parm)
+        ccall((:bsplitcb, liblikwid), Cint, (const_bstring_t, Cuchar, Cint, Ptr{Cvoid}, Ptr{Cvoid}), str, splitChar, pos, cb, parm)
     end
 
     function bsplitscb(str, splitStr, pos, cb, parm)
-        ccall((:bsplitscb, liblikwid), Cint, (const_bstring, const_bstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}), str, splitStr, pos, cb, parm)
+        ccall((:bsplitscb, liblikwid), Cint, (const_bstring_t, const_bstring_t, Cint, Ptr{Cvoid}, Ptr{Cvoid}), str, splitStr, pos, cb, parm)
     end
 
     function bsplitstrcb(str, splitStr, pos, cb, parm)
-        ccall((:bsplitstrcb, liblikwid), Cint, (const_bstring, const_bstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}), str, splitStr, pos, cb, parm)
+        ccall((:bsplitstrcb, liblikwid), Cint, (const_bstring_t, const_bstring_t, Cint, Ptr{Cvoid}, Ptr{Cvoid}), str, splitStr, pos, cb, parm)
     end
 
     function bpattern(b, len)
-        ccall((:bpattern, liblikwid), Cint, (bstring, Cint), b, len)
+        ccall((:bpattern, liblikwid), Cint, (bstring_t, Cint), b, len)
     end
 
     function btoupper(b)
-        ccall((:btoupper, liblikwid), Cint, (bstring,), b)
+        ccall((:btoupper, liblikwid), Cint, (bstring_t,), b)
     end
 
     function btolower(b)
-        ccall((:btolower, liblikwid), Cint, (bstring,), b)
+        ccall((:btolower, liblikwid), Cint, (bstring_t,), b)
     end
 
     function bltrimws(b)
-        ccall((:bltrimws, liblikwid), Cint, (bstring,), b)
+        ccall((:bltrimws, liblikwid), Cint, (bstring_t,), b)
     end
 
     function brtrimws(b)
-        ccall((:brtrimws, liblikwid), Cint, (bstring,), b)
+        ccall((:brtrimws, liblikwid), Cint, (bstring_t,), b)
     end
 
     function btrimws(b)
-        ccall((:btrimws, liblikwid), Cint, (bstring,), b)
+        ccall((:btrimws, liblikwid), Cint, (bstring_t,), b)
     end
 
     # typedef int ( * bNgetc ) ( void * parm )
@@ -280,23 +280,23 @@ module LibLikwid
     const bNread = Ptr{Cvoid}
 
     function bgets(getcPtr, parm, terminator)
-        ccall((:bgets, liblikwid), bstring, (bNgetc, Ptr{Cvoid}, Cchar), getcPtr, parm, terminator)
+        ccall((:bgets, liblikwid), bstring_t, (bNgetc, Ptr{Cvoid}, Cchar), getcPtr, parm, terminator)
     end
 
     function bread(readPtr, parm)
-        ccall((:bread, liblikwid), bstring, (bNread, Ptr{Cvoid}), readPtr, parm)
+        ccall((:bread, liblikwid), bstring_t, (bNread, Ptr{Cvoid}), readPtr, parm)
     end
 
     function bgetsa(b, getcPtr, parm, terminator)
-        ccall((:bgetsa, liblikwid), Cint, (bstring, bNgetc, Ptr{Cvoid}, Cchar), b, getcPtr, parm, terminator)
+        ccall((:bgetsa, liblikwid), Cint, (bstring_t, bNgetc, Ptr{Cvoid}, Cchar), b, getcPtr, parm, terminator)
     end
 
     function bassigngets(b, getcPtr, parm, terminator)
-        ccall((:bassigngets, liblikwid), Cint, (bstring, bNgetc, Ptr{Cvoid}, Cchar), b, getcPtr, parm, terminator)
+        ccall((:bassigngets, liblikwid), Cint, (bstring_t, bNgetc, Ptr{Cvoid}, Cchar), b, getcPtr, parm, terminator)
     end
 
     function breada(b, readPtr, parm)
-        ccall((:breada, liblikwid), Cint, (bstring, bNread, Ptr{Cvoid}), b, readPtr, parm)
+        ccall((:breada, liblikwid), Cint, (bstring_t, bNread, Ptr{Cvoid}), b, readPtr, parm)
     end
 
     mutable struct bStream end
@@ -314,43 +314,43 @@ module LibLikwid
     end
 
     function bsreadln(b, s, terminator)
-        ccall((:bsreadln, liblikwid), Cint, (bstring, Ptr{bStream}, Cchar), b, s, terminator)
+        ccall((:bsreadln, liblikwid), Cint, (bstring_t, Ptr{bStream}, Cchar), b, s, terminator)
     end
 
     function bsreadlns(r, s, term)
-        ccall((:bsreadlns, liblikwid), Cint, (bstring, Ptr{bStream}, const_bstring), r, s, term)
+        ccall((:bsreadlns, liblikwid), Cint, (bstring_t, Ptr{bStream}, const_bstring_t), r, s, term)
     end
 
     function bsread(b, s, n)
-        ccall((:bsread, liblikwid), Cint, (bstring, Ptr{bStream}, Cint), b, s, n)
+        ccall((:bsread, liblikwid), Cint, (bstring_t, Ptr{bStream}, Cint), b, s, n)
     end
 
     function bsreadlna(b, s, terminator)
-        ccall((:bsreadlna, liblikwid), Cint, (bstring, Ptr{bStream}, Cchar), b, s, terminator)
+        ccall((:bsreadlna, liblikwid), Cint, (bstring_t, Ptr{bStream}, Cchar), b, s, terminator)
     end
 
     function bsreadlnsa(r, s, term)
-        ccall((:bsreadlnsa, liblikwid), Cint, (bstring, Ptr{bStream}, const_bstring), r, s, term)
+        ccall((:bsreadlnsa, liblikwid), Cint, (bstring_t, Ptr{bStream}, const_bstring_t), r, s, term)
     end
 
     function bsreada(b, s, n)
-        ccall((:bsreada, liblikwid), Cint, (bstring, Ptr{bStream}, Cint), b, s, n)
+        ccall((:bsreada, liblikwid), Cint, (bstring_t, Ptr{bStream}, Cint), b, s, n)
     end
 
     function bsunread(s, b)
-        ccall((:bsunread, liblikwid), Cint, (Ptr{bStream}, const_bstring), s, b)
+        ccall((:bsunread, liblikwid), Cint, (Ptr{bStream}, const_bstring_t), s, b)
     end
 
     function bspeek(r, s)
-        ccall((:bspeek, liblikwid), Cint, (bstring, Ptr{bStream}), r, s)
+        ccall((:bspeek, liblikwid), Cint, (bstring_t, Ptr{bStream}), r, s)
     end
 
     function bssplitscb(s, splitStr, cb, parm)
-        ccall((:bssplitscb, liblikwid), Cint, (Ptr{bStream}, const_bstring, Ptr{Cvoid}, Ptr{Cvoid}), s, splitStr, cb, parm)
+        ccall((:bssplitscb, liblikwid), Cint, (Ptr{bStream}, const_bstring_t, Ptr{Cvoid}, Ptr{Cvoid}), s, splitStr, cb, parm)
     end
 
     function bssplitstrcb(s, splitStr, cb, parm)
-        ccall((:bssplitstrcb, liblikwid), Cint, (Ptr{bStream}, const_bstring, Ptr{Cvoid}, Ptr{Cvoid}), s, splitStr, cb, parm)
+        ccall((:bssplitstrcb, liblikwid), Cint, (Ptr{bStream}, const_bstring_t, Ptr{Cvoid}, Ptr{Cvoid}), s, splitStr, cb, parm)
     end
 
     function bseof(s)
@@ -595,7 +595,7 @@ module LibLikwid
     end
 
     struct AffinityDomain
-        tag::bstring
+        tag::bstring_t
         numberOfProcessors::UInt32
         numberOfCores::UInt32
         processorList::Ptr{Cint}

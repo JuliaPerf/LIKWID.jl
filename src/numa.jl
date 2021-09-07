@@ -3,7 +3,7 @@ function init_numa()
     if ret == 0
         _numainfo[] = unsafe_load(LibLikwid.get_numaTopology())
         _build_jl_numa()
-        _numa_initialized[] = true
+        numa_initialized[] = true
         return true
     end
     return false
@@ -11,7 +11,7 @@ end
 
 function finalize_numa()
     LibLikwid.numa_finalize()
-    _numa_initialized[] = false
+    numa_initialized[] = false
     _numainfo[] = nothing
     return nothing
 end
@@ -42,21 +42,14 @@ function _build_jl_numa()
 end
 
 function get_numa_topology()
-    if !_topo_initialized[]
+    if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
     end
-    if !_numa_initialized[]
+    if !numa_initialized[]
         init_numa() || error("Couldn't init numa.")
     end
-    # TODO: if (affinity_initialized == 0)
-    # {
-    #     affinity_init();
-    #     affinity_initialized = 1;
-    #     affinity = get_affinityDomains();
-    # }
-    # if ((affinity_initialized) && (affinity == NULL))
-    # {
-    #     affinity = get_affinityDomains();
-    # }
+    if !affinity_initialized[]
+        init_affinity() || error("Couldn't init affinity.")
+    end
     return numainfo[]
 end

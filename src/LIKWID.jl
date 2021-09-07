@@ -9,20 +9,24 @@ module LIKWID
    include("types.jl")
 
    # Note: underscore prefix -> liblikwid API
-   const _perfmon_initialized = Ref{Bool}(false)
-   const _timer_initialized = Ref{Bool}(false)
-   const _numa_initialized = Ref{Bool}(false) # NUMA module of liblikwid
-   const _numainfo = Ref{Union{LibLikwid.NumaTopology, Nothing}}(nothing) # (Julia) API struct
-   const numainfo = Ref{Union{NumaTopology, Nothing}}(nothing) # Julia struct
-   const _topo_initialized = Ref{Bool}(false) # Topo module of liblikwid
+   const topo_initialized = Ref{Bool}(false) # Topo module of liblikwid
+   const numa_initialized = Ref{Bool}(false)
+   const affinity_initialized = Ref{Bool}(false)
+   const perfmon_initialized = Ref{Bool}(false)
+   const timer_initialized = Ref{Bool}(false)
    const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
    const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
    const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
    const cpuinfo = Ref{Union{CpuInfo, Nothing}}(nothing) # Julia struct
+   const _numainfo = Ref{Union{LibLikwid.NumaTopology, Nothing}}(nothing) # (Julia) API struct
+   const numainfo = Ref{Union{NumaTopology, Nothing}}(nothing) # Julia struct
+   const _affinity = Ref{Union{LibLikwid.AffinityDomains, Nothing}}(nothing) # (Julia) API struct
+   const affinity = Ref{Union{AffinityDomains, Nothing}}(nothing) # Julia struct
 
    # functions
-   include("numa.jl")
    include("topology.jl")
+   include("numa.jl")
+   include("affinity.jl")
    include("marker.jl")
    
    function __init__()
