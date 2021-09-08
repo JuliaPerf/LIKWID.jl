@@ -8,6 +8,11 @@ build-likwid:
   stage: build
   tags:
     - testcluster
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
   variables:
     SLURM_NODELIST: medusa
     LIKWID_MODULE: likwid/5.2-dev
@@ -45,6 +50,11 @@ test-julia/1.6:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
   needs:
     job: build-likwid
   before_script:
@@ -72,6 +82,11 @@ test-julia/nightly:
     CUDA_MODULE: cuda/11.0
   needs:
     job: build-likwid
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
   before_script:
     - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
     - make local
