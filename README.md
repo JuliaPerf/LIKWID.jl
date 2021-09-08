@@ -2,7 +2,7 @@ LIKWID.jl
 =========
 
 [![Build Status](https://github.com/JuliaPerf/LIKWID.jl/workflows/CI/badge.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
-[![Build Status](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
+[![Build Status](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg)](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/-/pipelines)
 [![Coverage](https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/master/graph/badge.svg?token=Ze61CbGoO5)](https://codecov.io/gh/JuliaPerf/LIKWID.jl)
 
 *Like I Knew What I am Doing*
