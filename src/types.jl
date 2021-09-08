@@ -39,21 +39,6 @@ struct CpuTopology
     # topologyTree::Vector{LibLikwid.treeNode} # useless?
 end
 
-function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, ct::CpuTopology)
-    summary(io, ct); println(io)
-    T = typeof(ct)
-    nfields = length(fieldnames(T))
-    for (i,field) in enumerate(fieldnames(T))
-        char = i == nfields ? "└" : "├"
-        if field == :threadPool || field == :cacheLevels
-            print(io, char, " ", field, ": ... (", length(getproperty(ct, field)), " elements)")
-        else
-            print(io, char, " ", field, ": ", getproperty(ct, field))
-        end
-        i !== nfields && println(io)
-    end
-end
-
 # struct Likwid_Configuration
 #     configFileName::String
 #     topologyCfgFileName::String
@@ -87,17 +72,6 @@ struct CpuInfo
     perf_num_fixed_ctr::Int
 end
 
-function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, ci::CpuInfo)
-    summary(io, ci); println(io)
-    T = typeof(ci)
-    nfields = length(fieldnames(T))
-    for (i,field) in enumerate(fieldnames(T))
-        char = i == nfields ? "└" : "├"
-        print(io, char, " ", field, ": ", getproperty(ci, field))
-        i !== nfields && println(io)
-    end
-end
-
 struct NumaNode
     id::Int
     totalMemory::Int # kB
@@ -111,40 +85,10 @@ end
 function Base.show(io::IO, nn::NumaNode)
     print(io, "NumaNode()")
 end
-function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, nn::NumaNode)
-    summary(io, nn); println(io)
-    T = typeof(nn)
-    nfields = length(fieldnames(T))
-    for (i,field) in enumerate(fieldnames(T))
-        char = i == nfields ? "└" : "├"
-        if field == :totalMemory || field == :freeMemory
-            # print(io, char, " ", field, ": ", round(getproperty(nn, field) / 1024, digits=2), " MB")
-            print(io, char, " ", field, ": ", round(getproperty(nn, field) / 1024 / 1024, digits=2), " GB")
-        else
-            print(io, char, " ", field, ": ", getproperty(nn, field))
-        end
-        i !== nfields && println(io)
-    end
-end
 
 struct NumaTopology
     numberOfNodes::Int
     nodes::Vector{NumaNode}
-end
-
-function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, nt::NumaTopology)
-    summary(io, nt); println(io)
-    T = typeof(nt)
-    nfields = length(fieldnames(T))
-    for (i,field) in enumerate(fieldnames(T))
-        char = i == nfields ? "└" : "├"
-        if field == :nodes
-            print(io, char, " ", field, ": ... (", length(getproperty(nt, field)), " elements)")
-        else
-            print(io, char, " ", field, ": ", getproperty(nt, field))
-        end
-        i !== nfields && println(io)
-    end
 end
 
 struct AffinityDomain
@@ -163,4 +107,23 @@ struct AffinityDomains
     numberOfProcessorsPerCache::Int
     numberOfAffinityDomains::Int
     domains::Vector{AffinityDomain}
+end
+
+const SHOW_TYPES = Union{CpuTopology, CpuInfo, NumaTopology, NumaNode, AffinityDomain, AffinityDomains}
+
+function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
+    summary(io, x); println(io)
+    T = typeof(x)
+    nfields = length(fieldnames(T))
+    for (i,field) in enumerate(fieldnames(T))
+        char = i == nfields ? "└" : "├"
+        if getproperty(x, field) isa AbstractVector && !(T in (NumaNode, AffinityDomain))
+            print(io, char, " ", field, ": ... (", length(getproperty(x, field)), " elements)")
+        elseif field == :totalMemory || field == :freeMemory
+            print(io, char, " ", field, ": ", round(getproperty(x, field) / 1024 / 1024, digits=2), " GB")
+        else
+            print(io, char, " ", field, ": ", getproperty(x, field))
+        end
+        i !== nfields && println(io)
+    end
 end
