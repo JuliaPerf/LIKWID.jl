@@ -36,4 +36,3 @@ License
 -------
 
 LIKWID.jl is licensed under the [MIT license](LICENSE).
-
