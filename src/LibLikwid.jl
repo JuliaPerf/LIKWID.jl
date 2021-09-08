@@ -950,7 +950,14 @@ module LibLikwid
 
     struct TscCounter
         data::NTuple{8, UInt8}
+
+        TscCounter() = new(ntuple(i -> zero(UInt8), 8))
     end
+
+    Base.Int64(t::TscCounter) = Int64(t.int64)
+    Base.iszero(t::TscCounter) = iszero(t.int64)
+    Base.:-(t1::TscCounter, t2::TscCounter) = Int64(t1.int64) - Int64(t2.int64)
+    Base.:+(t1::TscCounter, t2::TscCounter) = Int64(t1.int64) + Int64(t2.int64)
 
     function Base.getproperty(x::Ptr{TscCounter}, f::Symbol)
         f === :int64 && return Ptr{UInt64}(x + 0)
@@ -972,6 +979,8 @@ module LibLikwid
     struct TimerData
         start::TscCounter
         stop::TscCounter
+
+        TimerData() = new(TscCounter(), TscCounter())
     end
 
     function timer_init()

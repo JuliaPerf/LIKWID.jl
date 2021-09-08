@@ -127,3 +127,21 @@ function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
         i !== nfields && println(io)
     end
 end
+
+# function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::LibLikwid.TimerData)
+#     summary(io, x); println(io)
+#     T = typeof(x)
+#     nfields = length(fieldnames(T))
+#     for (i,field) in enumerate(fieldnames(T))
+#         char = i == nfields ? "└" : "├"
+#         if getproperty(x, field) isa AbstractVector && !(T in (NumaNode, AffinityDomain))
+#             print(io, char, " ", field, ": ... (", length(getproperty(x, field)), " elements)")
+#         else
+#             print(io, char, " ", field, ": ", getproperty(x, field))
+#         end
+#         i !== nfields && println(io)
+#     end
+# end
+
+Base.show(io::IO, x::LibLikwid.TimerData) = print(io, "TimerData(cycles start: $(x.start.int64), cycles stop: $(x.stop.int64))")
+Base.show(io::IO, x::LibLikwid.TscCounter) = print(io, x.int64, " (TscCounter)")

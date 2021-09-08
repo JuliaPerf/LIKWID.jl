@@ -43,6 +43,21 @@ end
     @test isnothing(LIKWID.finalize_affinity())
 end
 
+@testset "Timer" begin
+    @test LIKWID.init_timer()
+    @test isinteger(LIKWID.get_cpu_clock())
+    @test isinteger(LIKWID.get_cpu_clock_current(0))
+    t = LIKWID.start_clock()
+    @test !isnothing(t)
+    @test !iszero(t.start)
+    @test iszero(t.stop)
+    t = LIKWID.stop_clock(t)
+    @test !iszero(t.start)
+    @test !iszero(t.stop)
+    @test typeof(LIKWID.get_clock(t)) == Float64
+    @test isinteger(LIKWID.get_clock_cycles(t))
+end
+
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__

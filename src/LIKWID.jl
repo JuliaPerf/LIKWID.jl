@@ -27,6 +27,7 @@ module LIKWID
    include("topology.jl")
    include("numa.jl")
    include("affinity.jl")
+   include("timer.jl")
    include("marker.jl")
    
    function __init__()
