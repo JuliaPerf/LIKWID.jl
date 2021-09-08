@@ -28,6 +28,7 @@ module LIKWID
    include("numa.jl")
    include("affinity.jl")
    include("timer.jl")
+   include("thermal.jl")
    include("marker.jl")
    
    function __init__()

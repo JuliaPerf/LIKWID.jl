@@ -1,7 +1,5 @@
 function init_timer()
     ret = LibLikwid.timer_init()
-    # _timerinfo[] = unsafe_load(LibLikwid.get_timerTopology())
-    # _build_jl_timer()
     timer_initialized[] = true
     return true
 end
@@ -9,7 +7,6 @@ end
 function finalize_timer()
     LibLikwid.timer_finalize()
     timer_initialized[] = false
-    # _timerinfo[] = nothing
     return nothing
 end
 

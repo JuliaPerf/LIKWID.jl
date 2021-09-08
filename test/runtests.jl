@@ -58,6 +58,11 @@ end
     @test isinteger(LIKWID.get_clock_cycles(t))
 end
 
+@testset "Thermal" begin
+    @test LIKWID.init_thermal(0)
+    @test isinteger(LIKWID.read_thermal(0))
+end
+
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__
