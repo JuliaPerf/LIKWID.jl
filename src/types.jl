@@ -82,9 +82,7 @@ struct NumaNode
     distances::Vector{Int}
 end
 
-function Base.show(io::IO, nn::NumaNode)
-    print(io, "NumaNode()")
-end
+Base.show(io::IO, nn::NumaNode) = print(io, "NumaNode()")
 
 struct NumaTopology
     numberOfNodes::Int
@@ -109,20 +107,97 @@ struct AffinityDomains
     domains::Vector{AffinityDomain}
 end
 
-const SHOW_TYPES = Union{CpuTopology, CpuInfo, NumaTopology, NumaNode, AffinityDomain, AffinityDomains}
+struct TurboBoost
+    numSteps::Int
+    steps::Vector{Float64}
+end
+
+Base.show(io::IO, t::TurboBoost) = print(io, "TurboBoost()")
+
+# @cenum PowerType::UInt32 begin
+#     PKG = 0
+#     PP0 = 1
+#     PP1 = 2
+#     DRAM = 3
+#     PLATFORM = 4
+# end
+
+struct PowerDomain
+    id::Int
+    type::LibLikwid.PowerType
+    supportFlags::UInt32
+    energyUnit::Float64
+    tdp::Float64
+    minPower::Float64
+    maxPower::Float64
+    maxTimeWindow::Float64
+    supportInfo::Bool
+    supportStatus::Bool
+    supportPerf::Bool
+    supportPolicy::Bool
+    supportLimit::Bool
+end
+
+Base.show(io::IO, pd::PowerDomain) = print(io, "PowerDomain($(pd.type), ...)")
+
+struct PowerInfo
+    baseFrequency::Float64
+    minFrequency::Float64
+    turbo::TurboBoost
+    hasRAPL::Bool
+    powerUnit::Float64
+    timeUnit::Float64
+    uncoreMinFreq::Float64
+    uncoreMaxFreq::Float64
+    perfBias::Int
+    domains::NTuple{5,PowerDomain}
+end
+
+# struct PowerData
+#     domain::Cint
+#     before::UInt32
+#     after::UInt32
+# end
+
+# SHOW
+const SHOW_TYPES = Union{
+    CpuTopology,CpuInfo,NumaTopology,NumaNode,AffinityDomain,AffinityDomains,PowerInfo,PowerDomain,TurboBoost
+}
 
 function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
-    summary(io, x); println(io)
+    summary(io, x)
+    println(io)
     T = typeof(x)
     nfields = length(fieldnames(T))
-    for (i,field) in enumerate(fieldnames(T))
+    for (i, field) in enumerate(fieldnames(T))
         char = i == nfields ? "└" : "├"
-        if getproperty(x, field) isa AbstractVector && !(T in (NumaNode, AffinityDomain))
-            print(io, char, " ", field, ": ... (", length(getproperty(x, field)), " elements)")
+        xfield = getproperty(x, field)
+        if (xfield isa AbstractVector || xfield isa NTuple) && !(T in (NumaNode, AffinityDomain, TurboBoost))
+            print(
+                io, char, " ", field, ": ... (", length(xfield), " elements)"
+            )
         elseif field == :totalMemory || field == :freeMemory
-            print(io, char, " ", field, ": ", round(getproperty(x, field) / 1024 / 1024, digits=2), " GB")
+            print(
+                io,
+                char,
+                " ",
+                field,
+                ": ",
+                round(xfield / 1024 / 1024; digits=2),
+                " GB",
+            )
+        elseif field in (:baseFrequency, :minFrequency, :uncoreMinFreq, :uncoreMaxFreq)
+            print(
+                io,
+                char,
+                " ",
+                field,
+                ": ",
+                xfield,
+                " MHz",
+            )
         else
-            print(io, char, " ", field, ": ", getproperty(x, field))
+            print(io, char, " ", field, ": ", xfield)
         end
         i !== nfields && println(io)
     end
@@ -143,5 +218,9 @@ end
 #     end
 # end
 
-Base.show(io::IO, x::LibLikwid.TimerData) = print(io, "TimerData(cycles start: $(x.start.int64), cycles stop: $(x.stop.int64))")
+function Base.show(io::IO, x::LibLikwid.TimerData)
+    return print(
+        io, "TimerData(cycles start: $(x.start.int64), cycles stop: $(x.stop.int64))"
+    )
+end
 Base.show(io::IO, x::LibLikwid.TscCounter) = print(io, x.int64, " (TscCounter)")
