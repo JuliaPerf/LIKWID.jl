@@ -56,11 +56,34 @@ end
     @test !iszero(t.stop)
     @test typeof(LIKWID.get_clock(t)) == Float64
     @test isinteger(LIKWID.get_clock_cycles(t))
+    @test isnothing(LIKWID.finalize_timer())
 end
 
 @testset "Thermal" begin
     @test LIKWID.init_thermal(0)
     @test isinteger(LIKWID.read_thermal(0))
+end
+
+@testset "Power" begin
+    @test LIKWID.init_power(0)
+    @test isnothing(LIKWID.finalize_power())
+    @test LIKWID.init_power()
+    pinfo = LIKWID.get_power_info()
+    @test typeof(pinfo) == LIKWID.PowerInfo
+    @test typeof(pinfo.turbo) == LIKWID.TurboBoost
+    @test pinfo.turbo.numSteps == length(pinfo.turbo.steps)
+    @test length(pinfo.domains) == 5
+    pd = pinfo.domains[1]
+    @test typeof(pd) == LIKWID.PowerDomain
+    @test isinteger(pd.id)
+    @test 0 ≤ pd.id ≤ 4
+    @test 0 ≤ Int(pd.type) ≤ 4
+    @test typeof(pd.supportInfo) == Bool
+    @test typeof(pd.supportStatus) == Bool
+    @test typeof(pd.supportPerf) == Bool
+    @test typeof(pd.supportPolicy) == Bool
+    @test typeof(pd.supportLimit) == Bool
+    @test isnothing(LIKWID.finalize_power())
 end
 
 const perfctr = `likwid-perfctr`

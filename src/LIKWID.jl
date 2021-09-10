@@ -14,6 +14,7 @@ module LIKWID
    const affinity_initialized = Ref{Bool}(false)
    const perfmon_initialized = Ref{Bool}(false)
    const timer_initialized = Ref{Bool}(false)
+   const power_initialized = Ref{Bool}(false)
    const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
    const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
    const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
@@ -22,6 +23,8 @@ module LIKWID
    const numainfo = Ref{Union{NumaTopology, Nothing}}(nothing) # Julia struct
    const _affinity = Ref{Union{LibLikwid.AffinityDomains, Nothing}}(nothing) # (Julia) API struct
    const affinity = Ref{Union{AffinityDomains, Nothing}}(nothing) # Julia struct
+   const _powerinfo = Ref{Union{LibLikwid.PowerInfo, Nothing}}(nothing) # (Julia) API struct
+   const powerinfo = Ref{Union{PowerInfo, Nothing}}(nothing) # Julia struct
 
    # functions
    include("topology.jl")

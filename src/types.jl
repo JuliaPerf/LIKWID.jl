@@ -154,7 +154,7 @@ struct PowerInfo
 end
 
 # struct PowerData
-#     domain::Cint
+#     domain::Int
 #     before::UInt32
 #     after::UInt32
 # end
