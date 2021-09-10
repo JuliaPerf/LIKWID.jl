@@ -109,11 +109,8 @@ const julia = Base.julia_cmd()
 const testdir = @__DIR__
 const pkgdir = joinpath(@__DIR__, "..")
 
-# const perfgrp = ENV["GITHUB_ACTIONS"] ?
-println()
-@show ENV["GITHUB_ACTIONS"]
-@show typeof(ENV["GITHUB_ACTIONS"])
-println()
+# On GitHub runners, FLOPS_SP doesn't seem to work...
+const perfgrp = ENV["GITHUB_ACTIONS"] == "true" ? "MEM" : "FLOPS_SP"
 
 @testset "Marker API (CPU)" begin
     @testset "$f" for f in ["test_marker.jl"]
@@ -121,7 +118,7 @@ println()
         run(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         @test true
         # with marker api
-        run(`$perfctr -C 0 -g FLOPS_SP -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+        run(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         @test true
     end
 end
