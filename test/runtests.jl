@@ -64,7 +64,7 @@ end
     @test isinteger(LIKWID.read_thermal(0))
 end
 
-@testset "Power" begin
+@testset "Power / Energy" begin
     @test LIKWID.init_power(0)
     @test isnothing(LIKWID.finalize_power())
     @test LIKWID.init_power()
@@ -93,6 +93,15 @@ end
     @test typeof(config.daemonMode) == LIKWID.LibLikwid.AccessMode
     @test Int(config.daemonMode) in (-1, 0, 1)
     @test LIKWID.destroy_configuration()
+end
+
+@testset "Access / HPM" begin
+    @test LIKWID.hpmmode(0)
+    @test LIKWID.hpmmode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
+    @test LIKWID.init_hpm()
+    @test typeof(LIKWID.hpm_add_thread(0)) == Int
+    # @test LIKWID.hpm_add_thread(0) != -1
+    @test isnothing(LIKWID.finalize_hpm())
 end
 
 const perfctr = `likwid-perfctr`
