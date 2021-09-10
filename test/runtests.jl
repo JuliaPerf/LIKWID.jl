@@ -109,6 +109,12 @@ const julia = Base.julia_cmd()
 const testdir = @__DIR__
 const pkgdir = joinpath(@__DIR__, "..")
 
+# const perfgrp = ENV["GITHUB_ACTIONS"] ?
+println()
+@show ENV["GITHUB_ACTIONS"]
+@show typeof(ENV["GITHUB_ACTIONS"])
+println()
+
 @testset "Marker API (CPU)" begin
     @testset "$f" for f in ["test_marker.jl"]
         # without marker api
