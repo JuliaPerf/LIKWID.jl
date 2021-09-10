@@ -110,7 +110,7 @@ const testdir = @__DIR__
 const pkgdir = joinpath(@__DIR__, "..")
 
 # On GitHub runners, FLOPS_SP doesn't seem to work...
-const perfgrp = ENV["GITHUB_ACTIONS"] == "true" ? "MEM" : "FLOPS_SP"
+const perfgrp = haskey(ENV, "GITHUB_ACTIONS") ? "MEM" : "FLOPS_SP"
 
 @testset "Marker API (CPU)" begin
     @testset "$f" for f in ["test_marker.jl"]
