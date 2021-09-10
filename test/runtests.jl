@@ -86,6 +86,15 @@ end
     @test isnothing(LIKWID.finalize_power())
 end
 
+@testset "Configuration" begin
+    @test LIKWID.init_configuration()
+    config = LIKWID.get_configuration()
+    @test typeof(config) == LIKWID.Likwid_Configuration
+    @test typeof(config.daemonMode) == LIKWID.LibLikwid.AccessMode
+    @test Int(config.daemonMode) in (-1, 0, 1)
+    @test LIKWID.destroy_configuration()
+end
+
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__

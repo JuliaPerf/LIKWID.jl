@@ -9,6 +9,7 @@ Initialize energy measurements on specific CPU.
 Returns the RAPL status, i.e. `false` (no RAPL) or `true` (RAPL working).
 """
 function init_power(cpuid::Integer)
+    power_initialized[] && return true
     hasRAPL = LibLikwid.power_init(cpuid)
     if Bool(hasRAPL)
         _powerinfo[] = unsafe_load(LibLikwid.get_powerInfo())

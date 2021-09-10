@@ -159,9 +159,19 @@ end
 #     after::UInt32
 # end
 
+struct Likwid_Configuration
+    configFileName::String
+    topologyCfgFileName::String
+    daemonPath::String
+    groupPath::String
+    daemonMode::LibLikwid.AccessMode
+    maxNumThreads::Int
+    maxNumNodes::Int
+end
+
 # SHOW
 const SHOW_TYPES = Union{
-    CpuTopology,CpuInfo,NumaTopology,NumaNode,AffinityDomain,AffinityDomains,PowerInfo,PowerDomain,TurboBoost
+    CpuTopology,CpuInfo,NumaTopology,NumaNode,AffinityDomain,AffinityDomains,PowerInfo,PowerDomain,TurboBoost,Likwid_Configuration
 }
 
 function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
