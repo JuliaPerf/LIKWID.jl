@@ -1,0 +1,108 @@
+stages:
+  - build
+  - test
+
+# This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa'
+# The build result is stored as artifact for the test jobs
+build-likwid:
+  stage: build
+  tags:
+    - testcluster
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
+  variables:
+    SLURM_NODELIST: medusa
+    LIKWID_MODULE: likwid/5.2-dev
+    LIKWID_VERSION: 5.2.0
+    CUDA_MODULE: cuda/11.0
+  script: 
+      - module load "$LIKWID_MODULE" "$CUDA_MODULE"
+      - export LIKWID_PREFIX=$(realpath $(dirname $(which likwid-topology))/..)
+      - module unload "$LIKWID_MODULE"
+      - wget "https://ftp.rrze.uni-erlangen.de/mirrors/likwid/likwid-$LIKWID_VERSION.tar.gz"
+      - tar xf likwid-$LIKWID_VERSION.tar.gz
+      - cd likwid-$LIKWID_VERSION
+      - sed -e s+"INSTALLED_ACCESSDAEMON = .*"+"INSTALLED_ACCESSDAEMON=$LIKWID_PREFIX/sbin/likwid-accessD"+g -i config.mk
+      - sed -e s+"ACCESSMODE = .*"+"ACCESSMODE=accessdaemon"+g -i config.mk
+      - sed -e s+"PREFIX ?= .*"+"PREFIX=$LIKWID_PREFIX"+g -i config.mk
+      - sed -e s+"INSTRUMENT_BENCH = .*"+"INSTRUMENT_BENCH=true"+g -i config.mk
+      - sed -e s+"BUILDDAEMON = .*"+"BUILDDAEMON=false"+g -i config.mk
+      - sed -e s+"BUILDFREQ = .*"+"BUILDFREQ=false"+g -i config.mk
+      - sed -e s+"NVIDIA_INTERFACE = .*"+"NVIDIA_INTERFACE=true"+g -i config.mk
+      - make
+      - if [ -e likwid-accessD ]; then rm likwid-accessD; fi
+      - if [ -e likwid-setFreq ]; then rm likwid-setFreq; fi
+  artifacts:
+    paths:
+      - likwid-$LIKWID_VERSION
+    expire_in: 1 week
+
+# This job tests the LIKWID.jl interface with Julia 1.6
+test-julia/1.6:
+  stage: test
+  tags:
+    - testcluster
+  variables:
+    SLURM_NODELIST: medusa # This is required to run the job on the specified node
+    SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
+    LIKWID_VERSION: 5.2.0
+    CUDA_MODULE: cuda/11.0
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
+  needs:
+    job: build-likwid
+  before_script:
+    - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
+    - make local
+    - cd $CI_PROJECT_DIR
+    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
+    - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
+  script:
+    - module load "$CUDA_MODULE"
+    - export JULIA_CUDA_USE_BINARYBUILDER=false
+    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
+    - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
+    - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
+
+# This job tests the LIKWID.jl interface with Julia nightly build
+test-julia/nightly:
+  stage: test
+  tags:
+    - testcluster
+  variables:
+    SLURM_NODELIST: medusa # This is required to run the job on the specified node
+    SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
+    LIKWID_VERSION: 5.2.0
+    CUDA_MODULE: cuda/11.0
+  needs:
+    job: build-likwid
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
+  before_script:
+    - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
+    - make local
+    - cd $CI_PROJECT_DIR
+    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
+    - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
+  script:
+    - echo "PATH= $PATH"
+    - echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
+    - ls -la
+    - module load "$CUDA_MODULE"
+    - likwid-topology
+    - likwid-perfctr -i
+    - export JULIA_CUDA_USE_BINARYBUILDER=false
+    - wget https://julialangnightlies-s3.julialang.org/bin/linux/x64/julia-latest-linux64.tar.gz
+    - tar --strip-components=1 -xf julia-latest-linux64.tar.gz
+    - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
+
+
