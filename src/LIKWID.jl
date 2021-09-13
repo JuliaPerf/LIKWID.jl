@@ -39,8 +39,9 @@ module LIKWID
    include("thermal.jl")
    include("power.jl")
    include("access.jl")
-   include("marker.jl")
    include("perfmon.jl")
+   include("marker.jl")
+   include("misc.jl")
    
    function __init__()
       Marker.init()

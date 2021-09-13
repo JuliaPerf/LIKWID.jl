@@ -168,6 +168,13 @@ end
     @test typeof(LIKWID.get_time_of_group(gid2)) == Float64
 end
 
+@testset "Misc" begin
+    @test LIKWID.setverbosity(0)
+    @test typeof(LIKWID.get_processor_id()) == Int
+    @test typeof(LIKWID.pinprocess(0)) == Bool
+    @test typeof(LIKWID.pinthread(0)) == Bool
+end
+
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__
