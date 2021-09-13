@@ -145,6 +145,9 @@ end
     @test LIKWID.stop_counters()
     @test typeof(LIKWID.get_result(gid, 0, 0)) == Float64
     @test typeof(LIKWID.get_last_result(gid, 0, 0)) == Float64
+    @test typeof(LIKWID.get_metric(gid, 0, 0)) == Float64
+    @test typeof(LIKWID.get_last_metric(gid, 0, 0)) == Float64
+    @test typeof(LIKWID.get_time_of_group(gid)) == Float64
     
     # multiple groups
     gid2 = LIKWID.add_event_set(groups[2].name)
@@ -157,8 +160,12 @@ end
     @test LIKWID.switch_group(gid)
     @test LIKWID.get_id_of_active_group() == gid
     @test LIKWID.stop_counters()
-
-    
+    @test typeof(LIKWID.get_result(gid, 0, 0)) == Float64
+    @test typeof(LIKWID.get_result(gid2, 0, 0)) == Float64
+    @test typeof(LIKWID.get_metric(gid, 0, 0)) == Float64
+    @test typeof(LIKWID.get_metric(gid2, 0, 0)) == Float64
+    @test typeof(LIKWID.get_time_of_group(gid)) == Float64
+    @test typeof(LIKWID.get_time_of_group(gid2)) == Float64
 end
 
 const perfctr = `likwid-perfctr`

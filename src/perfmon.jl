@@ -90,7 +90,7 @@ Returns a `groupid` which is required to later specify the event set.
 function add_event_set(estr::AbstractString)
     perfmon_initialized[] || return nothing
     groupid = LibLikwid.perfmon_addEventSet(estr)
-    return groupid
+    return Int(groupid)
 end
 
 """
@@ -241,4 +241,36 @@ function get_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
     _check_threadidx(threadidx) || return nothing
     res = LibLikwid.perfmon_getResult(groupid, eventidx, threadidx)
     return res
+end
+
+"""
+Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx`.
+"""
+function get_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
+    perfmon_initialized[] || return nothing
+    _check_metricidx(groupid, metricidx) || return nothing
+    _check_threadidx(threadidx) || return nothing
+    res = LibLikwid.perfmon_getMetric(groupid, metricidx, threadidx)
+    return res
+end
+
+"""
+Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx`.
+"""
+function get_last_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
+    perfmon_initialized[] || return nothing
+    _check_metricidx(groupid, metricidx) || return nothing
+    _check_threadidx(threadidx) || return nothing
+    res = LibLikwid.perfmon_getLastMetric(groupid, metricidx, threadidx)
+    return res
+end
+
+"""
+Return the measurement time for group identified by `groupid`.
+"""
+function get_time_of_group(groupid::Integer)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    time = LibLikwid.perfmon_getTimeOfGroup(groupid)
+    return time
 end
