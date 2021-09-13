@@ -136,21 +136,29 @@ end
     @test isnothing(LIKWID.get_name_of_metric(gid, nmetrics))
     @test !isnothing(LIKWID.get_name_of_metric(gid, 0))
 
+    @test LIKWID.setup_counters(gid)
+    @test LIKWID.get_id_of_active_group() == gid
     @test !LIKWID.read_counters()
     @test LIKWID.start_counters()
     @test LIKWID.read_counters()
     @test LIKWID.read_counters()
     @test LIKWID.stop_counters()
-
+    @test typeof(LIKWID.get_result(gid, 0, 0)) == Float64
     @test typeof(LIKWID.get_last_result(gid, 0, 0)) == Float64
-
+    
     # multiple groups
-    @test LIKWID.get_id_of_active_group() == gid
     gid2 = LIKWID.add_event_set(groups[2].name)
+    @test LIKWID.start_counters()
+    @test LIKWID.get_id_of_active_group() == gid
+    @test LIKWID.read_counters()
     @test LIKWID.switch_group(gid2)
+    @test LIKWID.read_counters()
     @test LIKWID.get_id_of_active_group() == gid2
     @test LIKWID.switch_group(gid)
     @test LIKWID.get_id_of_active_group() == gid
+    @test LIKWID.stop_counters()
+
+    
 end
 
 const perfctr = `likwid-perfctr`

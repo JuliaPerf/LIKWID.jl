@@ -221,10 +221,24 @@ function switch_group(groupid::Integer)
     return ret == 0
 end
 
+"""
+Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and thread `threadidx`.
+"""
 function get_last_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
     perfmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
     _check_threadidx(threadidx) || return nothing
     res = LibLikwid.perfmon_getLastResult(groupid, eventidx, threadidx)
+    return res
+end
+
+"""
+Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx`.
+"""
+function get_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
+    perfmon_initialized[] || return nothing
+    _check_eventidx(groupid, eventidx) || return nothing
+    _check_threadidx(threadidx) || return nothing
+    res = LibLikwid.perfmon_getResult(groupid, eventidx, threadidx)
     return res
 end
