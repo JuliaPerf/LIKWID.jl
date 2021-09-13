@@ -41,6 +41,7 @@ module LIKWID
    include("access.jl")
    include("perfmon.jl")
    include("marker.jl")
+   include("markerfile.jl")
    include("misc.jl")
    
    function __init__()
