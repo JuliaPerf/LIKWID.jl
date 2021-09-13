@@ -104,6 +104,55 @@ end
     @test isnothing(LIKWID.finalize_hpm())
 end
 
+@testset "PerfMon" begin
+    @test_throws MethodError LIKWID.init_perfmon()
+    @test LIKWID.init_perfmon([0])
+    @test LIKWID.get_number_of_threads() == 1
+    @test LIKWID.get_number_of_groups() == 0
+    groups = LIKWID.get_groups()
+    @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
+    gname = groups[1].name
+    gsinfo = groups[1].shortinfo
+    glinfo = groups[1].longinfo
+    # single group
+    gid = LIKWID.add_event_set(gname)
+    @test gid ≥ 0
+    @test LIKWID.get_number_of_groups() == 1
+    @test LIKWID.get_name_of_group(gid) == gname
+    @test LIKWID.get_shortinfo_of_group(gid) == gsinfo
+    @test strip(LIKWID.get_longinfo_of_group(gid)) == strip(glinfo)
+    @test LIKWID.get_number_of_events(gid) ≥ 0
+    @test LIKWID.get_number_of_metrics(gid) ≥ 0
+    nevents = LIKWID.get_number_of_events(gid)
+    @test isnothing(LIKWID.get_name_of_event(gid, -1))
+    @test isnothing(LIKWID.get_name_of_event(gid, nevents))
+    @test isnothing(LIKWID.get_name_of_event(gid, nevents+1))
+    @test !isnothing(LIKWID.get_name_of_event(gid, 0))
+    @test isnothing(LIKWID.get_name_of_counter(gid, -1))
+    @test isnothing(LIKWID.get_name_of_counter(gid, nevents))
+    @test !isnothing(LIKWID.get_name_of_counter(gid, 0))
+    nmetrics = LIKWID.get_number_of_metrics(gid)
+    @test isnothing(LIKWID.get_name_of_metric(gid, -1))
+    @test isnothing(LIKWID.get_name_of_metric(gid, nmetrics))
+    @test !isnothing(LIKWID.get_name_of_metric(gid, 0))
+
+    @test !LIKWID.read_counters()
+    @test LIKWID.start_counters()
+    @test LIKWID.read_counters()
+    @test LIKWID.read_counters()
+    @test LIKWID.stop_counters()
+
+    @test typeof(LIKWID.get_last_result(gid, 0, 0)) == Float64
+
+    # multiple groups
+    @test LIKWID.get_id_of_active_group() == gid
+    gid2 = LIKWID.add_event_set(groups[2].name)
+    @test LIKWID.switch_group(gid2)
+    @test LIKWID.get_id_of_active_group() == gid2
+    @test LIKWID.switch_group(gid)
+    @test LIKWID.get_id_of_active_group() == gid
+end
+
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__

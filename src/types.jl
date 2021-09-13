@@ -169,9 +169,27 @@ struct Likwid_Configuration
     maxNumNodes::Int
 end
 
+struct GroupInfoCompact
+    name::String
+    shortinfo::String
+    longinfo::String
+end
+
+Base.show(io::IO, gi::GroupInfoCompact) = print(io, "GroupInfoCompact($(gi.name), ...)")
+
 # SHOW
 const SHOW_TYPES = Union{
-    CpuTopology,CpuInfo,NumaTopology,NumaNode,AffinityDomain,AffinityDomains,PowerInfo,PowerDomain,TurboBoost,Likwid_Configuration
+    CpuTopology,
+    CpuInfo,
+    NumaTopology,
+    NumaNode,
+    AffinityDomain,
+    AffinityDomains,
+    PowerInfo,
+    PowerDomain,
+    TurboBoost,
+    Likwid_Configuration,
+    GroupInfoCompact,
 }
 
 function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
@@ -182,30 +200,13 @@ function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
     for (i, field) in enumerate(fieldnames(T))
         char = i == nfields ? "└" : "├"
         xfield = getproperty(x, field)
-        if (xfield isa AbstractVector || xfield isa NTuple) && !(T in (NumaNode, AffinityDomain, TurboBoost))
-            print(
-                io, char, " ", field, ": ... (", length(xfield), " elements)"
-            )
+        if (xfield isa AbstractVector || xfield isa NTuple) &&
+           !(T in (NumaNode, AffinityDomain, TurboBoost))
+            print(io, char, " ", field, ": ... (", length(xfield), " elements)")
         elseif field == :totalMemory || field == :freeMemory
-            print(
-                io,
-                char,
-                " ",
-                field,
-                ": ",
-                round(xfield / 1024 / 1024; digits=2),
-                " GB",
-            )
+            print(io, char, " ", field, ": ", round(xfield / 1024 / 1024; digits=2), " GB")
         elseif field in (:baseFrequency, :minFrequency, :uncoreMinFreq, :uncoreMaxFreq)
-            print(
-                io,
-                char,
-                " ",
-                field,
-                ": ",
-                xfield,
-                " MHz",
-            )
+            print(io, char, " ", field, ": ", xfield, " MHz")
         else
             print(io, char, " ", field, ": ", xfield)
         end

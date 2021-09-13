@@ -12,11 +12,11 @@ module LIKWID
    const topo_initialized = Ref{Bool}(false) # Topo module of liblikwid
    const numa_initialized = Ref{Bool}(false)
    const affinity_initialized = Ref{Bool}(false)
-   const perfmon_initialized = Ref{Bool}(false)
    const timer_initialized = Ref{Bool}(false)
    const power_initialized = Ref{Bool}(false)
    const config_initialized = Ref{Bool}(false)
    const access_initialized = Ref{Bool}(false)
+   const perfmon_initialized = Ref{Bool}(false)
    const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
    const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
    const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
@@ -40,6 +40,7 @@ module LIKWID
    include("power.jl")
    include("access.jl")
    include("marker.jl")
+   include("perfmon.jl")
    
    function __init__()
       Marker.init()
