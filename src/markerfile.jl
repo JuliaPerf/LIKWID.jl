@@ -42,4 +42,19 @@ Return the accumulated measurement time for the region identified by `rid` and t
 """
 regiontime(ridx, tidx) = LibLikwid.perfmon_getTimeOfRegion(ridx, tidx)
 
+"""
+Return the call count for the region identified by `rid` and the thread index `tidx`.
+"""
+regioncount(ridx, tidx) = LibLikwid.perfmon_getCountOfRegion(ridx, tidx)
+
+"""
+Return the call count for the region identified by `ridx`, the event index `eidx` and the thread index `tidx`.
+"""
+regionresult(ridx, eidx, tidx) = LibLikwid.perfmon_getResultOfRegionThread(ridx, eidx, tidx)
+
+"""
+Return the call count for the region identified by `ridx`, the metric index `midx` and the thread index `tidx`.
+"""
+regionmetric(ridx, midx, tidx) = LibLikwid.perfmon_getMetricOfRegionThread(ridx, midx, tidx)
+
 end # module
