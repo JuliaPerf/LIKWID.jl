@@ -56,36 +56,12 @@ function get_affinity()
     return affinity[]
 end
 
-# TODO
-# likwid_cpustr_to_cpulist(PyObject *self, PyObject *args)
-# {
-#     int ret = 0, j = 0;
-#     const char *cpustr;
-#     if (!PyArg_ParseTuple(args, "s", &cpustr))
-#     {
-#         Py_RETURN_NONE;
-#     }
-#     if (configfile == NULL)
-#     {
-#         init_configuration();
-#         configfile = get_configuration();
-#     }
-#     int* cpulist = (int*) malloc(configfile->maxNumThreads * sizeof(int));
-#     if (!cpulist)
-#     {
-#         Py_RETURN_NONE;
-#     }
-#     ret = cpustr_to_cpulist((char *)cpustr, cpulist, configfile->maxNumThreads);
-#     if (ret < 0)
-#     {
-#         free(cpulist);
-#         Py_RETURN_NONE;
-#     }
-#     PyObject *l = PyList_New(ret);
-#     for(j=0;j<ret;j++)
-#     {
-#         PyList_SET_ITEM(l, (Py_ssize_t)j, PYINT(cpulist[j]));
-#     }
-#     free(cpulist);
-#     return l;
-# }
+function cpustr_to_cpulist(cpustr::AbstractString)
+    if !config_initialized[]
+        init_configuration() || error("Couldn't init configuration.")
+    end
+    config = get_configuration()
+    cpulist = zeros(Int32, config.maxNumThreads)
+    LibLikwid.cpustr_to_cpulist(cpustr, cpulist, length(cpulist))
+    return cpulist
+end

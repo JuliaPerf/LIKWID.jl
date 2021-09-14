@@ -1277,6 +1277,279 @@ module LibLikwid
         ccall((:freq_finalize, liblikwid), Cvoid, ())
     end
 
+    struct GpuDevice
+        devid::Cint
+        numaNode::Cint
+        name::Ptr{Cchar}
+        short_name::Ptr{Cchar}
+        mem::UInt64
+        ccapMajor::Cint
+        ccapMinor::Cint
+        maxThreadsPerBlock::Cint
+        maxThreadsDim::NTuple{3, Cint}
+        maxGridSize::NTuple{3, Cint}
+        sharedMemPerBlock::Cint
+        totalConstantMemory::Cint
+        simdWidth::Cint
+        memPitch::Cint
+        regsPerBlock::Cint
+        clockRatekHz::Cint
+        textureAlign::Cint
+        surfaceAlign::Cint
+        l2Size::Cint
+        memClockRatekHz::Cint
+        pciBus::Cint
+        pciDev::Cint
+        pciDom::Cint
+        maxBlockRegs::Cint
+        numMultiProcs::Cint
+        maxThreadPerMultiProc::Cint
+        memBusWidth::Cint
+        unifiedAddrSpace::Cint
+        ecc::Cint
+        asyncEngines::Cint
+        mapHostMem::Cint
+        integrated::Cint
+    end
+
+    struct GpuTopology
+        numDevices::Cint
+        devices::Ptr{GpuDevice}
+    end
+
+    const GpuTopology_t = Ptr{GpuTopology}
+
+    function topology_gpu_init()
+        ccall((:topology_gpu_init, liblikwid), Cint, ())
+    end
+
+    function topology_gpu_finalize()
+        ccall((:topology_gpu_finalize, liblikwid), Cvoid, ())
+    end
+
+    function get_gpuTopology()
+        ccall((:get_gpuTopology, liblikwid), GpuTopology_t, ())
+    end
+
+    function likwid_gpuMarkerInit()
+        ccall((:likwid_gpuMarkerInit, liblikwid), Cvoid, ())
+    end
+
+    function likwid_gpuMarkerNextGroup()
+        ccall((:likwid_gpuMarkerNextGroup, liblikwid), Cvoid, ())
+    end
+
+    function likwid_gpuMarkerClose()
+        ccall((:likwid_gpuMarkerClose, liblikwid), Cvoid, ())
+    end
+
+    function likwid_gpuMarkerRegisterRegion(regionTag)
+        ccall((:likwid_gpuMarkerRegisterRegion, liblikwid), Cint, (Ptr{Cchar},), regionTag)
+    end
+
+    function likwid_gpuMarkerStartRegion(regionTag)
+        ccall((:likwid_gpuMarkerStartRegion, liblikwid), Cint, (Ptr{Cchar},), regionTag)
+    end
+
+    function likwid_gpuMarkerStopRegion(regionTag)
+        ccall((:likwid_gpuMarkerStopRegion, liblikwid), Cint, (Ptr{Cchar},), regionTag)
+    end
+
+    function likwid_gpuMarkerResetRegion(regionTag)
+        ccall((:likwid_gpuMarkerResetRegion, liblikwid), Cint, (Ptr{Cchar},), regionTag)
+    end
+
+    function likwid_gpuMarkerGetRegion(regionTag, nr_gpus, nr_events, events, time, count)
+        ccall((:likwid_gpuMarkerGetRegion, liblikwid), Cvoid, (Ptr{Cchar}, Ptr{Cint}, Ptr{Cint}, Ptr{Ptr{Cdouble}}, Ptr{Cdouble}, Ptr{Cint}), regionTag, nr_gpus, nr_events, events, time, count)
+    end
+
+    function nvmon_readMarkerFile(filename)
+        ccall((:nvmon_readMarkerFile, liblikwid), Cint, (Ptr{Cchar},), filename)
+    end
+
+    # no prototype is found for this function at likwid.h:1977:6, please use with caution
+    function nvmon_destroyMarkerResults()
+        ccall((:nvmon_destroyMarkerResults, liblikwid), Cvoid, ())
+    end
+
+    # no prototype is found for this function at likwid.h:1982:5, please use with caution
+    function nvmon_getNumberOfRegions()
+        ccall((:nvmon_getNumberOfRegions, liblikwid), Cint, ())
+    end
+
+    function nvmon_getMetricsOfRegion(region)
+        ccall((:nvmon_getMetricsOfRegion, liblikwid), Cint, (Cint,), region)
+    end
+
+    function nvmon_getGpusOfRegion(region)
+        ccall((:nvmon_getGpusOfRegion, liblikwid), Cint, (Cint,), region)
+    end
+
+    function nvmon_getGpulistOfRegion(region, count, gpulist)
+        ccall((:nvmon_getGpulistOfRegion, liblikwid), Cint, (Cint, Cint, Ptr{Cint}), region, count, gpulist)
+    end
+
+    function nvmon_getTimeOfRegion(region, gpu)
+        ccall((:nvmon_getTimeOfRegion, liblikwid), Cdouble, (Cint, Cint), region, gpu)
+    end
+
+    function nvmon_getCountOfRegion(region, gpu)
+        ccall((:nvmon_getCountOfRegion, liblikwid), Cint, (Cint, Cint), region, gpu)
+    end
+
+    function nvmon_getGroupOfRegion(region)
+        ccall((:nvmon_getGroupOfRegion, liblikwid), Cint, (Cint,), region)
+    end
+
+    function nvmon_getTagOfRegion(region)
+        ccall((:nvmon_getTagOfRegion, liblikwid), Ptr{Cchar}, (Cint,), region)
+    end
+
+    function nvmon_getEventsOfRegion(region)
+        ccall((:nvmon_getEventsOfRegion, liblikwid), Cint, (Cint,), region)
+    end
+
+    function nvmon_getResultOfRegionGpu(region, eventId, gpuId)
+        ccall((:nvmon_getResultOfRegionGpu, liblikwid), Cdouble, (Cint, Cint, Cint), region, eventId, gpuId)
+    end
+
+    function nvmon_getMetricOfRegionGpu(region, metricId, gpuId)
+        ccall((:nvmon_getMetricOfRegionGpu, liblikwid), Cdouble, (Cint, Cint, Cint), region, metricId, gpuId)
+    end
+
+    struct NvmonEventListEntry
+        name::Ptr{Cchar}
+        desc::Ptr{Cchar}
+        limit::Ptr{Cchar}
+    end
+
+    struct NvmonEventList
+        numEvents::Cint
+        events::Ptr{NvmonEventListEntry}
+    end
+
+    const NvmonEventList_t = Ptr{NvmonEventList}
+
+    function nvmon_getEventsOfGpu(gpuId, list)
+        ccall((:nvmon_getEventsOfGpu, liblikwid), Cint, (Cint, Ptr{NvmonEventList_t}), gpuId, list)
+    end
+
+    function nvmon_returnEventsOfGpu(list)
+        ccall((:nvmon_returnEventsOfGpu, liblikwid), Cvoid, (NvmonEventList_t,), list)
+    end
+
+    function nvmon_init(nrGpus, gpuIds)
+        ccall((:nvmon_init, liblikwid), Cint, (Cint, Ptr{Cint}), nrGpus, gpuIds)
+    end
+
+    function nvmon_finalize()
+        ccall((:nvmon_finalize, liblikwid), Cvoid, ())
+    end
+
+    function nvmon_addEventSet(eventCString)
+        ccall((:nvmon_addEventSet, liblikwid), Cint, (Ptr{Cchar},), eventCString)
+    end
+
+    function nvmon_setupCounters(gid)
+        ccall((:nvmon_setupCounters, liblikwid), Cint, (Cint,), gid)
+    end
+
+    function nvmon_startCounters()
+        ccall((:nvmon_startCounters, liblikwid), Cint, ())
+    end
+
+    function nvmon_stopCounters()
+        ccall((:nvmon_stopCounters, liblikwid), Cint, ())
+    end
+
+    function nvmon_readCounters()
+        ccall((:nvmon_readCounters, liblikwid), Cint, ())
+    end
+
+    function nvmon_switchActiveGroup(new_group)
+        ccall((:nvmon_switchActiveGroup, liblikwid), Cint, (Cint,), new_group)
+    end
+
+    function nvmon_setVerbosity(level)
+        ccall((:nvmon_setVerbosity, liblikwid), Cvoid, (Cint,), level)
+    end
+
+    function nvmon_getResult(groupId, eventId, gpuId)
+        ccall((:nvmon_getResult, liblikwid), Cdouble, (Cint, Cint, Cint), groupId, eventId, gpuId)
+    end
+
+    function nvmon_getLastResult(groupId, eventId, gpuId)
+        ccall((:nvmon_getLastResult, liblikwid), Cdouble, (Cint, Cint, Cint), groupId, eventId, gpuId)
+    end
+
+    function nvmon_getMetric(groupId, metricId, gpuId)
+        ccall((:nvmon_getMetric, liblikwid), Cdouble, (Cint, Cint, Cint), groupId, metricId, gpuId)
+    end
+
+    function nvmon_getLastMetric(groupId, metricId, gpuId)
+        ccall((:nvmon_getLastMetric, liblikwid), Cdouble, (Cint, Cint, Cint), groupId, metricId, gpuId)
+    end
+
+    function nvmon_getNumberOfGroups()
+        ccall((:nvmon_getNumberOfGroups, liblikwid), Cint, ())
+    end
+
+    function nvmon_getIdOfActiveGroup()
+        ccall((:nvmon_getIdOfActiveGroup, liblikwid), Cint, ())
+    end
+
+    function nvmon_getNumberOfGPUs()
+        ccall((:nvmon_getNumberOfGPUs, liblikwid), Cint, ())
+    end
+
+    function nvmon_getNumberOfEvents(groupId)
+        ccall((:nvmon_getNumberOfEvents, liblikwid), Cint, (Cint,), groupId)
+    end
+
+    function nvmon_getNumberOfMetrics(groupId)
+        ccall((:nvmon_getNumberOfMetrics, liblikwid), Cint, (Cint,), groupId)
+    end
+
+    function nvmon_getTimeOfGroup(groupId)
+        ccall((:nvmon_getTimeOfGroup, liblikwid), Cdouble, (Cint,), groupId)
+    end
+
+    function nvmon_getLastTimeOfGroup(groupId)
+        ccall((:nvmon_getLastTimeOfGroup, liblikwid), Cdouble, (Cint,), groupId)
+    end
+
+    function nvmon_getEventName(groupId, eventId)
+        ccall((:nvmon_getEventName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, eventId)
+    end
+
+    function nvmon_getCounterName(groupId, eventId)
+        ccall((:nvmon_getCounterName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, eventId)
+    end
+
+    function nvmon_getMetricName(groupId, metricId)
+        ccall((:nvmon_getMetricName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, metricId)
+    end
+
+    function nvmon_getGroupName(groupId)
+        ccall((:nvmon_getGroupName, liblikwid), Ptr{Cchar}, (Cint,), groupId)
+    end
+
+    function nvmon_getGroupInfoShort(groupId)
+        ccall((:nvmon_getGroupInfoShort, liblikwid), Ptr{Cchar}, (Cint,), groupId)
+    end
+
+    function nvmon_getGroupInfoLong(groupId)
+        ccall((:nvmon_getGroupInfoLong, liblikwid), Ptr{Cchar}, (Cint,), groupId)
+    end
+
+    function nvmon_getGroups(gpuId, groups, shortinfos, longinfos)
+        ccall((:nvmon_getGroups, liblikwid), Cint, (Cint, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}), gpuId, groups, shortinfos, longinfos)
+    end
+
+    function nvmon_returnGroups(nrgroups, groups, shortinfos, longinfos)
+        ccall((:nvmon_returnGroups, liblikwid), Cint, (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}), nrgroups, groups, shortinfos, longinfos)
+    end
+
     struct Ctag279
         lo::UInt32
         hi::UInt32
