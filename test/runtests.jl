@@ -1,6 +1,13 @@
 using Test
 using LIKWID
 
+const perfctr = `likwid-perfctr`
+const julia = Base.julia_cmd()
+const testdir = @__DIR__
+const pkgdir = joinpath(@__DIR__, "..")
+# On GitHub runners, FLOPS_SP doesn't seem to work...
+const perfgrp = haskey(ENV, "GITHUB_ACTIONS") ? "MEM" : "FLOPS_SP"
+
 @testset "LIKWID.jl" begin
     @testset "Topology" begin
         @test LIKWID.init_topology()
@@ -176,13 +183,6 @@ using LIKWID
         @test typeof(LIKWID.pinthread(0)) == Bool
     end
 
-    perfctr = `likwid-perfctr`
-    julia = Base.julia_cmd()
-    testdir = @__DIR__
-    pkgdir = joinpath(@__DIR__, "..")
-    # On GitHub runners, FLOPS_SP doesn't seem to work...
-    perfgrp = haskey(ENV, "GITHUB_ACTIONS") ? "MEM" : "FLOPS_SP"
-
     @testset "Marker API (CPU)" begin
         @testset "$f" for f in ["test_marker.jl"]
             # without marker api
@@ -193,9 +193,11 @@ using LIKWID
     end
 
     @testset "Marker File Reader" begin
-        @testset "$f" for f in ["test_markerfile.jl"]
-            # with marker api
-            @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
-        end
+        f = "test_markerfile.jl"
+        @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+    end
+
+    @testset "Pylikwid Example" begin
+        include("test_pylikwid.jl")
     end
 end
