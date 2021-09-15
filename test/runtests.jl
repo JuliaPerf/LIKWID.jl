@@ -195,8 +195,8 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
         @test typeof(LIKWID.pinthread(0)) == Bool
     end
 
-    @testset "GPU Topology" begin
-        if hascuda
+    if hascuda
+        @testset "GPU Topology" begin
             @test LIKWID.init_topology_gpu()
             gputopo = LIKWID.get_gpu_topology()
             @test typeof(gputopo) == LIKWID.GpuTopology
@@ -206,10 +206,6 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
             @test typeof(gpu.mem) == Int
             @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
             @test typeof(gpu.maxGridSize) == NTuple{3, Int}
-            @test isnothing(LIKWID.finalize_topology_gpu())
-        else
-            @test !LIKWID.init_topology_gpu()
-            @test_throws ErrorException LIKWID.get_gpu_topology()
             @test isnothing(LIKWID.finalize_topology_gpu())
         end
     end
