@@ -9,7 +9,7 @@ module LIKWID
    include("types.jl")
 
    # Note: underscore prefix -> liblikwid API
-   const topo_initialized = Ref{Bool}(false) # Topo module of liblikwid
+   const topo_initialized = Ref{Bool}(false)
    const numa_initialized = Ref{Bool}(false)
    const affinity_initialized = Ref{Bool}(false)
    const timer_initialized = Ref{Bool}(false)
@@ -17,6 +17,7 @@ module LIKWID
    const config_initialized = Ref{Bool}(false)
    const access_initialized = Ref{Bool}(false)
    const perfmon_initialized = Ref{Bool}(false)
+   const gputopo_initialized = Ref{Bool}(false)
    const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
    const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
    const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
@@ -29,6 +30,8 @@ module LIKWID
    const powerinfo = Ref{Union{PowerInfo, Nothing}}(nothing) # Julia struct
    const _config = Ref{Union{LibLikwid.Likwid_Configuration, Nothing}}(nothing) # (Julia) API struct
    const config = Ref{Union{Likwid_Configuration, Nothing}}(nothing) # Julia struct
+   const _gputopo = Ref{Union{LibLikwid.GpuTopology, Nothing}}(nothing) # (Julia) API struct
+   const gputopo = Ref{Union{GpuTopology, Nothing}}(nothing) # Julia struct
 
    # functions
    include("topology.jl")
@@ -43,6 +46,7 @@ module LIKWID
    include("marker.jl")
    include("markerfile.jl")
    include("misc.jl")
+   include("gpu_topology.jl")
    
    function __init__()
       Marker.init()

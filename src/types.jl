@@ -177,6 +177,46 @@ end
 
 Base.show(io::IO, gi::GroupInfoCompact) = print(io, "GroupInfoCompact($(gi.name), ...)")
 
+struct GpuDevice
+    devid::Int
+    numaNode::Int
+    name::String
+    short_name::String
+    mem::UInt64
+    ccapMajor::Int
+    ccapMinor::Int
+    maxThreadsPerBlock::Int
+    maxThreadsDim::NTuple{3, Int}
+    maxGridSize::NTuple{3, Int}
+    sharedMemPerBlock::Int
+    totalConstantMemory::Int
+    simdWidth::Int
+    memPitch::Int
+    regsPerBlock::Int
+    clockRatekHz::Int
+    textureAlign::Int
+    surfaceAlign::Int
+    l2Size::Int
+    memClockRatekHz::Int
+    pciBus::Int
+    pciDev::Int
+    pciDom::Int
+    maxBlockRegs::Int
+    numMultiProcs::Int
+    maxThreadPerMultiProc::Int
+    memBusWidth::Int
+    unifiedAddrSpace::Int
+    ecc::Int
+    asyncEngines::Int
+    mapHostMem::Int
+    integrated::Int
+end
+
+struct GpuTopology
+    numDevices::Int
+    devices::Vector{GpuDevice}
+end
+
 # SHOW
 const SHOW_TYPES = Union{
     CpuTopology,
@@ -190,6 +230,8 @@ const SHOW_TYPES = Union{
     TurboBoost,
     Likwid_Configuration,
     GroupInfoCompact,
+    GpuTopology,
+    GpuDevice
 }
 
 function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
