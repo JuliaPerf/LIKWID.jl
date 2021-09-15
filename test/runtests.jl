@@ -1,12 +1,24 @@
 using Test
 using LIKWID
+using CUDA
+
+const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
+
+if CUDA.functional()
+    println("CUDA/GPU available. Running all tests (CPU + GPU).")
+    hascuda = true
+else
+    println("No CUDA/GPU support. Running CPU tests only.")
+    hascuda = false
+end
 
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__
 const pkgdir = joinpath(@__DIR__, "..")
 # On GitHub runners, FLOPS_SP doesn't seem to work...
-const perfgrp = haskey(ENV, "GITHUB_ACTIONS") ? "MEM" : "FLOPS_SP"
+const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
+
 
 @testset "LIKWID.jl" begin
     @testset "Topology" begin
@@ -181,6 +193,25 @@ const perfgrp = haskey(ENV, "GITHUB_ACTIONS") ? "MEM" : "FLOPS_SP"
         @test typeof(LIKWID.get_processor_id()) == Int
         @test typeof(LIKWID.pinprocess(0)) == Bool
         @test typeof(LIKWID.pinthread(0)) == Bool
+    end
+
+    @testset "GPU Topology" begin
+        if hascuda
+            @test LIKWID.init_topology_gpu()
+            gputopo = LIKWID.get_gpu_topology()
+            @test typeof(gputopo) == LIKWID.GpuTopology
+            gpu = gputopo.devices[1]
+            @test typeof(gpu) == LIKWID.GpuDevice
+            @test typeof(gpu.name) == String
+            @test typeof(gpu.mem) == Int
+            @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
+            @test typeof(gpu.maxGridSize) == NTuple{3, Int}
+            @test isnothing(LIKWID.finalize_topology_gpu())
+        else
+            @test !LIKWID.init_topology_gpu()
+            @test_throws ErrorException LIKWID.get_gpu_topology()
+            @test isnothing(LIKWID.finalize_topology_gpu())
+        end
     end
 
     @testset "Marker API (CPU)" begin

@@ -182,9 +182,9 @@ struct GpuDevice
     numaNode::Int
     name::String
     short_name::String
-    mem::UInt64
-    ccapMajor::Int
-    ccapMinor::Int
+    mem::Int
+    compute_capability_major::Int
+    compute_capability_minor::Int
     maxThreadsPerBlock::Int
     maxThreadsDim::NTuple{3, Int}
     maxGridSize::NTuple{3, Int}
@@ -205,12 +205,14 @@ struct GpuDevice
     numMultiProcs::Int
     maxThreadPerMultiProc::Int
     memBusWidth::Int
-    unifiedAddrSpace::Int
-    ecc::Int
+    unifiedAddrSpace::Bool
+    ecc::Bool
     asyncEngines::Int
-    mapHostMem::Int
-    integrated::Int
+    mapHostMem::Bool
+    integrated::Bool
 end
+
+Base.show(io::IO, d::GpuDevice) = print(io, "GpuDevice($(d.name), ...)")
 
 struct GpuTopology
     numDevices::Int
@@ -243,10 +245,12 @@ function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
         char = i == nfields ? "└" : "├"
         xfield = getproperty(x, field)
         if (xfield isa AbstractVector || xfield isa NTuple) &&
-           !(T in (NumaNode, AffinityDomain, TurboBoost))
+           !(T in (NumaNode, AffinityDomain, TurboBoost, GpuDevice))
             print(io, char, " ", field, ": ... (", length(xfield), " elements)")
         elseif field == :totalMemory || field == :freeMemory
             print(io, char, " ", field, ": ", round(xfield / 1024 / 1024; digits=2), " GB")
+        elseif T == GpuDevice && field == :mem
+            print(io, char, " ", field, ": ", round(xfield / 1024 / 1024 / 1024; digits=2), " GB")
         elseif field in (:baseFrequency, :minFrequency, :uncoreMinFreq, :uncoreMaxFreq)
             print(io, char, " ", field, ": ", xfield, " MHz")
         else

@@ -46,7 +46,7 @@ module LIKWID
    include("marker.jl")
    include("markerfile.jl")
    include("misc.jl")
-   include("gpu_topology.jl")
+   include("topology_gpu.jl")
    
    function __init__()
       Marker.init()
