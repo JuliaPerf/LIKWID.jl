@@ -1,14 +1,17 @@
 using Test
 using LIKWID
 using CUDA
+using Libdl
 
 const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
 
 if CUDA.functional()
-    println("CUDA/GPU available. Running all tests (CPU + GPU).")
+    @info("CUDA/GPU available. Running all tests (CPU + GPU).")
     hascuda = true
 else
-    println("No CUDA/GPU support. Running CPU tests only.")
+    @info("No CUDA/GPU support. Running CPU tests only.")
+    @show Libdl.find_library("libcuda")
+    @show filter(contains("cuda"), lowercase.(Libdl.dllist()))
     hascuda = false
 end
 
