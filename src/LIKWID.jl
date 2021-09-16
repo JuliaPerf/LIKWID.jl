@@ -60,9 +60,9 @@ module LIKWID
          Marker.threadinit()
       end
       gpusupport() && GPUMarker.init()
-      init_topology()
-      init_numa()
-      init_perfmon()
+      # init_topology()
+      # init_numa()
+      # init_perfmon()
       return nothing
    end
    
