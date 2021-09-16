@@ -224,11 +224,13 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
     end
 
     @testset "Marker API (CPU)" begin
+        # with active marker api
         @testset "$f" for f in ["test_marker.jl"]
-            # without marker api
-            @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
-            # with marker api
             @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+        end
+        # without marker api
+        @testset "$f" for f in ["test_marker_noapi.jl"]
+           @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         end
     end
 
