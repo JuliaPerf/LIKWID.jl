@@ -327,7 +327,7 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
             # dev LIKWID.jl + add CUDA
             withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
                 rm(joinpath(testdir, "Manifest.toml"), force=true)
-                rm(joinpath(testdir, "Project.toml"), forece=true)
+                rm(joinpath(testdir, "Project.toml"), force=true)
                 run(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="../"); Pkg.add("CUDA"); Pkg.precompile();'`)
                 @test success(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
             end
