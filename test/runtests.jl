@@ -5,6 +5,7 @@ using Libdl
 
 const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
 
+CUDA.versioninfo()
 if CUDA.functional()
     @info("CUDA/GPU available. Running all tests (CPU + GPU).")
     hascuda = true
