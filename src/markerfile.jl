@@ -1,6 +1,6 @@
 module MarkerFile
 
-import ..LIKWID: LibLikwid
+using ..LIKWID: LibLikwid
 
 """
 Reads in the result file of an application run instrumented by the LIKWID Marker API.

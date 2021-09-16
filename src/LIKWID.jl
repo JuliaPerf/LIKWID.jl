@@ -19,6 +19,7 @@ module LIKWID
    const access_initialized = Ref{Bool}(false)
    const perfmon_initialized = Ref{Bool}(false)
    const gputopo_initialized = Ref{Bool}(false)
+   const nvmon_initialized = Ref{Bool}(false)
    const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
    const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
    const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
@@ -48,6 +49,7 @@ module LIKWID
    include("markerfile.jl")
    include("misc.jl")
    include("topology_gpu.jl")
+   include("nvmon.jl")
    
    function __init__()
       Marker.init()

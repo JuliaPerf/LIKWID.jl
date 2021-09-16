@@ -1,6 +1,6 @@
 module Marker
 
-import ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events
+using ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events
 
 """
 Initialize the Marker API. Must be called previous to all other functions.
