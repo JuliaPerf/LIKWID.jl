@@ -2,6 +2,8 @@ using Test
 using LIKWID
 using LinearAlgebra
 
+LIKWID.init_perfmon() # required for getregion below
+
 N = 100_000_000
 a = 3.141f0
 z = zeros(Float32, N)
