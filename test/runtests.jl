@@ -3,31 +3,42 @@ using LIKWID
 using CUDA
 using Libdl
 
+# check if we are a GitHub runner
 const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
 
-try
-    @info("CUDA.versioninfo():")
-    CUDA.versioninfo()
-    @info("Successful!")
-catch ex
-    @warn("Unsuccessful!")
-    println(ex)
-    println()
-end
-
+# check if CUDA is available and functional
 if CUDA.functional()
-    @info("CUDA/GPU available. Running all tests (CPU + GPU).")
-    hascuda = true
+    @info("CUDA/GPU available.")
+    const hascuda = true
 else
-    @info("No CUDA/GPU support. Running CPU tests only.")
+    @info("No CUDA/GPU found.")
+    const hascuda = false
+    # debug information
     @show Libdl.find_library("libcuda")
     @show filter(contains("cuda"), lowercase.(Libdl.dllist()))
-    hascuda = false
+    try
+        @info("CUDA.versioninfo():")
+        CUDA.versioninfo()
+        @info("Successful!")
+    catch ex
+        @warn("Unsuccessful!")
+        println(ex)
+        println()
+    end
 end
 
+# check if LIKWID has been compiled with NVIDIA GPU support
 @info("LIKWID NVIDIA GPU support:", LIKWID.gpusupport())
-if LIKWID.gpusupport() && !hascuda
-    @warn("LIKWID seems to have been compiled with NVIDIA GPU support but CUDA.jl isn't functional. Did you intend to test GPU functionality?")
+
+# decide whether to run GPU tests
+const TEST_GPU = LIKWID.gpusupport() && hascuda
+if TEST_GPU
+    @info("Running all tests (CPU + GPU).")
+else
+    @info("Running CPU tests only.")
+    if LIKWID.gpusupport() && !hascuda
+        @warn("LIKWID seems to have been compiled with NVIDIA GPU support but CUDA.jl isn't functional. Did you intend to test GPU functionality?")
+    end
 end
 
 const perfctr = `likwid-perfctr`
