@@ -53,15 +53,23 @@ module LIKWID
    include("topology_gpu.jl")
    include("nvmon.jl")
    include("marker_gpu.jl")
-   
-   function __init__()
-      
+
+   function init()
+      init_topology()
+      init_numa()
+      init_perfmon()
       Marker.init()
       Threads.@threads for i in 1:Threads.nthreads()
          Marker.threadinit()
       end
+      GPUMarker.issupported() && GPUMarker.init()
+   end
+   
+   function __init__()
+      init()
       atexit() do
          Marker.close()
+         GPUMarker.issupported() && GPUMarker.close()
       end
    end
 end

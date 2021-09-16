@@ -154,7 +154,6 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
     end
 
     @testset "PerfMon" begin
-        @test_throws MethodError LIKWID.init_perfmon()
         @test LIKWID.init_perfmon([0])
         @test LIKWID.get_number_of_threads() == 1
         @test LIKWID.get_number_of_groups() == 0
