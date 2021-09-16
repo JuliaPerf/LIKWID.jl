@@ -35,6 +35,7 @@ build-likwid:
       - make
       - if [ -e likwid-accessD ]; then rm likwid-accessD; fi
       - if [ -e likwid-setFreq ]; then rm likwid-setFreq; fi
+      - likwid-topology
   artifacts:
     paths:
       - likwid-$LIKWID_VERSION
