@@ -64,11 +64,11 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
         @test LIKWID.init_numa()
         numinfo = LIKWID.get_numa_topology()
         @test typeof(numinfo) == LIKWID.NumaTopology
-        @test numinfo.numberOfNodes ≥ 1
+        @test numinfo.numberOfNodes ≥ 0
         numanode = first(numinfo.nodes)
         @test typeof(numanode) == LIKWID.NumaNode
         @test numanode.totalMemory ≥ 0
-        @test numanode.numberOfProcessors ≥ 1
+        @test numanode.numberOfProcessors ≥ 0
         @test typeof(numanode.processors) == Vector{Int}
         @test length(numanode.processors) == numanode.numberOfProcessors
         @test isnothing(LIKWID.finalize_numa())
@@ -223,6 +223,25 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
         @test typeof(LIKWID.pinthread(0)) == Bool
     end
 
+    @testset "Marker API (CPU)" begin
+        @testset "$f" for f in ["test_marker.jl"]
+            # without marker api
+            @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+            # with marker api
+            @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+        end
+    end
+
+    @testset "Marker File Reader" begin
+        f = "test_markerfile.jl"
+        @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+    end
+
+    @testset "Pylikwid Example" begin
+        include("test_pylikwid.jl")
+    end
+
+    # ------- GPU -------
     if hascuda
         @testset "GPU Topology" begin
             @test LIKWID.init_topology_gpu()
@@ -301,23 +320,15 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
             @test typeof(LIKWID.Nvmon.get_time_of_group(gid)) == Float64
             @test typeof(LIKWID.Nvmon.get_time_of_group(gid2)) == Float64
         end
-    end
 
-    @testset "Marker API (CPU)" begin
-        @testset "$f" for f in ["test_marker.jl"]
-            # without marker api
-            @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
-            # with marker api
-            @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+        @testset "Marker API (GPU)" begin
+            @testset "$f" for f in ["test_marker_gpu.jl"]
+                # without marker api
+                @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+                # with marker api
+                @test success(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+            end
         end
     end
 
-    @testset "Marker File Reader" begin
-        f = "test_markerfile.jl"
-        @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
-    end
-
-    @testset "Pylikwid Example" begin
-        include("test_pylikwid.jl")
-    end
 end

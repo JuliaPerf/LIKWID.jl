@@ -48,11 +48,12 @@ Get the intermediate results of the region identified by `regiontag`. On success
 function getregion(regiontag::AbstractString)
     current_group = Nvmon.get_id_of_active_group()
     nevents = Ref(Nvmon.get_number_of_events(current_group))
-    events = zeros(nevents[])
+    events_ref = Ref{Ptr{Float64}}()
     time = Ref(0.0)
-    count = Ref(0.0f0)
-    ngpus = Ref(0.0f0)
-    LibLikwid.likwid_gpuMarkerGetRegion(regiontag, ngpus, nevents, events, time, count)
+    count = Ref(Int32(0))
+    ngpus = Ref(Int32(0))
+    LibLikwid.likwid_gpuMarkerGetRegion(regiontag, ngpus, nevents, events_ref, time, count)
+    events = unsafe_wrap(Array, events_ref[], nevents[])
     return ngpus[], nevents[], events, time[], count[]
 end
 
