@@ -35,6 +35,8 @@ module LIKWID
    const _gputopo = Ref{Union{LibLikwid.GpuTopology, Nothing}}(nothing) # (Julia) API struct
    const gputopo = Ref{Union{GpuTopology, Nothing}}(nothing) # Julia struct
 
+   const likwid_gpusupport = Ref{Union{Nothing, Bool}}(nothing)
+
    # functions
    include("topology.jl")
    include("numa.jl")
@@ -50,8 +52,10 @@ module LIKWID
    include("misc.jl")
    include("topology_gpu.jl")
    include("nvmon.jl")
+   include("marker_gpu.jl")
    
    function __init__()
+      
       Marker.init()
       Threads.@threads for i in 1:Threads.nthreads()
          Marker.threadinit()

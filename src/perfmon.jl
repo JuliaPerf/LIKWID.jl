@@ -1,4 +1,4 @@
-function init_perfmon(cpus::AbstractVector{Int32})
+function init_perfmon(cpus::AbstractVector{Int32}=[Int32(i-1) for i in 1:Threads.nthreads()])
     perfmon_initialized[] && finalize_perfmon()
 
     if !topo_initialized[]

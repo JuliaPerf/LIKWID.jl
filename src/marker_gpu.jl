@@ -1,27 +1,23 @@
-module Marker
+module GPUMarker
 
-using ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events
-
-"""
-Initialize the Marker API. Must be called previous to all other functions.
-
-*Note:* LIKWID.jl automatically calls the function on initialization so users typically don't need to call this function.
-"""
-init() = LibLikwid.likwid_markerInit()
+using ..LIKWID: LibLikwid, Nvmon, gpusupport
 
 """
-Add the current thread to the Marker API.
+Initialize the Nvmon Marker API of the LIKWID library. Must be called previous to all other functions.
 """
-threadinit() = LibLikwid.likwid_markerThreadInit()
+function init()
+    gpusupport() || error("liblikwid hasn't been compiled with GPU support (i.e. `NVIDIA_INTERFACE=true`).")
+    return LibLikwid.likwid_gpuMarkerInit()
+end
 
 """
-Register a region with name `regiontag` to the Marker API. On success, `true` is returned.
+Register a region with name `regiontag` to the GPU Marker API. On success, `true` is returned.
 
 This is an optional function to reduce the overhead of region registration at `Marker.startregion`.
 If you don't call `registerregion`, the registration is done at `startregion`.
 """
 function registerregion(regiontag::AbstractString)
-    ret = LibLikwid.likwid_markerRegisterRegion(regiontag)
+    ret = LibLikwid.likwid_gpuMarkerRegisterRegion(regiontag)
     return ret == 0
 end
 
@@ -29,7 +25,7 @@ end
 Start measurements under the name `regiontag`. On success, `true` is returned.
 """
 function startregion(regiontag::AbstractString)
-    ret = LibLikwid.likwid_markerStartRegion(regiontag)
+    ret = LibLikwid.likwid_gpuMarkerStartRegion(regiontag)
     return ret == 0
 end
 
@@ -37,7 +33,7 @@ end
 Stop measurements under the name `regiontag`. On success, `true` is returned.
 """
 function stopregion(regiontag::AbstractString)
-    ret = LibLikwid.likwid_markerStopRegion(regiontag)
+    ret = LibLikwid.likwid_gpuMarkerStopRegion(regiontag)
     return ret == 0
 end
 
@@ -50,36 +46,35 @@ Get the intermediate results of the region identified by `regiontag`. On success
     * `count`: the number of calls.
 """
 function getregion(regiontag::AbstractString)
-    current_group = get_id_of_active_group()
-    nevents = Ref(get_number_of_events(current_group))
+    current_group = Nvmon.get_id_of_active_group()
+    nevents = Ref(Nvmon.get_number_of_events(current_group))
     events = zeros(nevents[])
     time = Ref(0.0)
-    count = Ref(Int32(0))
-    LibLikwid.likwid_markerGetRegion(regiontag, nevents, events, time, count)
-    return nevents[], events, time[], count[]
+    count = Ref(0.0f0)
+    ngpus = Ref(0.0f0)
+    LibLikwid.likwid_gpuMarkerGetRegion(regiontag, ngpus, nevents, events, time, count)
+    return ngpus[], nevents[], events, time[], count[]
 end
 
 """
 Switch to the next event set in a round-robin fashion.
 If you have set only one event set on the command line, this function performs no operation.
 """
-nextgroup() = LibLikwid.likwid_markerNextGroup()
+nextgroup() = LibLikwid.likwid_gpuMarkerNextGroup()
 
 """
 Reset the values stored using the region name `regiontag`.
 On success, `true` is returned.
 """
 function resetregion(regiontag::AbstractString)
-    ret = LibLikwid.likwid_markerResetRegion(regiontag)
+    ret = LibLikwid.likwid_gpuMarkerResetRegion(regiontag)
     return ret == 0
 end
 
 """
-Close the connection to the LIKWID Marker API and write out measurement data to file.
+Close the connection to the LIKWID GPU Marker API and write out measurement data to file.
 This file will be evaluated by `likwid-perfctr`.
-
-*Note:* LIKWID.jl automatically calls the function `atexit` so users typically don't need to call this function.
 """
-close() = LibLikwid.likwid_markerClose()
+close() = LibLikwid.likwid_gpuMarkerClose()
 
 end # module

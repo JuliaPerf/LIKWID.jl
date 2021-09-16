@@ -45,21 +45,25 @@ function setverbosity(verbosity::Integer)
 end
 
 """
-Tries to detect whether LIKWID has been compiled with GPU support.
-
-Note: Should be replaced by a less "hacky" implementation when
-https://github.com/RRZE-HPC/likwid/issues/430 has been addressed.
+Returns whether LIKWID has been compiled with GPU support
+(i.e. has been compiled with `NVIDIA_INTERFACE=true`).
 """
 function gpusupport()
+    # Note: Should be replaced by a less "hacky" implementation when
+    # https://github.com/RRZE-HPC/likwid/issues/430 has been addressed.
+    if isnothing(likwid_gpusupport[])
+        likwid_gpusupport[] = _check_likwid_gpusupport()
+    end
+    return likwid_gpusupport[]
+end
+
+function _check_likwid_gpusupport()
     dlopen(liblikwid) do handle
         return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
     end
 end
 
-"""
-Alternative to `LIKWID.gpusupport()` based on analyzing the output of `likwid-topology`.
-"""
-function gpusupport_alternative()
+function _check_likwid_gpusupport_alternative()
     x = _execute(`likwid-topology`)
     # if there is a gpu section in the output, return true
     contains(lowercase(x[1]), "gpu") && return true

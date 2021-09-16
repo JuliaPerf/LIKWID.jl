@@ -237,6 +237,71 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
             @test typeof(gpu.maxGridSize) == NTuple{3, Int}
             @test isnothing(LIKWID.finalize_topology_gpu())
         end
+        
+        # According to @TomTheBear, this shouldn't be used yet
+        @testset "GPU PerfMon / NvMon" begin
+            @test_throws MethodError LIKWID.Nvmon.init()
+            @test LIKWID.Nvmon.init([0])
+            @test LIKWID.Nvmon.get_number_of_gpus() == 1
+            @test LIKWID.Nvmon.get_number_of_groups() == 0
+            groups = LIKWID.Nvmon.get_groups(0)
+            @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
+            gname = groups[1].name
+            gsinfo = groups[1].shortinfo
+            glinfo = groups[1].longinfo
+            # single group
+            gid = LIKWID.Nvmon.add_event_set(gname)
+            @test gid ≥ 0
+            @test LIKWID.Nvmon.get_number_of_groups() == 1
+            @test LIKWID.Nvmon.get_name_of_group(gid) == gname
+            @test LIKWID.Nvmon.get_shortinfo_of_group(gid) == gsinfo
+            @test strip(LIKWID.Nvmon.get_longinfo_of_group(gid)) == strip(glinfo)
+            @test LIKWID.Nvmon.get_number_of_events(gid) ≥ 0
+            @test LIKWID.Nvmon.get_number_of_metrics(gid) ≥ 0
+            nevents = LIKWID.Nvmon.get_number_of_events(gid)
+            @test isnothing(LIKWID.Nvmon.get_name_of_event(gid, -1))
+            @test isnothing(LIKWID.Nvmon.get_name_of_event(gid, nevents))
+            @test isnothing(LIKWID.Nvmon.get_name_of_event(gid, nevents+1))
+            @test !isnothing(LIKWID.Nvmon.get_name_of_event(gid, 0))
+            @test isnothing(LIKWID.Nvmon.get_name_of_counter(gid, -1))
+            @test isnothing(LIKWID.Nvmon.get_name_of_counter(gid, nevents))
+            @test !isnothing(LIKWID.Nvmon.get_name_of_counter(gid, 0))
+            nmetrics = LIKWID.Nvmon.get_number_of_metrics(gid)
+            @test isnothing(LIKWID.Nvmon.get_name_of_metric(gid, -1))
+            @test isnothing(LIKWID.Nvmon.get_name_of_metric(gid, nmetrics))
+            @test !isnothing(LIKWID.Nvmon.get_name_of_metric(gid, 0))
+        
+            @test LIKWID.Nvmon.setup_counters(gid)
+            @test LIKWID.Nvmon.get_id_of_active_group() == gid
+            @test_broken !LIKWID.Nvmon.read_counters() # error 7
+            @test_broken LIKWID.Nvmon.start_counters() # error 1
+            @test LIKWID.Nvmon.read_counters()
+            @test LIKWID.Nvmon.read_counters()
+            @test LIKWID.Nvmon.stop_counters()
+            @test typeof(LIKWID.Nvmon.get_result(gid, 0, 0)) == Float64
+            @test typeof(LIKWID.Nvmon.get_last_result(gid, 0, 0)) == Float64
+            @test_broken typeof(LIKWID.Nvmon.get_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
+            @test_broken typeof(LIKWID.Nvmon.get_last_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getLastMetric
+            @test typeof(LIKWID.Nvmon.get_time_of_group(gid)) == Float64
+            
+            # multiple groups
+            gid2 = LIKWID.Nvmon.add_event_set(groups[2].name)
+            @test LIKWID.Nvmon.start_counters()
+            @test LIKWID.Nvmon.get_id_of_active_group() == gid
+            @test LIKWID.Nvmon.read_counters()
+            @test LIKWID.Nvmon.switch_group(gid2)
+            @test LIKWID.Nvmon.read_counters()
+            @test LIKWID.Nvmon.get_id_of_active_group() == gid2
+            @test LIKWID.Nvmon.switch_group(gid)
+            @test LIKWID.Nvmon.get_id_of_active_group() == gid
+            @test LIKWID.Nvmon.stop_counters()
+            @test typeof(LIKWID.Nvmon.get_result(gid, 0, 0)) == Float64
+            @test typeof(LIKWID.Nvmon.get_result(gid2, 0, 0)) == Float64
+            @test_broken typeof(LIKWID.Nvmon.get_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
+            @test_broken typeof(LIKWID.Nvmon.get_metric(gid2, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
+            @test typeof(LIKWID.Nvmon.get_time_of_group(gid)) == Float64
+            @test typeof(LIKWID.Nvmon.get_time_of_group(gid2)) == Float64
+        end
     end
 
     @testset "Marker API (CPU)" begin
