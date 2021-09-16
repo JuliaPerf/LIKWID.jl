@@ -324,11 +324,20 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
         end
 
         @testset "Marker API (GPU)" begin
+            # dev LIKWID.jl + add CUDA
+            withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
+                rm(joinpath(testdir, "Manifest.toml"), force=true)
+                rm(joinpath(testdir, "Project.toml"), forece=true)
+                run(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="../"); Pkg.add("CUDA"); Pkg.precompile();'`)
+                @test success(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
+            end
+            # without gpu marker api
+            @testset "$f" for f in ["test_marker_gpu_noapi.jl"]
+                @test success(`$julia --project=$(testdir) $(joinpath(testdir, f))`)
+            end
+            # with active gpu marker api
             @testset "$f" for f in ["test_marker_gpu.jl"]
-                # without marker api
-                @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
-                # with marker api
-                @test success(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+                @test success(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
         end
     end
