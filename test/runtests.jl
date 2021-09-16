@@ -25,6 +25,11 @@ else
     hascuda = false
 end
 
+@info("LIKWID NVIDIA GPU support:", LIKWID.gpusupport())
+if LIKWID.gpusupport() && !hascuda
+    @warn("LIKWID seems to have been compiled with NVIDIA GPU support but CUDA.jl isn't functional. Did you intend to test GPU functionality?")
+end
+
 const perfctr = `likwid-perfctr`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__

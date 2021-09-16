@@ -43,3 +43,15 @@ function setverbosity(verbosity::Integer)
     end
     return false
 end
+
+"""
+Tries to detect whether LIKWID has been compiled with GPU support.
+
+Note: Should be replaced by a less "hacky" implementation when
+https://github.com/RRZE-HPC/likwid/issues/430 has been addressed.
+"""
+function gpusupport()
+    dlopen(liblikwid) do handle
+        return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+    end
+end
