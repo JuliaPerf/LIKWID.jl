@@ -5,7 +5,11 @@ using CUDA
 
 @assert CUDA.functional()
 
-@test !LIKWID.GPUMarker.isactive()
+# julia must have been started with `likwid-perfctr -G ... -W ... -m`
+@assert !LIKWID.GPUMarker.isactive()
+
+# init
+@test isnothing(LIKWID.GPUMarker.init())
 
 N = 100_000_000
 a = 3.141f0
@@ -20,9 +24,6 @@ saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
 @test !LIKWID.GPUMarker.startregion("saxpy_gpu!")
 saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
 @test !LIKWID.GPUMarker.stopregion("saxpy_gpu!") 
-
-# init
-@test isnothing(LIKWID.GPUMarker.init())
 
 # nextgroup
 @test isnothing(LIKWID.GPUMarker.nextgroup())

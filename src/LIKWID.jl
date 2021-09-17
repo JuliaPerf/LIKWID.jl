@@ -55,22 +55,17 @@ module LIKWID
    include("marker_gpu.jl")
 
    function init()
-      Marker.init()
-      Threads.@threads for i in 1:Threads.nthreads()
-         Marker.threadinit()
-      end
-      gpusupport() && GPUMarker.init()
+      # Marker.init()
+      # gpusupport() && GPUMarker.init()
       # init_topology()
       # init_numa()
       # init_perfmon()
       return nothing
    end
-   
-   function __init__()
-      init()
-      atexit() do
-         Marker.close()
-         gpusupport() && GPUMarker.close()
-      end
+
+   function close()
+      Marker.close()
+      gpusupport() && GPUMarker.close()
    end
+
 end

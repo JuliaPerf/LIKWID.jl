@@ -2,7 +2,11 @@ using Test
 using LIKWID
 using LinearAlgebra
 
-@test !LIKWID.Marker.isactive()
+# julia should NOT have been started with `likwid-perfctr -C ... -g ... -m` for this test file
+@assert !LIKWID.Marker.isactive()
+
+# init
+@test isnothing(LIKWID.Marker.init())
 
 N = 100_000_000
 a = 3.141f0
@@ -17,9 +21,6 @@ saxpy!(z,a,x,y)
 @test !LIKWID.Marker.startregion("saxpy!")
 saxpy!(z,a,x,y)
 @test !LIKWID.Marker.stopregion("saxpy!")
-
-# init
-@test isnothing(LIKWID.Marker.init())
 
 # nextgroup
 @test isnothing(LIKWID.Marker.nextgroup())

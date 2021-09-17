@@ -112,7 +112,7 @@ function capture_stderr!(f::Function, io::IO)
         flush(stderr)
         return ret
     finally
-        close(rd)
+        Base.close(rd)
         redirect_stderr(old_stderr)
         wait(task)
     end

@@ -4,10 +4,19 @@ using ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events, capture
 
 """
 Initialize the Marker API. Must be called previous to all other functions.
-
-*Note:* LIKWID.jl automatically calls the function on initialization so users typically don't need to call this function.
 """
-init() = LibLikwid.likwid_markerInit()
+function init()
+    LibLikwid.likwid_markerInit()
+    Threads.@threads for i in 1:Threads.nthreads()
+       LibLikwid.likwid_markerThreadInit()
+    end
+    return nothing
+end
+
+"""
+Initialize the Marker API only on the main thread. `LIKWID.Marker.threadinit()` must be called manually.
+"""
+init_nothreads() = LibLikwid.likwid_markerInit()
 
 """
 Add the current thread to the Marker API.
@@ -77,8 +86,6 @@ end
 """
 Close the connection to the LIKWID Marker API and write out measurement data to file.
 This file will be evaluated by `likwid-perfctr`.
-
-*Note:* LIKWID.jl automatically calls the function `atexit` so users typically don't need to call this function.
 """
 close() = LibLikwid.likwid_markerClose()
 
