@@ -52,18 +52,18 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
 @testset "LIKWID.jl" begin
     @testset "Topology" begin
-        @test LIKWID.init_topology()
-        cputopo = LIKWID.get_cpu_topology()
+        @test LIKWID.Topo.init()
+        cputopo = LIKWID.Topo.get_cpu_topology()
         @test typeof(cputopo) == LIKWID.CpuTopology
-        cpuinfo = LIKWID.get_cpu_info()
+        cpuinfo = LIKWID.Topo.get_cpu_info()
         @test typeof(cpuinfo) == LIKWID.CpuInfo
-        @test isnothing(LIKWID.print_supported_cpus())
-        @test isnothing(LIKWID.finalize_topology())
+        @test isnothing(LIKWID.Topo.print_supported_cpus())
+        @test isnothing(LIKWID.Topo.finalize())
     end
 
     @testset "NUMA" begin
-        @test LIKWID.init_numa()
-        numinfo = LIKWID.get_numa_topology()
+        @test LIKWID.NUMA.init()
+        numinfo = LIKWID.NUMA.get_numa_topology()
         @test typeof(numinfo) == LIKWID.NumaTopology
         @test numinfo.numberOfNodes ≥ 0
         numanode = first(numinfo.nodes)
@@ -72,12 +72,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test numanode.numberOfProcessors ≥ 0
         @test typeof(numanode.processors) == Vector{Int}
         @test length(numanode.processors) == numanode.numberOfProcessors
-        @test isnothing(LIKWID.finalize_numa())
+        @test isnothing(LIKWID.NUMA.finalize())
     end
 
     @testset "Affinity" begin
-        @test LIKWID.init_affinity()
-        affinity = LIKWID.get_affinity()
+        @test LIKWID.Affinity.init()
+        affinity = LIKWID.Affinity.get_affinity()
         @test typeof(affinity) == LIKWID.AffinityDomains
         @test affinity.numberOfSocketDomains ≥ 1
         @test affinity.numberOfNumaDomains ≥ 1
@@ -90,35 +90,35 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(d.tag) == String
         @test typeof(d.processorList) == Vector{Int}
         @test length(d.processorList) == d.numberOfProcessors
-        @test isnothing(LIKWID.finalize_affinity())
+        @test isnothing(LIKWID.Affinity.finalize())
     end
 
     @testset "Timer" begin
-        @test LIKWID.init_timer()
-        @test isinteger(LIKWID.get_cpu_clock())
-        @test isinteger(LIKWID.get_cpu_clock_current(0))
-        t = LIKWID.start_clock()
+        @test LIKWID.Timer.init()
+        @test isinteger(LIKWID.Timer.get_cpu_clock())
+        @test isinteger(LIKWID.Timer.get_cpu_clock_current(0))
+        t = LIKWID.Timer.start_clock()
         @test !isnothing(t)
         @test !iszero(t.start)
         @test iszero(t.stop)
-        t = LIKWID.stop_clock(t)
+        t = LIKWID.Timer.stop_clock(t)
         @test !iszero(t.start)
         @test !iszero(t.stop)
-        @test typeof(LIKWID.get_clock(t)) == Float64
-        @test isinteger(LIKWID.get_clock_cycles(t))
-        @test isnothing(LIKWID.finalize_timer())
+        @test typeof(LIKWID.Timer.get_clock(t)) == Float64
+        @test isinteger(LIKWID.Timer.get_clock_cycles(t))
+        @test isnothing(LIKWID.Timer.finalize())
     end
 
     @testset "Thermal" begin
-        @test LIKWID.init_thermal(0)
-        @test isinteger(LIKWID.read_thermal(0))
+        @test LIKWID.Thermal.init(0)
+        @test isinteger(LIKWID.Thermal.read_thermal(0))
     end
 
     @testset "Power / Energy" begin
-        @test LIKWID.init_power(0)
-        @test isnothing(LIKWID.finalize_power())
-        @test LIKWID.init_power()
-        pinfo = LIKWID.get_power_info()
+        @test LIKWID.Power.init(0)
+        @test isnothing(LIKWID.Power.finalize())
+        @test LIKWID.Power.init()
+        pinfo = LIKWID.Power.get_power_info()
         @test typeof(pinfo) == LIKWID.PowerInfo
         @test typeof(pinfo.turbo) == LIKWID.TurboBoost
         @test pinfo.turbo.numSteps == length(pinfo.turbo.steps)
@@ -133,7 +133,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(pd.supportPerf) == Bool
         @test typeof(pd.supportPolicy) == Bool
         @test typeof(pd.supportLimit) == Bool
-        @test isnothing(LIKWID.finalize_power())
+        @test isnothing(LIKWID.Power.finalize())
     end
 
     @testset "Configuration" begin
@@ -146,75 +146,76 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     end
 
     @testset "Access / HPM" begin
-        @test LIKWID.hpmmode(0)
-        @test LIKWID.hpmmode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
-        @test LIKWID.init_hpm()
-        @test typeof(LIKWID.hpm_add_thread(0)) == Int
+        @test LIKWID.Access.hpmmode(0)
+        @test LIKWID.Access.hpmmode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
+        @test LIKWID.Access.init_hpm()
+        @test typeof(LIKWID.Access.hpm_add_thread(0)) == Int
         # @test LIKWID.hpm_add_thread(0) != -1
-        @test isnothing(LIKWID.finalize_hpm())
+        @test isnothing(LIKWID.Access.finalize_hpm())
     end
 
     @testset "PerfMon" begin
-        @test LIKWID.init_perfmon([0])
-        @test LIKWID.get_number_of_threads() == 1
-        @test LIKWID.get_number_of_groups() == 0
-        groups = LIKWID.get_groups()
+        @test LIKWID.PerfMon.init([0])
+        @test LIKWID.PerfMon.get_number_of_threads() == 1
+        @test LIKWID.PerfMon.get_number_of_groups() == 0
+        groups = LIKWID.PerfMon.get_groups()
         @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
         gname = groups[1].name
         gsinfo = groups[1].shortinfo
         glinfo = groups[1].longinfo
         # single group
-        gid = LIKWID.add_event_set(gname)
+        gid = LIKWID.PerfMon.add_event_set(gname)
         @test gid ≥ 0
-        @test LIKWID.get_number_of_groups() == 1
-        @test LIKWID.get_name_of_group(gid) == gname
-        @test LIKWID.get_shortinfo_of_group(gid) == gsinfo
-        @test strip(LIKWID.get_longinfo_of_group(gid)) == strip(glinfo)
-        @test LIKWID.get_number_of_events(gid) ≥ 0
-        @test LIKWID.get_number_of_metrics(gid) ≥ 0
-        nevents = LIKWID.get_number_of_events(gid)
-        @test isnothing(LIKWID.get_name_of_event(gid, -1))
-        @test isnothing(LIKWID.get_name_of_event(gid, nevents))
-        @test isnothing(LIKWID.get_name_of_event(gid, nevents+1))
-        @test !isnothing(LIKWID.get_name_of_event(gid, 0))
-        @test isnothing(LIKWID.get_name_of_counter(gid, -1))
-        @test isnothing(LIKWID.get_name_of_counter(gid, nevents))
-        @test !isnothing(LIKWID.get_name_of_counter(gid, 0))
-        nmetrics = LIKWID.get_number_of_metrics(gid)
-        @test isnothing(LIKWID.get_name_of_metric(gid, -1))
-        @test isnothing(LIKWID.get_name_of_metric(gid, nmetrics))
-        @test !isnothing(LIKWID.get_name_of_metric(gid, 0))
+        @test LIKWID.PerfMon.get_number_of_groups() == 1
+        @test LIKWID.PerfMon.get_name_of_group(gid) == gname
+        @test LIKWID.PerfMon.get_shortinfo_of_group(gid) == gsinfo
+        @test strip(LIKWID.PerfMon.get_longinfo_of_group(gid)) == strip(glinfo)
+        @test LIKWID.PerfMon.get_number_of_events(gid) ≥ 0
+        @test LIKWID.PerfMon.get_number_of_metrics(gid) ≥ 0
+        nevents = LIKWID.PerfMon.get_number_of_events(gid)
+        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, -1))
+        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents))
+        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents+1))
+        @test !isnothing(LIKWID.PerfMon.get_name_of_event(gid, 0))
+        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, -1))
+        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, nevents))
+        @test !isnothing(LIKWID.PerfMon.get_name_of_counter(gid, 0))
+        nmetrics = LIKWID.PerfMon.get_number_of_metrics(gid)
+        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, -1))
+        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, nmetrics))
+        @test !isnothing(LIKWID.PerfMon.get_name_of_metric(gid, 0))
 
-        @test LIKWID.setup_counters(gid)
-        @test LIKWID.get_id_of_active_group() == gid
-        @test !LIKWID.read_counters()
-        @test LIKWID.start_counters()
-        @test LIKWID.read_counters()
-        @test LIKWID.read_counters()
-        @test LIKWID.stop_counters()
-        @test typeof(LIKWID.get_result(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.get_last_result(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.get_metric(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.get_last_metric(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.get_time_of_group(gid)) == Float64
+        @test LIKWID.PerfMon.setup_counters(gid)
+        @test LIKWID.PerfMon.get_id_of_active_group() == gid
+        @test !LIKWID.PerfMon.read_counters()
+        @test LIKWID.PerfMon.start_counters()
+        @test LIKWID.PerfMon.read_counters()
+        @test LIKWID.PerfMon.read_counters()
+        @test LIKWID.PerfMon.stop_counters()
+        @test typeof(LIKWID.PerfMon.get_result(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_last_result(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_metric(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_last_metric(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
         
         # multiple groups
-        gid2 = LIKWID.add_event_set(groups[2].name)
-        @test LIKWID.start_counters()
-        @test LIKWID.get_id_of_active_group() == gid
-        @test LIKWID.read_counters()
-        @test LIKWID.switch_group(gid2)
-        @test LIKWID.read_counters()
-        @test LIKWID.get_id_of_active_group() == gid2
-        @test LIKWID.switch_group(gid)
-        @test LIKWID.get_id_of_active_group() == gid
-        @test LIKWID.stop_counters()
-        @test typeof(LIKWID.get_result(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.get_result(gid2, 0, 0)) == Float64
-        @test typeof(LIKWID.get_metric(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.get_metric(gid2, 0, 0)) == Float64
-        @test typeof(LIKWID.get_time_of_group(gid)) == Float64
-        @test typeof(LIKWID.get_time_of_group(gid2)) == Float64
+        gid2 = LIKWID.PerfMon.add_event_set(groups[2].name)
+        @test LIKWID.PerfMon.start_counters()
+        @test LIKWID.PerfMon.get_id_of_active_group() == gid
+        @test LIKWID.PerfMon.read_counters()
+        @test LIKWID.PerfMon.switch_group(gid2)
+        @test LIKWID.PerfMon.read_counters()
+        @test LIKWID.PerfMon.get_id_of_active_group() == gid2
+        @test LIKWID.PerfMon.switch_group(gid)
+        @test LIKWID.PerfMon.get_id_of_active_group() == gid
+        @test LIKWID.PerfMon.stop_counters()
+        @test typeof(LIKWID.PerfMon.get_result(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_result(gid2, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_metric(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_metric(gid2, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
+        @test typeof(LIKWID.PerfMon.get_time_of_group(gid2)) == Float64
+        @test isnothing(LIKWID.PerfMon.finalize())
     end
 
     @testset "Misc" begin
@@ -247,8 +248,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     # ------- GPU -------
     if hascuda
         @testset "GPU Topology" begin
-            @test LIKWID.init_topology_gpu()
-            gputopo = LIKWID.get_gpu_topology()
+            @test LIKWID.GPUTopo.init()
+            gputopo = LIKWID.GPUTopo.get_gpu_topology()
             @test typeof(gputopo) == LIKWID.GpuTopology
             gpu = gputopo.devices[1]
             @test typeof(gpu) == LIKWID.GpuDevice
@@ -256,7 +257,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(gpu.mem) == Int
             @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
             @test typeof(gpu.maxGridSize) == NTuple{3, Int}
-            @test isnothing(LIKWID.finalize_topology_gpu())
+            @test isnothing(LIKWID.GPUTopo.finalize())
         end
         
         # According to @TomTheBear, this shouldn't be used yet

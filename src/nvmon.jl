@@ -1,6 +1,7 @@
 module Nvmon
 
-using ..LIKWID: LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact
+using ..LIKWID:
+    LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact
 
 function init(gpus::AbstractVector{Int32})
     nvmon_initialized[] && finalize()

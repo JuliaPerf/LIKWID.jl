@@ -1,4 +1,8 @@
-function hpmmode(mode::Union{Integer, LibLikwid.AccessMode})
+module Access
+
+using ..LIKWID: LibLikwid, access_initialized
+
+function hpmmode(mode::Union{Integer,LibLikwid.AccessMode})
     if mode == LibLikwid.ACCESSMODE_DIRECT || mode == LibLikwid.ACCESSMODE_DAEMON
         LibLikwid.HPMmode(mode)
         return true
@@ -28,3 +32,5 @@ function finalize_hpm()
     access_initialized[] = false
     return nothing
 end
+
+end # module

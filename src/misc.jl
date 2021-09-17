@@ -39,7 +39,7 @@ Options are:
 function setverbosity(verbosity::Integer)
     if verbosity ≥ LibLikwid.DEBUGLEV_ONLY_ERROR && verbosity ≤ LibLikwid.DEBUGLEV_DEVELOP
         LibLikwid.perfmon_setVerbosity(verbosity)
-        return true        
+        return true
     end
     return false
 end
@@ -78,15 +78,11 @@ function _execute(cmd::Cmd)
     out = Pipe()
     err = Pipe()
 
-    process = run(pipeline(ignorestatus(cmd), stdout=out, stderr=err))
+    process = run(pipeline(ignorestatus(cmd); stdout=out, stderr=err))
     close(out.in)
     close(err.in)
 
-    out = (
-        stdout = String(read(out)), 
-        stderr = String(read(err)),  
-        exitcode = process.exitcode
-    )
+    out = (stdout=String(read(out)), stderr=String(read(err)), exitcode=process.exitcode)
     return out
 end
 

@@ -186,8 +186,8 @@ struct GpuDevice
     compute_capability_major::Int
     compute_capability_minor::Int
     maxThreadsPerBlock::Int
-    maxThreadsDim::NTuple{3, Int}
-    maxGridSize::NTuple{3, Int}
+    maxThreadsDim::NTuple{3,Int}
+    maxGridSize::NTuple{3,Int}
     sharedMemPerBlock::Int
     totalConstantMemory::Int
     simdWidth::Int
@@ -233,7 +233,7 @@ const SHOW_TYPES = Union{
     Likwid_Configuration,
     GroupInfoCompact,
     GpuTopology,
-    GpuDevice
+    GpuDevice,
 }
 
 function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
@@ -250,7 +250,15 @@ function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
         elseif field == :totalMemory || field == :freeMemory
             print(io, char, " ", field, ": ", round(xfield / 1024 / 1024; digits=2), " GB")
         elseif T == GpuDevice && field == :mem
-            print(io, char, " ", field, ": ", round(xfield / 1024 / 1024 / 1024; digits=2), " GB")
+            print(
+                io,
+                char,
+                " ",
+                field,
+                ": ",
+                round(xfield / 1024 / 1024 / 1024; digits=2),
+                " GB",
+            )
         elseif field in (:baseFrequency, :minFrequency, :uncoreMinFreq, :uncoreMaxFreq)
             print(io, char, " ", field, ": ", xfield, " MHz")
         else

@@ -6,7 +6,9 @@ using ..LIKWID: LibLikwid, Nvmon, gpusupport, capture_stderr!
 Initialize the Nvmon Marker API of the LIKWID library. Must be called previous to all other functions.
 """
 function init()
-    gpusupport() || error("liblikwid hasn't been compiled with GPU support (i.e. `NVIDIA_INTERFACE=true`).")
+    gpusupport() || error(
+        "liblikwid hasn't been compiled with GPU support (i.e. `NVIDIA_INTERFACE=true`).",
+    )
     return LibLikwid.likwid_gpuMarkerInit()
 end
 

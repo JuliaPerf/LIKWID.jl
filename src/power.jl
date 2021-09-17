@@ -1,3 +1,8 @@
+module Power
+
+using ..LIKWID:
+    LibLikwid, power_initialized, _powerinfo, powerinfo, TurboBoost, PowerDomain, PowerInfo
+
 const POWER_DOMAIN_SUPPORT_STATUS = UInt64(1) << 0
 const POWER_DOMAIN_SUPPORT_LIMIT = UInt64(1) << 1
 const POWER_DOMAIN_SUPPORT_POLICY = UInt64(1) << 2
@@ -8,7 +13,7 @@ const POWER_DOMAIN_SUPPORT_INFO = UInt64(1) << 4
 Initialize energy measurements on specific CPU.
 Returns the RAPL status, i.e. `false` (no RAPL) or `true` (RAPL working).
 """
-function init_power(cpuid::Integer)
+function init(cpuid::Integer)
     power_initialized[] && return true
     hasRAPL = LibLikwid.power_init(cpuid)
     if Bool(hasRAPL)
@@ -21,13 +26,13 @@ function init_power(cpuid::Integer)
 end
 
 # "helper"
-function init_power()
+function init()
     power_initialized[] && return true
     init_topology()
-    return init_power(0)
+    return init(0)
 end
 
-function finalize_power()
+function finalize()
     LibLikwid.power_finalize()
     power_initialized[] = false
     _powerinfo[] = nothing
@@ -80,7 +85,7 @@ function get_power_info()
         init_topology() || error("Couldn't init topology.")
     end
     if !power_initialized[]
-        init_power(0) || error("Couldn't init power.")
+        init(0) || error("Couldn't init power.")
     end
     return powerinfo[]
 end
@@ -118,3 +123,5 @@ function get_power(p_start::Integer, p_stop::Integer, domainid::Integer)
     energy = LibLikwid.power_printEnergy(Ref(pd))
     return energy
 end
+
+end # module

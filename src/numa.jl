@@ -1,4 +1,18 @@
-function init_numa()
+module NUMA
+
+using ..LIKWID:
+    LibLikwid,
+    numa_initialized,
+    topo_initialized,
+    affinity_initialized,
+    NumaNode,
+    NumaTopology,
+    Topo,
+    Affinity,
+    _numainfo,
+    numainfo
+
+function init()
     ret = LibLikwid.numa_init()
     if ret == 0
         _numainfo[] = unsafe_load(LibLikwid.get_numaTopology())
@@ -9,7 +23,7 @@ function init_numa()
     return false
 end
 
-function finalize_numa()
+function finalize()
     LibLikwid.numa_finalize()
     numa_initialized[] = false
     _numainfo[] = nothing
@@ -34,22 +48,21 @@ function _build_jl_numa()
         )
     end
 
-    numainfo[] = NumaTopology(
-        nnodes,
-        nodes
-    )
+    numainfo[] = NumaTopology(nnodes, nodes)
     return nothing
 end
 
 function get_numa_topology()
     if !topo_initialized[]
-        init_topology() || error("Couldn't init topology.")
+        Topo.init() || error("Couldn't init topology.")
     end
     if !numa_initialized[]
-        init_numa() || error("Couldn't init numa.")
+        init() || error("Couldn't init numa.")
     end
     if !affinity_initialized[]
-        init_affinity() || error("Couldn't init affinity.")
+        Affinity.init() || error("Couldn't init affinity.")
     end
     return numainfo[]
 end
+
+end # module

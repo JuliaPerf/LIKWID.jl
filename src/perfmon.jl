@@ -1,11 +1,23 @@
-function init_perfmon(cpus::AbstractVector{Int32}=[Int32(i-1) for i in 1:Threads.nthreads()])
-    perfmon_initialized[] && finalize_perfmon()
+module PerfMon
+
+using ..LIKWID:
+    LibLikwid,
+    perfmon_initialized,
+    topo_initialized,
+    numa_initialized,
+    timer_initialized,
+    Topo,
+    NUMA,
+    GroupInfoCompact
+
+function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthreads()])
+    perfmon_initialized[] && finalize()
 
     if !topo_initialized[]
-        init_topology() || error("Couldn't init topology.")
+        Topo.init() || error("Couldn't init topology.")
     end
     if !numa_initialized[]
-        init_numa() || error("Couldn't init numa.")
+        NUMA.init() || error("Couldn't init numa.")
     end
 
     nthreads = length(cpus)
@@ -18,9 +30,9 @@ function init_perfmon(cpus::AbstractVector{Int32}=[Int32(i-1) for i in 1:Threads
     return false
 end
 
-init_perfmon(cpus::AbstractVector{<:Integer}) = init_perfmon(convert(Vector{Int32}, cpus))
+init(cpus::AbstractVector{<:Integer}) = init(convert(Vector{Int32}, cpus))
 
-function finalize_perfmon()
+function finalize()
     LibLikwid.perfmon_finalize()
     perfmon_initialized[] = false
     return nothing
@@ -57,7 +69,7 @@ Return a list of all available perfmon groups.
 """
 function get_groups()
     if !topo_initialized[]
-        init_topology() || error("Couldn't init topology.")
+        Topo.init() || error("Couldn't init topology.")
     end
     # refs to char**
     groups_ref = Ref{Ptr{Ptr{Cchar}}}()
@@ -274,3 +286,5 @@ function get_time_of_group(groupid::Integer)
     time = LibLikwid.perfmon_getTimeOfGroup(groupid)
     return time
 end
+
+end # module

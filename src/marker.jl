@@ -8,7 +8,7 @@ Initialize the Marker API. Must be called previous to all other functions.
 function init()
     LibLikwid.likwid_markerInit()
     Threads.@threads for i in 1:Threads.nthreads()
-       LibLikwid.likwid_markerThreadInit()
+        LibLikwid.likwid_markerThreadInit()
     end
     return nothing
 end

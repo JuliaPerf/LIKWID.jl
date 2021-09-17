@@ -1,4 +1,20 @@
-function init_topology()
+module Topo
+
+using ..LIKWID:
+    LibLikwid,
+    cputopo,
+    _cputopo,
+    cpuinfo,
+    _cpuinfo,
+    topo_initialized,
+    HWThread,
+    CacheLevel,
+    CpuTopology,
+    CpuInfo,
+    numa_initialized,
+    NUMA
+
+function init()
     ret = LibLikwid.topology_init()
     if ret == 0
         _cputopo[] = unsafe_load(LibLikwid.get_cpuTopology())
@@ -19,12 +35,7 @@ function _build_jl_cputopo()
     threads = Vector{HWThread}(undef, nhwthreads)
     for (i, tp) in enumerate(threadpools)
         threads[i] = HWThread(
-            tp.threadId,
-            tp.coreId,
-            tp.packageId,
-            tp.apicId,
-            tp.dieId,
-            tp.inCpuSet,
+            tp.threadId, tp.coreId, tp.packageId, tp.apicId, tp.dieId, tp.inCpuSet
         )
     end
     cachelvls = unsafe_wrap(Array, ct.cacheLevels, ncachelvls)
@@ -32,11 +43,19 @@ function _build_jl_cputopo()
     for (i, clvl) in enumerate(cachelvls)
         caches[i] = CacheLevel(
             clvl.level,
-            clvl.type == LibLikwid.DATACACHE ? :data :
-                          clvl.type == LibLikwid.INSTRUCTIONCACHE ? :instruction :
-                          clvl.type == LibLikwid.UNIFIEDCACHE ? :unified :
-                          clvl.type == LibLikwid.ITLB ? :itlb :
-                          clvl.type == LibLikwid.DTLB ? :dtlb : :nocache,
+            if clvl.type == LibLikwid.DATACACHE
+                :data
+            elseif clvl.type == LibLikwid.INSTRUCTIONCACHE
+                :instruction
+            elseif clvl.type == LibLikwid.UNIFIEDCACHE
+                :unified
+            elseif clvl.type == LibLikwid.ITLB
+                :itlb
+            elseif clvl.type == LibLikwid.DTLB
+                :dtlb
+            else
+                :nocache
+            end,
             clvl.associativity,
             clvl.sets,
             clvl.lineSize,
@@ -60,7 +79,7 @@ function _build_jl_cputopo()
     return nothing
 end
 
-function finalize_topology()
+function finalize()
     LibLikwid.topology_finalize()
     topo_initialized[] = false
     _cputopo[] = nothing
@@ -99,22 +118,24 @@ end
 
 function get_cpu_topology()
     if !topo_initialized[]
-        init_topology() || error("Couldn't init topology.")
+        init() || error("Couldn't init topology.")
     end
     if !numa_initialized[]
-        init_numa() || error("Couldn't init numa.")
+        NUMA.init() || error("Couldn't init numa.")
     end
     return cputopo[]
 end
 
 function get_cpu_info()
     if !topo_initialized[]
-        init_topology() || error("Couldn't init topology.")
+        init() || error("Couldn't init topology.")
     end
     if !numa_initialized[]
-        init_numa() || error("Couldn't init numa.")
+        NUMA.init() || error("Couldn't init numa.")
     end
     return cpuinfo[]
 end
 
 print_supported_cpus() = LibLikwid.print_supportedCPUs()
+
+end # module
