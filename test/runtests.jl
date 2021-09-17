@@ -325,10 +325,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         end
 
         @testset "Marker API (GPU)" begin
-            # print performance groups
-            LIKWID._execute_test(`likwid-perfctr -a`; print_only_on_fail=false)
+            # print perf groups
+            # LIKWID._execute_test(`likwid-perfctr -a`; print_only_on_fail=false)
+            # read gpu perf group
             LIKWID.Nvmon.init([0])
             perfgrp_gpu = LIKWID.Nvmon.get_groups()[1].name
+            LIKWID.Nvmon.finalize()
             # dev LIKWID.jl + add CUDA
             withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
                 rm(joinpath(testdir, "Manifest.toml"), force=true)

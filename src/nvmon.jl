@@ -3,7 +3,7 @@ module Nvmon
 using ..LIKWID: LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact
 
 function init(gpus::AbstractVector{Int32})
-    nvmon_initialized[] && finalize_nvmon()
+    nvmon_initialized[] && finalize()
 
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
