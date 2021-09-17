@@ -325,13 +325,15 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         end
 
         @testset "Marker API (GPU)" begin
+            # print performance groups
+            LIKWID._execute_test(`likwid-perfctr -a`; print_only_on_fail=false)
+            LIKWID.Nvmon.init([0])
+            perfgrp_gpu = LIKWID.Nvmon.get_groups()[1].name
             # dev LIKWID.jl + add CUDA
             withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
-                println("Creating CUDA test environment")
                 rm(joinpath(testdir, "Manifest.toml"), force=true)
                 rm(joinpath(testdir, "Project.toml"), force=true)
                 @test exec(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="$(joinpath(testdir, "../"))"); Pkg.add("CUDA"); Pkg.precompile();'`)
-                println("Checking CUDA functionality")
                 @test exec(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
             end
             # without gpu marker api
@@ -340,7 +342,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             end
             # with active gpu marker api
             @testset "$f" for f in ["test_marker_gpu.jl"]
-                @test exec(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
+                @test exec(`$perfctr -G 0 -W $(perfgrp_gpu) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
         end
     end
