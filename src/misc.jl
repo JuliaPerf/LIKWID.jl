@@ -85,6 +85,6 @@ function _execute(cmd::Cmd)
   (
     stdout = String(read(out)), 
     stderr = String(read(err)),  
-    code = process.exitcode
+    exitcode = process.exitcode
   )
 end

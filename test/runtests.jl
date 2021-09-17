@@ -326,18 +326,32 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
         @testset "Marker API (GPU)" begin
             # dev LIKWID.jl + add CUDA
             withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
+                println("Creating CUDA test environment")
                 rm(joinpath(testdir, "Manifest.toml"), force=true)
                 rm(joinpath(testdir, "Project.toml"), force=true)
-                run(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="../"); Pkg.add("CUDA"); Pkg.precompile();'`)
-                @test success(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
+                out = LIKWID._execute(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="$(joinpath(testdir, "../"))"); Pkg.add("CUDA"); Pkg.precompile();'`)
+                @info("stdout:\n" * out[:stdout])
+                @info("stderr:\n" * out[:stderr])
+                @test iszero(out[:exitcode])
+                println("Checking CUDA functionality")
+                out = LIKWID._execute(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
+                @info("stdout:\n" * out[:stdout])
+                @info("stderr:\n" * out[:stderr])
+                @test iszero(out[:exitcode])
             end
             # without gpu marker api
             @testset "$f" for f in ["test_marker_gpu_noapi.jl"]
-                @test success(`$julia --project=$(testdir) $(joinpath(testdir, f))`)
+                out = LIKWID._execute(`$julia --project=$(testdir) $(joinpath(testdir, f))`)
+                @info("stdout:\n" * out[:stdout])
+                @info("stderr:\n" * out[:stderr])
+                @test iszero(out[:exitcode])
             end
             # with active gpu marker api
             @testset "$f" for f in ["test_marker_gpu.jl"]
-                @test success(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
+                out = LIKWID._execute(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
+                @info("stdout:\n" * out[:stdout])
+                @info("stderr:\n" * out[:stderr])
+                @test iszero(out[:exitcode])
             end
         end
     end
