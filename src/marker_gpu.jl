@@ -1,6 +1,6 @@
 module GPUMarker
 
-using ..LIKWID: LibLikwid, Nvmon, gpusupport
+using ..LIKWID: LibLikwid, Nvmon, gpusupport, capture_stderr!
 
 """
 Initialize the Nvmon Marker API of the LIKWID library. Must be called previous to all other functions.
