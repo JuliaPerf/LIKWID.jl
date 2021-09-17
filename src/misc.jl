@@ -74,17 +74,29 @@ function _check_likwid_gpusupport_alternative()
 end
 
 "Run a Cmd object, returning the stdout & stderr contents plus the exit code"
-function _execute(cmd::Cmd)
-  out = Pipe()
-  err = Pipe()
+function _execute(cmd::Cmd; verbose=false)
+    out = Pipe()
+    err = Pipe()
 
-  process = run(pipeline(ignorestatus(cmd), stdout=out, stderr=err))
-  close(out.in)
-  close(err.in)
+    process = run(pipeline(ignorestatus(cmd), stdout=out, stderr=err))
+    close(out.in)
+    close(err.in)
 
-  (
-    stdout = String(read(out)), 
-    stderr = String(read(err)),  
-    exitcode = process.exitcode
-  )
+    out = (
+        stdout = String(read(out)), 
+        stderr = String(read(err)),  
+        exitcode = process.exitcode
+    )
+
+    hasfailed = !iszero(out[:exitcode]) || (out[:stderr] != "")
+
+    if verbose == true || verbose == :onfail
+        if verbose == :onfail && hasfailed
+            @info("stdout:\n" * out[:stdout])
+            @warn("stderr:\n" * out[:stderr])
+        end
+        return out[:exitcode] == 0
+    else
+        return out
+    end
 end

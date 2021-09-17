@@ -48,6 +48,7 @@ const pkgdir = joinpath(@__DIR__, "..")
 # On GitHub runners, FLOPS_SP doesn't seem to work...
 const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
 
+exec(cmd::Cmd) = LIKWID._execute(cmd; verbose=:onfail)
 
 @testset "LIKWID.jl" begin
     @testset "Topology" begin
@@ -226,17 +227,17 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
     @testset "Marker API (CPU)" begin
         # with active marker api
         @testset "$f" for f in ["test_marker.jl"]
-            @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+            @test exec(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         end
         # without marker api
         @testset "$f" for f in ["test_marker_noapi.jl"]
-           @test success(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+           @test exec(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         end
     end
 
     @testset "Marker File Reader" begin
         f = "test_markerfile.jl"
-        @test success(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+        @test exec(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
     end
 
     @testset "Pylikwid Example" begin
@@ -329,29 +330,17 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
                 println("Creating CUDA test environment")
                 rm(joinpath(testdir, "Manifest.toml"), force=true)
                 rm(joinpath(testdir, "Project.toml"), force=true)
-                out = LIKWID._execute(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="$(joinpath(testdir, "../"))"); Pkg.add("CUDA"); Pkg.precompile();'`)
-                @info("stdout:\n" * out[:stdout])
-                @info("stderr:\n" * out[:stderr])
-                @test iszero(out[:exitcode])
+                @test exec(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="$(joinpath(testdir, "../"))"); Pkg.add("CUDA"); Pkg.precompile();'`)
                 println("Checking CUDA functionality")
-                out = LIKWID._execute(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
-                @info("stdout:\n" * out[:stdout])
-                @info("stderr:\n" * out[:stderr])
-                @test iszero(out[:exitcode])
+                @test exec(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
             end
             # without gpu marker api
             @testset "$f" for f in ["test_marker_gpu_noapi.jl"]
-                out = LIKWID._execute(`$julia --project=$(testdir) $(joinpath(testdir, f))`)
-                @info("stdout:\n" * out[:stdout])
-                @info("stderr:\n" * out[:stderr])
-                @test iszero(out[:exitcode])
+                @test exec(`$julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
             # with active gpu marker api
             @testset "$f" for f in ["test_marker_gpu.jl"]
-                out = LIKWID._execute(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
-                @info("stdout:\n" * out[:stdout])
-                @info("stderr:\n" * out[:stderr])
-                @test iszero(out[:exitcode])
+                @test exec(`$perfctr -G 0 -W $(perfgrp) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
         end
     end
