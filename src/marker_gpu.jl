@@ -83,7 +83,7 @@ Checks whether the NVIDIA GPU Marker API is active, i.e. julia has been started 
 """
 function isactive()
     buf = IOBuffer()
-    capture_stderr!(Marker.init, buf)
+    capture_stderr!(GPUMarker.init, buf)
     s = String(take!(buf))
     return !startswith(s, "Running without GPU Marker API")
 end
