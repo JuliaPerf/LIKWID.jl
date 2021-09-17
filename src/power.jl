@@ -1,7 +1,7 @@
 module Power
 
 using ..LIKWID:
-    LibLikwid, power_initialized, _powerinfo, powerinfo, TurboBoost, PowerDomain, PowerInfo
+    LibLikwid, power_initialized, topo_initialized, _powerinfo, powerinfo, TurboBoost, PowerDomain, PowerInfo, init_topology
 
 const POWER_DOMAIN_SUPPORT_STATUS = UInt64(1) << 0
 const POWER_DOMAIN_SUPPORT_LIMIT = UInt64(1) << 1
