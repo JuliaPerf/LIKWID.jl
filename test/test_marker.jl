@@ -2,6 +2,8 @@ using Test
 using LIKWID
 using LinearAlgebra
 
+@test LIKWID.Marker.isactive()
+
 LIKWID.init_perfmon() # required for getregion below
 
 N = 100_000_000

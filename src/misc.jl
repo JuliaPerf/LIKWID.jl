@@ -100,3 +100,30 @@ function _execute_test(cmd::Cmd; print_only_on_fail=true)
     end
     return out[:exitcode] == 0
 end
+
+# working around https://github.com/JuliaLang/julia/issues/12711
+function capture_stderr!(f::Function, io::IO)
+    old_stderr = stderr
+    rd, = redirect_stderr()
+    task = @async write(io, rd)
+    try
+        ret = f()
+        Libc.flush_cstdio()
+        flush(stderr)
+        return ret
+    finally
+        close(rd)
+        redirect_stderr(old_stderr)
+        wait(task)
+    end
+end
+
+function capture_stderr(f::Function)
+    mktemp() do path, io
+        redirect_stderr(io) do
+            f()
+        end
+        flush(io)
+        s = read(path, String)
+    end
+end

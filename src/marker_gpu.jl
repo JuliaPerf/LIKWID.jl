@@ -78,4 +78,14 @@ This file will be evaluated by `likwid-perfctr`.
 """
 close() = LibLikwid.likwid_gpuMarkerClose()
 
+"""
+Checks whether the NVIDIA GPU Marker API is active, i.e. julia has been started under `likwid-perfctr -G ... -W ... -m`.
+"""
+function isactive()
+    buf = IOBuffer()
+    capture_stderr!(Marker.init, buf)
+    s = String(take!(buf))
+    return !startswith(s, "Running without GPU Marker API")
+end
+
 end # module

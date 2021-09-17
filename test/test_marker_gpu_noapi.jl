@@ -5,6 +5,8 @@ using CUDA
 
 @assert CUDA.functional()
 
+@test !LIKWID.GPUMarker.isactive()
+
 N = 100_000_000
 a = 3.141f0
 z_gpu = CUDA.zeros(Float32, N)

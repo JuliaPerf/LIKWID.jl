@@ -2,6 +2,8 @@ using Test
 using LIKWID
 using LinearAlgebra
 
+@test !LIKWID.Marker.isactive()
+
 N = 100_000_000
 a = 3.141f0
 z = zeros(Float32, N)

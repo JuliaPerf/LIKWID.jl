@@ -1,6 +1,6 @@
 module Marker
 
-using ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events
+using ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events, capture_stderr!
 
 """
 Initialize the Marker API. Must be called previous to all other functions.
@@ -81,5 +81,15 @@ This file will be evaluated by `likwid-perfctr`.
 *Note:* LIKWID.jl automatically calls the function `atexit` so users typically don't need to call this function.
 """
 close() = LibLikwid.likwid_markerClose()
+
+"""
+Checks whether the Marker API is active, i.e. julia has been started under `likwid-perfctr -C ... -g ... -m`.
+"""
+function isactive()
+    buf = IOBuffer()
+    capture_stderr!(Marker.init, buf)
+    s = String(take!(buf))
+    return !startswith(s, "Running without Marker API")
+end
 
 end # module
