@@ -331,13 +331,13 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             LIKWID.Nvmon.init([0])
             perfgrp_gpu = LIKWID.Nvmon.get_groups()[1].name
             LIKWID.Nvmon.finalize()
-            # dev LIKWID.jl + add CUDA
-            withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
-                rm(joinpath(testdir, "Manifest.toml"), force=true)
-                rm(joinpath(testdir, "Project.toml"), force=true)
-                @test exec(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="$(joinpath(testdir, "../"))"); Pkg.add("CUDA"); Pkg.precompile();'`)
-                @test exec(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
-            end
+            # # dev LIKWID.jl + add CUDA
+            # withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
+            #     rm(joinpath(testdir, "Manifest.toml"), force=true)
+            #     rm(joinpath(testdir, "Project.toml"), force=true)
+            #     @test exec(`$julia --project=$(testdir) -e 'using Pkg; Pkg.develop(path="$(joinpath(testdir, "../"))"); Pkg.add("CUDA"); Pkg.precompile();'`)
+            #     @test exec(`$julia --project=$(testdir) -e 'using CUDA; CUDA.functional()'`)
+            # end
             # without gpu marker api
             @testset "$f" for f in ["test_marker_gpu_noapi.jl"]
                 @test exec(`$julia --project=$(testdir) $(joinpath(testdir, f))`)

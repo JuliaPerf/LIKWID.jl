@@ -53,6 +53,7 @@ module LIKWID
    include("topology_gpu.jl")
    include("nvmon.jl")
    include("marker_gpu.jl")
+   include("frequency.jl")
 
    function init()
       # Marker.init()
