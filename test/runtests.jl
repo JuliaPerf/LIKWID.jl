@@ -48,7 +48,7 @@ const pkgdir = joinpath(@__DIR__, "..")
 # On GitHub runners, FLOPS_SP doesn't seem to work...
 const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
 
-exec(cmd::Cmd) = LIKWID._execute(cmd; verbose=:onfail)
+exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
 @testset "LIKWID.jl" begin
     @testset "Topology" begin
