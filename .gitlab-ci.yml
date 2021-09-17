@@ -106,5 +106,6 @@ test-julia/nightly:
     - wget https://julialangnightlies-s3.julialang.org/bin/linux/x64/julia-latest-linux64.tar.gz
     - tar --strip-components=1 -xf julia-latest-linux64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
+  allow_failure: true
 
 
