@@ -63,7 +63,7 @@ module LIKWID
       return nothing
    end
 
-   function close()
+   function finalize()
       Marker.close()
       gpusupport() && GPUMarker.close()
    end
