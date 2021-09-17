@@ -1,18 +1,4 @@
-module Affinity
-
-using ..LIKWID:
-    LibLikwid,
-    affinity_initialized,
-    topo_initialized,
-    numa_initialized,
-    Topo,
-    NUMA,
-    _affinity,
-    affinity,
-    AffinityDomain,
-    AffinityDomains
-
-function init()
+function init_affinity()
     LibLikwid.affinity_init()
     _affinity[] = unsafe_load(LibLikwid.get_affinityDomains())
     _build_jl_affinity()
@@ -52,20 +38,20 @@ function _build_jl_affinity()
         af.numberOfCoresPerCache,
         af.numberOfProcessorsPerCache,
         ndomains,
-        domains,
+        domains
     )
     return nothing
 end
 
 function get_affinity()
     if !topo_initialized[]
-        Topo.init() || error("Couldn't init topology.")
+        init_topology() || error("Couldn't init topology.")
     end
     if !numa_initialized[]
-        NUMA.init() || error("Couldn't init numa.")
+        init_numa() || error("Couldn't init numa.")
     end
     if !affinity_initialized[]
-        init() || error("Couldn't init affinity.")
+        init_affinity() || error("Couldn't init affinity.")
     end
     return affinity[]
 end
@@ -79,5 +65,3 @@ function cpustr_to_cpulist(cpustr::AbstractString)
     LibLikwid.cpustr_to_cpulist(cpustr, cpulist, length(cpulist))
     return cpulist
 end
-
-end # module

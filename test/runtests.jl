@@ -52,18 +52,18 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
 @testset "LIKWID.jl" begin
     @testset "Topology" begin
-        @test LIKWID.Topo.init()
-        cputopo = LIKWID.Topo.get_cpu_topology()
+        @test LIKWID.init_topology()
+        cputopo = LIKWID.get_cpu_topology()
         @test typeof(cputopo) == LIKWID.CpuTopology
-        cpuinfo = LIKWID.Topo.get_cpu_info()
+        cpuinfo = LIKWID.get_cpu_info()
         @test typeof(cpuinfo) == LIKWID.CpuInfo
-        @test isnothing(LIKWID.Topo.print_supported_cpus())
-        @test isnothing(LIKWID.Topo.finalize())
+        @test isnothing(LIKWID.print_supported_cpus())
+        @test isnothing(LIKWID.finalize_topology())
     end
 
     @testset "NUMA" begin
-        @test LIKWID.NUMA.init()
-        numinfo = LIKWID.NUMA.get_numa_topology()
+        @test LIKWID.init_numa()
+        numinfo = LIKWID.get_numa_topology()
         @test typeof(numinfo) == LIKWID.NumaTopology
         @test numinfo.numberOfNodes ≥ 0
         numanode = first(numinfo.nodes)
@@ -72,12 +72,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test numanode.numberOfProcessors ≥ 0
         @test typeof(numanode.processors) == Vector{Int}
         @test length(numanode.processors) == numanode.numberOfProcessors
-        @test isnothing(LIKWID.NUMA.finalize())
+        @test isnothing(LIKWID.finalize_numa())
     end
 
     @testset "Affinity" begin
-        @test LIKWID.Affinity.init()
-        affinity = LIKWID.Affinity.get_affinity()
+        @test LIKWID.init_affinity()
+        affinity = LIKWID.get_affinity()
         @test typeof(affinity) == LIKWID.AffinityDomains
         @test affinity.numberOfSocketDomains ≥ 1
         @test affinity.numberOfNumaDomains ≥ 1
@@ -90,7 +90,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(d.tag) == String
         @test typeof(d.processorList) == Vector{Int}
         @test length(d.processorList) == d.numberOfProcessors
-        @test isnothing(LIKWID.Affinity.finalize())
+        @test isnothing(LIKWID.finalize_affinity())
     end
 
     @testset "Timer" begin
@@ -110,8 +110,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     end
 
     @testset "Thermal" begin
-        @test LIKWID.Thermal.init(0)
-        @test isinteger(LIKWID.Thermal.read_thermal(0))
+        @test LIKWID.init_thermal(0)
+        @test isinteger(LIKWID.read_thermal(0))
     end
 
     @testset "Power / Energy" begin
@@ -146,12 +146,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     end
 
     @testset "Access / HPM" begin
-        @test LIKWID.Access.hpmmode(0)
-        @test LIKWID.Access.hpmmode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
-        @test LIKWID.Access.init_hpm()
-        @test typeof(LIKWID.Access.hpm_add_thread(0)) == Int
+        @test LIKWID.hpmmode(0)
+        @test LIKWID.hpmmode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
+        @test LIKWID.init_hpm()
+        @test typeof(LIKWID.hpm_add_thread(0)) == Int
         # @test LIKWID.hpm_add_thread(0) != -1
-        @test isnothing(LIKWID.Access.finalize_hpm())
+        @test isnothing(LIKWID.finalize_hpm())
     end
 
     @testset "PerfMon" begin
@@ -248,8 +248,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     # ------- GPU -------
     if hascuda
         @testset "GPU Topology" begin
-            @test LIKWID.GPUTopo.init()
-            gputopo = LIKWID.GPUTopo.get_gpu_topology()
+            @test LIKWID.init_topology_gpu()
+            gputopo = LIKWID.get_gpu_topology()
             @test typeof(gputopo) == LIKWID.GpuTopology
             gpu = gputopo.devices[1]
             @test typeof(gpu) == LIKWID.GpuDevice
@@ -257,7 +257,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(gpu.mem) == Int
             @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
             @test typeof(gpu.maxGridSize) == NTuple{3, Int}
-            @test isnothing(LIKWID.GPUTopo.finalize())
+            @test isnothing(LIKWID.finalize_topology_gpu())
         end
         
         # According to @TomTheBear, this shouldn't be used yet

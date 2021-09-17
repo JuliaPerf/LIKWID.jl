@@ -6,18 +6,18 @@ using ..LIKWID:
     topo_initialized,
     numa_initialized,
     timer_initialized,
-    Topo,
-    NUMA,
+    init_topology,
+    init_numa,
     GroupInfoCompact
 
 function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthreads()])
     perfmon_initialized[] && finalize()
 
     if !topo_initialized[]
-        Topo.init() || error("Couldn't init topology.")
+        init_topology() || error("Couldn't init topology.")
     end
     if !numa_initialized[]
-        NUMA.init() || error("Couldn't init numa.")
+        init_numa() || error("Couldn't init numa.")
     end
 
     nthreads = length(cpus)
@@ -69,7 +69,7 @@ Return a list of all available perfmon groups.
 """
 function get_groups()
     if !topo_initialized[]
-        Topo.init() || error("Couldn't init topology.")
+        init_topology() || error("Couldn't init topology.")
     end
     # refs to char**
     groups_ref = Ref{Ptr{Ptr{Cchar}}}()

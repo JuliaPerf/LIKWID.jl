@@ -1,8 +1,4 @@
-module GPUTopo
-
-using ..LIKWID: LibLikwid, gputopo_initialized, GpuDevice, GpuTopology, _gputopo, gputopo
-
-function init()
+function init_topology_gpu()
     ret = LibLikwid.topology_gpu_init()
     if ret == 0
         _gputopo[] = unsafe_load(LibLikwid.get_gpuTopology())
@@ -15,7 +11,7 @@ end
 
 function _build_jl_gputopo()
     gt = _gputopo[]
-
+    
     ndevices = gt.numDevices
     _devices = unsafe_wrap(Array, gt.devices, ndevices)
 
@@ -30,8 +26,8 @@ function _build_jl_gputopo()
             dev.ccapMajor,
             dev.ccapMinor,
             dev.maxThreadsPerBlock,
-            convert(NTuple{3,Int}, dev.maxThreadsDim),
-            convert(NTuple{3,Int}, dev.maxGridSize),
+            convert(NTuple{3, Int}, dev.maxThreadsDim),
+            convert(NTuple{3, Int}, dev.maxGridSize),
             dev.sharedMemPerBlock,
             dev.totalConstantMemory,
             dev.simdWidth,
@@ -57,23 +53,24 @@ function _build_jl_gputopo()
         )
     end
 
-    gputopo[] = GpuTopology(ndevices, devices)
+    gputopo[] = GpuTopology(
+        ndevices,
+        devices
+    )
     return nothing
 end
 
 function get_gpu_topology()
     if !gputopo_initialized[]
-        init() || error("Couldn't init gpu topology.")
+        init_topology_gpu() || error("Couldn't init gpu topology.")
     end
     return gputopo[]
 end
 
-function finalize()
+function finalize_topology_gpu()
     LibLikwid.topology_gpu_finalize()
     gputopo_initialized[] = false
     _gputopo[] = nothing
     gputopo[] = nothing
     return nothing
 end
-
-end # module

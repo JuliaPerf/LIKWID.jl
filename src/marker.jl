@@ -1,6 +1,6 @@
 module Marker
 
-using ..LIKWID: LibLikwid, get_id_of_active_group, get_number_of_events, capture_stderr!
+using ..LIKWID: LibLikwid, PerfMon, capture_stderr!
 
 """
 Initialize the Marker API. Must be called previous to all other functions.
@@ -59,8 +59,8 @@ Get the intermediate results of the region identified by `regiontag`. On success
     * `count`: the number of calls.
 """
 function getregion(regiontag::AbstractString)
-    current_group = get_id_of_active_group()
-    nevents = Ref(get_number_of_events(current_group))
+    current_group = PerfMon.get_id_of_active_group()
+    nevents = Ref(PerfMon.get_number_of_events(current_group))
     events = zeros(nevents[])
     time = Ref(0.0)
     count = Ref(Int32(0))
