@@ -9,6 +9,7 @@ using ..LIKWID:
     init_topology,
     init_numa,
     GroupInfoCompact
+using OrderedCollections
 
 function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthreads()])
     perfmon_initialized[] && finalize()
@@ -285,6 +286,50 @@ function get_time_of_group(groupid::Integer)
     _check_groupid(groupid) || return nothing
     time = LibLikwid.perfmon_getTimeOfGroup(groupid)
     return time
+end
+
+"""
+List all the metrics of a given group.
+"""
+function list_metrics(groupid::Integer)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    nmetrics = get_number_of_metrics(groupid)
+    return get_name_of_metric.(Ref(groupid), 0:nmetrics-1)
+end
+
+"""
+Get the name and results of all metrics of a given group for a given cpu thread.
+"""
+function get_metric_results(groupid::Integer, threadid::Integer)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    _check_threadidx(threadid) || return nothing
+    nmetrics = get_number_of_metrics(groupid)
+    d = OrderedDict{String, Float64}()
+    for m in 1:nmetrics
+        metricid = m-1
+        metric = get_name_of_metric(groupid, metricid)
+        d[metric] = get_last_metric(groupid, metricid, threadid)
+    end
+    return d
+end
+
+"""
+Get the name and results of all events of a given group for a given cpu thread.
+"""
+function get_event_results(groupid::Integer, threadid::Integer)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    _check_threadidx(threadid) || return nothing
+    nevents = get_number_of_events(groupid)
+    d = OrderedDict{String, Float64}()
+    for i in 1:nevents
+        eventid = i-1
+        event = get_name_of_event(groupid, eventid)
+        d[event] = get_last_result(groupid, eventid, threadid)
+    end
+    return d
 end
 
 end # module

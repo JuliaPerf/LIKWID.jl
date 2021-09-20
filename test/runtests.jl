@@ -197,6 +197,9 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(LIKWID.PerfMon.get_metric(gid, 0, 0)) == Float64
         @test typeof(LIKWID.PerfMon.get_last_metric(gid, 0, 0)) == Float64
         @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
+        @test LIKWID.PerfMon.list_metrics(gid) isa Vector{String}
+        @test LIKWID.PerfMon.get_metric_results(gid, 0) isa Dict
+        @test LIKWID.PerfMon.get_event_results(gid, 0) isa Dict
         
         # multiple groups
         gid2 = LIKWID.PerfMon.add_event_set(groups[2].name)
