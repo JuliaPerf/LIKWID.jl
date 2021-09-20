@@ -1,10 +1,11 @@
 LIKWID.jl
 =========
 
-![Lifecycle](https://img.shields.io/badge/Lifecycle-experimental-blue.svg)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaperf.github.io/LIKWID.jl/dev/)
 [![Build Status](https://github.com/JuliaPerf/LIKWID.jl/workflows/CI/badge.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
 [![Build Status](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg?key_text=CI+at+NHR@FAU&key_width=130)](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/-/pipelines)
 [![codecov](https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/main/graph/badge.svg?token=Ze61CbGoO5)](https://codecov.io/gh/JuliaPerf/LIKWID.jl)
+![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
 
 *Like I Knew What I am Doing*
 
