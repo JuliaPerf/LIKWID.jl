@@ -16,6 +16,6 @@ makedocs(
 
 deploydocs(
     repo = "github.com/JuliaPerf/LIKWID.jl.git",
-    push_preview = true,
+    push_preview = false,
     # target = "site",
 )
