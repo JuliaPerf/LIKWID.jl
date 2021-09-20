@@ -5,6 +5,8 @@ on:
     branches:
       - main
     tags: '*'
+    paths-ignore:
+      - 'README.md'
   pull_request:
 
 jobs:
