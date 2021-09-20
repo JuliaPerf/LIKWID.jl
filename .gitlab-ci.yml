@@ -11,6 +11,7 @@ build-likwid:
   rules:
     - changes:
       - "README.md"
+      - "docs/*"
       when: never
     - when: always
   variables:
