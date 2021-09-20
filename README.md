@@ -47,7 +47,7 @@ LIKWID.Marker.stopregion("matmul")
 LIKWID.Marker.close()
 ```
 
-Then run `likwid-perfctr` with `--marker` like: `likwid-perfctr ... --marker julia ...`.
+Then run `likwid-perfctr` with `--marker` like: `likwid-perfctr -C 0 -g FLOPS_DP --marker julia ...`.
 
 ```
 --------------------------------------------------------------------------------
