@@ -49,46 +49,44 @@ Then run `likwid-perfctr` with `--marker` like: `likwid-perfctr ... --marker jul
 
 ```
 --------------------------------------------------------------------------------
-CPU name:       AMD EPYC 7402 24-Core Processor                
-CPU type:       AMD K17 (Zen2) architecture
-CPU clock:      2.80 GHz
-WARN: Linux kernel configured with paranoid level 2
-WARN: Paranoid level 0 or root access is required to measure Uncore counters
-Setup of event ACTUAL_CPU_CLOCK on CPU 0 failed: Permission denied
-Setup of event MAX_CPU_CLOCK on CPU 0 failed: Permission denied
+CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
+CPU type:	Intel Rocketlake processor
+CPU clock:	3.60 GHz
 --------------------------------------------------------------------------------
-WARN: Linux kernel configured with paranoid level 2
-WARN: Paranoid level 0 or root access is required to measure Uncore counters
-Setup of event ACTUAL_CPU_CLOCK on CPU 0 failed: Permission denied
-Setup of event MAX_CPU_CLOCK on CPU 0 failed: Permission denied
 --------------------------------------------------------------------------------
-Region saxpy!, Group 1: FLOPS_SP
+Region matmul, Group 1: FLOPS_SP
 +-------------------+------------+
 |    Region Info    | HWThread 0 |
 +-------------------+------------+
-| RDTSC Runtime [s] |   0.058149 |
+| RDTSC Runtime [s] |   0.387556 |
 |     call count    |          1 |
 +-------------------+------------+
 
-+---------------------------+---------+------------+
-|           Event           | Counter | HWThread 0 |
-+---------------------------+---------+------------+
-|      ACTUAL_CPU_CLOCK     |  FIXC1  |          0 |
-|       MAX_CPU_CLOCK       |  FIXC2  |          0 |
-|    RETIRED_INSTRUCTIONS   |   PMC0  |   64520480 |
-|    CPU_CLOCKS_UNHALTED    |   PMC1  |  189116300 |
-| RETIRED_SSE_AVX_FLOPS_ALL |   PMC2  |  200000400 |
-|           MERGE           |   PMC3  |          0 |
-+---------------------------+---------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 3220108000 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 1859272000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1369125000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |      46742 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |          0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
 
 +----------------------+------------+
 |        Metric        | HWThread 0 |
 +----------------------+------------+
-|  Runtime (RDTSC) [s] |     0.0581 |
-| Runtime unhalted [s] |          0 |
-|      Clock [MHz]     |      -     |
-|          CPI         |     2.9311 |
-|     SP [MFLOP/s]     |  3439.4605 |
+|  Runtime (RDTSC) [s] |     0.3876 |
+| Runtime unhalted [s] |     0.5165 |
+|      Clock [MHz]     |  4888.8943 |
+|          CPI         |     0.5774 |
+|     SP [MFLOP/s]     |     0.1206 |
+|   AVX SP [MFLOP/s]   |          0 |
+|  AVX512 SP [MFLOP/s] |          0 |
+|   Packed [MUOPS/s]   |          0 |
+|   Scalar [MUOPS/s]   |     0.1206 |
+|  Vectorization ratio |          0 |
 +----------------------+------------+
 ```
 
