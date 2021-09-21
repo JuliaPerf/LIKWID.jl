@@ -6,9 +6,11 @@ makedocs(
     doctest = false,
     sitename = "LIKWID.jl",
     pages = [
-        "Introduction" => "index.md",
-        "Marker API" => [
-            "Introduction" => "marker.md",
+        "Like I Knew What I am Doing" => "index.md",
+        "Marker API" => "marker.md",
+        "Sections" => [
+            "CPU Topology" => "topo.md",
+            "Performance monitoring" => "perfmon.md",
         ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
