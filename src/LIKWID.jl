@@ -54,6 +54,7 @@ include("topology_gpu.jl")
 include("nvmon.jl")
 include("marker_gpu.jl")
 include("frequency.jl")
+include("pin.jl")
 
 function init()
     # Marker.init()

@@ -15,6 +15,9 @@ makedocs(
             "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
         ],
+        "CLI Tools" => [
+            "likwid-pin" => "likwid-pin.md",
+        ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
 )
