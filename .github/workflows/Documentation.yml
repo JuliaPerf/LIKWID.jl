@@ -14,13 +14,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install LIKWID
+        run: |
+          wget http://ftp.fau.de/pub/likwid/likwid-stable.tar.gz
+          mkdir likwid
+          tar -xaf likwid-stable.tar.gz -C likwid --strip-components=1
+          cd likwid
+          make
+          sudo make install
+          /usr/local/bin/likwid-topology -c -C -g
+          sudo modprobe msr
+          /usr/local/bin/likwid-perfctr -i
+          /usr/local/bin/likwid-perfctr -a
       - uses: julia-actions/setup-julia@latest
         with:
           version: '1.6'
+      - uses: actions/cache@v1
+        env:
+          cache-name: cache-artifacts
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-test-
+            ${{ runner.os }}-
       - name: Install dependencies
         run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+        env:
+          LD_LIBRARY_PATH: /usr/local/lib
+          JULIA_NUM_THREADS: 2
+          JULIA_CUDA_USE_BINARYBUILDER: false
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # If authenticating with GitHub Actions token
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }} # If authenticating with SSH deploy key
+          LD_LIBRARY_PATH: /usr/local/lib
+          JULIA_NUM_THREADS: 2
+          JULIA_CUDA_USE_BINARYBUILDER: false
         run: julia --project=docs/ docs/make.jl
