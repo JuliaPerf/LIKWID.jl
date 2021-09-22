@@ -11,11 +11,7 @@ build-likwid:
   rules:
     - changes:
       - "README.md"
-      when: never
-    - changes:
       - "docs/**/*.md"
-      when: never
-    - changes:
       - "docs/make.jl"
       when: never
     - when: always
@@ -61,6 +57,8 @@ test-julia/1.6:
   rules:
     - changes:
       - "README.md"
+      - "docs/**/*.md"
+      - "docs/make.jl"
       when: never
     - when: always
   needs:
@@ -93,6 +91,8 @@ test-julia/nightly:
   rules:
     - changes:
       - "README.md"
+      - "docs/**/*.md"
+      - "docs/make.jl"
       when: never
     - when: always
   before_script:
