@@ -118,3 +118,17 @@ function get_cpu_info()
 end
 
 print_supported_cpus() = LibLikwid.print_supportedCPUs()
+
+"""
+Graphical visualization of the CPU topology. Extracts the corresponding output of `likwid-topology -g`.
+"""
+function print_cpu_topology()
+    out = _execute(`likwid-topology -g`)
+    if out[:stderr] != ""
+        @warn out[:stderr]
+    end
+    stdout = out[:stdout]
+    idcs = findfirst("Graphical Topology", stdout)
+    print(stdout[first(idcs):end])
+    return nothing
+end
