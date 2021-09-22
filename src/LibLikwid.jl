@@ -1,5 +1,4 @@
 # mostly auto-generated with Clang.jl from likwid.h
-# NVIDIA GPU related part (e.g. nvmon_*) is missing
 module LibLikwid
 using ..LIKWID: liblikwid
 
