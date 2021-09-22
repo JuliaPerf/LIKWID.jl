@@ -1,3 +1,4 @@
+"Information about a hardware thread"
 struct HWThread
     threadId::Int
     coreId::Int
@@ -11,6 +12,7 @@ end
 #     print("HWThread()")
 # end
 
+"Information about a cache level"
 struct CacheLevel
     level::Int
     type::Symbol
@@ -26,6 +28,7 @@ end
 #     print(io, "CacheLevel($(clvl.level), ...)")
 # end
 
+"CPU topology information"
 struct CpuTopology
     numHWThreads::Int
     activeHWThreads::Int
@@ -36,7 +39,6 @@ struct CpuTopology
     numCacheLevels::Int
     threadPool::Vector{HWThread}
     cacheLevels::Vector{CacheLevel}
-    # topologyTree::Vector{LibLikwid.treeNode} # useless?
 end
 
 # struct Likwid_Configuration
@@ -49,6 +51,7 @@ end
 #     maxNumNodes::Cint
 # end
 
+"CPU information"
 struct CpuInfo
     family::Int
     model::Int

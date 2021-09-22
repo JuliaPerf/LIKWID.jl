@@ -87,14 +87,14 @@ Region matmul, Group 1: FLOPS_DP
 +----------------------+------------+
 ```
 
-## Most important Functions
+<!-- ## Most important Functions
 
 ```@docs
 LIKWID.Marker.init()
 LIKWID.Marker.startregion(regiontag::AbstractString)
 LIKWID.Marker.stopregion(regiontag::AbstractString)
 LIKWID.Marker.close()
-```
+``` -->
 
 ## `likwid-perfctr` in a nutshell
 
@@ -123,7 +123,7 @@ Combinding the points above, the full command could look like this: `likwid-perf
 
 For more information, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr).
 
-## All Functions
+## Functions
 
 ```@autodocs
 Modules = [LIKWID.Marker]
