@@ -11,7 +11,11 @@ build-likwid:
   rules:
     - changes:
       - "README.md"
+      when: never
+    - changes:
       - "docs/**/*.md"
+      when: never
+    - changes:
       - "docs/make.jl"
       when: never
     - when: always
