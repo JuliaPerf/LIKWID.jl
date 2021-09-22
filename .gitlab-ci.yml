@@ -75,6 +75,38 @@ test-julia/1.6:
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
+    
+# This job tests the LIKWID.jl interface with Julia 1.7-rc1
+test-julia/1.7-rc1:
+  stage: test
+  tags:
+    - testcluster
+  variables:
+    SLURM_NODELIST: medusa # This is required to run the job on the specified node
+    SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
+    LIKWID_VERSION: 5.2.0
+    CUDA_MODULE: cuda/11.0
+  rules:
+    - changes:
+      - "README.md"
+      - "docs/**/*.md"
+      - "docs/make.jl"
+      when: never
+    - when: always
+  needs:
+    job: build-likwid
+  before_script:
+    - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
+    - make local
+    - cd $CI_PROJECT_DIR
+    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
+    - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
+  script:
+    - module load "$CUDA_MODULE"
+    - export JULIA_CUDA_USE_BINARYBUILDER=false
+    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.0-rc1-linux-x86_64.tar.gz
+    - tar --strip-components=1 -xf julia-1.7.0-rc1-linux-x86_64.tar.gz
+    - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
 
 # This job tests the LIKWID.jl interface with Julia nightly build
 test-julia/nightly:
