@@ -7,7 +7,10 @@ makedocs(
     sitename = "LIKWID.jl",
     pages = [
         "LIKWID" => "index.md",
-        "Marker API" => "marker.md",
+        "Marker API" => [
+            "CPU" => "marker.md",
+            "GPU" => "marker_gpu.md",
+        ],
         "Library" => [
             "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",

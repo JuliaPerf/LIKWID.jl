@@ -1,4 +1,4 @@
-# Marker API
+# Marker API (CPU)
 
 ## Example
 
