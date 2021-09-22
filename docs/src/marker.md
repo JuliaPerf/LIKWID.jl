@@ -68,6 +68,25 @@ Region matmul, Group 1: FLOPS_DP
 +----------------------+------------+
 ```
 
+**Sidenote**: Given the absence of AVX calls, it seems like OpenBLAS is falling back to a suboptimal Nehalem kernel. If we install [MKL.jl](https://github.com/JuliaLinearAlgebra/MKL.jl) and add `using MKL` to the top of our script above, the metrics table becomes
+
+```
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.4599 |
+| Runtime unhalted [s] |     0.6065 |
+|      Clock [MHz]     |  4888.9102 |
+|          CPI         |     0.5145 |
+|     DP [MFLOP/s]     |   459.6089 |
+|   AVX DP [MFLOP/s]   |   459.6080 |
+|  AVX512 DP [MFLOP/s] |   459.6080 |
+|   Packed [MUOPS/s]   |    57.4510 |
+|   Scalar [MUOPS/s]   |     0.0008 |
+|  Vectorization ratio |    99.9986 |
++----------------------+------------+
+```
+
 ## Most important Functions
 
 ```@docs
