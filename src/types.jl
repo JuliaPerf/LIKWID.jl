@@ -75,6 +75,7 @@ struct CpuInfo
     perf_num_fixed_ctr::Int
 end
 
+"Information about a NUMA node"
 struct NumaNode
     id::Int
     totalMemory::Int # kB
@@ -87,6 +88,7 @@ end
 
 Base.show(io::IO, nn::NumaNode) = print(io, "NumaNode()")
 
+"CPU topology information"
 struct NumaTopology
     numberOfNodes::Int
     nodes::Vector{NumaNode}
