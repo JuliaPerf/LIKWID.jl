@@ -1,6 +1,6 @@
-# Like I Knew What I am Doing
+# LIKWID - Like I Knew What I'm Doing
 
-LIKWID.jl is a Julia wrapper for [LIKWID](https://github.com/RRZE-HPC/likwid).
+LIKWID.jl is a Julia wrapper for the performance monitoring and benchmarking suite [LIKWID](https://github.com/RRZE-HPC/likwid).
 
 ## Installation
 

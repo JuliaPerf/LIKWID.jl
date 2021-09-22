@@ -6,10 +6,10 @@ makedocs(
     doctest = false,
     sitename = "LIKWID.jl",
     pages = [
-        "Like I Knew What I am Doing" => "index.md",
+        "LIKWID" => "index.md",
         "Marker API" => "marker.md",
-        "Sections" => [
-            "CPU Topology" => "topo.md",
+        "Library" => [
+            "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
         ],
     ],

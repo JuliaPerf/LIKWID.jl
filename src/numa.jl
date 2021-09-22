@@ -1,3 +1,4 @@
+"Initialize LIKWIDs NUMA module."
 function init_numa()
     ret = LibLikwid.numa_init()
     if ret == 0
@@ -9,6 +10,7 @@ function init_numa()
     return false
 end
 
+"Close and finalize LIKWIDs NUMA module."
 function finalize_numa()
     LibLikwid.numa_finalize()
     numa_initialized[] = false
@@ -38,6 +40,13 @@ function _build_jl_numa()
     return nothing
 end
 
+"""
+    get_numa_topology() -> NumaTopology
+Get the NUMA topology of the machine.
+
+Automatically initializes the topology, NUMA, and affinity modules,
+i.e. calls [`init_topology`](@ref), [`init_numa`](@ref), and [`init_affinity`](@ref).
+"""
 function get_numa_topology()
     if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
