@@ -10,8 +10,3 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 ```julia
 ] add LIKWID
 ```
-
-## Contents
-
-```@contents
-```

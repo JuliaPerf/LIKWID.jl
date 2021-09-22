@@ -1,3 +1,4 @@
+"Initialize LIKWIDs topology module."
 function init_topology()
     ret = LibLikwid.topology_init()
     if ret == 0
@@ -60,6 +61,7 @@ function _build_jl_cputopo()
     return nothing
 end
 
+"Close and finalize LIKWIDs topology module."
 function finalize_topology()
     LibLikwid.topology_finalize()
     topo_initialized[] = false
@@ -97,6 +99,13 @@ function _build_jl_cpuinfo()
     return nothing
 end
 
+"""
+    get_cpu_topology() -> CpuTopology
+Get the CPU topology of the machine.
+
+Automatically initializes the topology and NUMA modules,
+i.e. calls [`init_topology`](@ref) and [`init_numa`](@ref).
+"""
 function get_cpu_topology()
     if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
@@ -107,6 +116,13 @@ function get_cpu_topology()
     return cputopo[]
 end
 
+"""
+    get_cpu_info() -> CpuInfo
+Get detailed information about the CPU.
+
+Automatically initializes the topology and NUMA modules,
+i.e. calls [`init_topology`](@ref) and [`init_numa`](@ref).
+"""
 function get_cpu_info()
     if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
@@ -117,7 +133,24 @@ function get_cpu_info()
     return cpuinfo[]
 end
 
-print_supported_cpus() = LibLikwid.print_supportedCPUs()
+"""
+    print_supported_cpus(; cprint=true)
+Print a list of all supported CPUs.
+
+If `cprint=false`, LIKWID.jl
+will first capture the stdout and then `print` the list.
+"""
+function print_supported_cpus(; cprint=true)
+    if cprint
+        LibLikwid.print_supportedCPUs()
+    else
+        buf = IOBuffer()
+        capture_stdout!(LibLikwid.print_supportedCPUs, buf)
+        s = String(take!(buf))
+        print(s)
+    end
+    return nothing
+end
 
 """
 Graphical visualization of the CPU topology. Extracts the corresponding output of `likwid-topology -g`.

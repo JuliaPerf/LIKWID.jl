@@ -4,10 +4,17 @@ The basis functionality of `likwid-topology`.
 
 ## Example
 
+Query CPU topology information:
 ```@repl
 using LIKWID
 topo = LIKWID.get_cpu_topology()
+topo.threadPool
 topo.cacheLevels
+```
+
+Get detailed CPU information:
+```@repl
+using LIKWID
 cpuinfo = LIKWID.get_cpu_info()
 ```
 
@@ -20,9 +27,12 @@ LIKWID.print_cpu_topology()
 
 ## Functions
 
-```@autodocs
-Modules = [LIKWID]
-Pages   = ["topology.jl"]
+```@docs
+LIKWID.init_topology()
+LIKWID.finalize_topology()
+LIKWID.get_cpu_topology()
+LIKWID.get_cpu_info()
+LIKWID.print_supported_cpus()
 ```
 
 ## Types
@@ -32,4 +42,11 @@ LIKWID.CpuTopology
 LIKWID.CpuInfo
 LIKWID.HWThread
 LIKWID.CacheLevel
+```
+
+## Supported CPUs
+
+```@repl
+using LIKWID; LIKWID.print_supported_cpus()
+LIKWID.print_supported_cpus(; cprint=false) # hide
 ```

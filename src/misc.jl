@@ -114,6 +114,22 @@ function capture_stderr!(f::Function, io::IO)
     end
 end
 
+function capture_stdout!(f::Function, io::IO)
+    old_stdout = stdout
+    rd, = redirect_stdout()
+    task = @async write(io, rd)
+    try
+        ret = f()
+        Libc.flush_cstdio()
+        flush(stdout)
+        return ret
+    finally
+        Base.close(rd)
+        redirect_stdout(old_stdout)
+        wait(task)
+    end
+end
+
 function capture_stderr(f::Function)
     mktemp() do path, io
         redirect_stderr(io) do
