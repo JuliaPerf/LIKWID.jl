@@ -33,45 +33,33 @@ LIKWID.GPUMarker.close()
 Running this file with the command `likwid-perfctr -G 0 -W FLOPS_SP -m julia perfctr_gpu.jl` one should obtain something like the following:
 ```
 --------------------------------------------------------------------------------
-CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
-CPU type:	Intel Rocketlake processor
-CPU clock:	3.60 GHz
+CPU name:	Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
+CPU type:	Intel Skylake SP processor
+CPU clock:	2.20 GHz
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-Region matmul, Group 1: FLOPS_DP
-+-------------------+------------+
-|    Region Info    | HWThread 0 |
-+-------------------+------------+
-| RDTSC Runtime [s] |   0.465348 |
-|     call count    |          1 |
-+-------------------+------------+
+Region matmul, Group 1: FLOPS_SP
++-------------------+----------+
+|    Region Info    |   GPU 0  |
++-------------------+----------+
+| RDTSC Runtime [s] | 4.365781 |
+|     call count    |        1 |
++-------------------+----------+
 
-+------------------------------------------+---------+------------+
-|                   Event                  | Counter | HWThread 0 |
-+------------------------------------------+---------+------------+
-|             INSTR_RETIRED_ANY            |  FIXC0  | 4414042000 |
-|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 2237935000 |
-|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1648606000 |
-| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |  106496000 |
-|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |        569 |
-| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |          0 |
-| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |          0 |
-+------------------------------------------+---------+------------+
++----------------------------------------------------+---------+----------+
+|                        Event                       | Counter |   GPU 0  |
++----------------------------------------------------+---------+----------+
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM |   GPU0  |  2457600 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM |   GPU1  |  3276800 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM |   GPU2  | 52436990 |
++----------------------------------------------------+---------+----------+
 
-+----------------------+------------+
-|        Metric        | HWThread 0 |
-+----------------------+------------+
-|  Runtime (RDTSC) [s] |     0.4653 |
-| Runtime unhalted [s] |     0.6217 |
-|      Clock [MHz]     |  4886.7513 |
-|          CPI         |     0.5070 |
-|     DP [MFLOP/s]     |   457.7061 |
-|   AVX DP [MFLOP/s]   |          0 |
-|  AVX512 DP [MFLOP/s] |          0 |
-|   Packed [MUOPS/s]   |   228.8524 |
-|   Scalar [MUOPS/s]   |     0.0012 |
-|  Vectorization ratio |    99.9995 |
-+----------------------+------------+
++---------------------+---------+
+|        Metric       |  GPU 0  |
++---------------------+---------+
+| Runtime (RDTSC) [s] |  4.3658 |
+|     SP [MFLOP/s]    | 25.3353 |
++---------------------+---------+
 ```
 
 ## `likwid-perfctr` in a nutshell
