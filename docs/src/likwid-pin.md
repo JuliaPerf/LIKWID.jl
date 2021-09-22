@@ -1,6 +1,6 @@
 # likwid-pin
 
-Pinning threads to cores.
+Pinning threads to cores. For details, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/Likwid-Pin).
 
 ## Example
 
