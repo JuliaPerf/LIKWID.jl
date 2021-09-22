@@ -27,7 +27,11 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 
 ## Documentation
 
-Please check out [the documentation] to learn how to use LIKWID.jl.
+Please check out [the documentation](https://juliaperf.github.io/LIKWID.jl/dev/) to learn how to use LIKWID.jl.
+
+## Example: Marker API (CPU + GPU)
+
+TODO
 
 ## Resources
 
