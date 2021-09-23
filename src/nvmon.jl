@@ -1,9 +1,9 @@
 module Nvmon
 
 using ..LIKWID:
-    LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact
+    LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology
 
-function init(gpus::AbstractVector{Int32})
+function init(gpus::AbstractVector{Int32}=Int32[i-1 for i in 1:(get_gpu_topology().numDevices)])
     nvmon_initialized[] && finalize()
 
     if !gputopo_initialized[]
@@ -59,6 +59,9 @@ Return a list of all available nvmon groups for the GPU identified by `gpuid`.
 function get_groups(gpuid::Integer=0)
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
+    end
+    if !nvmon_initialized[]
+        init(Int32[gpuid]) || error("Couldn't init nvmon.")
     end
     _check_gpuid(gpuid) || return nothing
 
