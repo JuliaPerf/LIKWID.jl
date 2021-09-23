@@ -180,7 +180,7 @@ struct GroupInfoCompact
     longinfo::String
 end
 
-Base.show(io::IO, gi::GroupInfoCompact) = print(io, "GroupInfoCompact($(gi.name), ...)")
+Base.show(io::IO, gi::GroupInfoCompact) = print(io, "$(gi.name) => $(gi.shortinfo)")
 
 struct GpuDevice
     devid::Int
