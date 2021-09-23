@@ -9,8 +9,8 @@
 	.st2{fill-rule:evenodd;clip-rule:evenodd;fill:#CC3832;}
 	.st3{fill-rule:evenodd;clip-rule:evenodd;fill:#526FDB;}
 	.st4{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
-	.st5{fill:none;stroke:#FFFFFF;stroke-width:3;stroke-miterlimit:10;}
-	.st6{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
+	.st5{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
+	.st6{fill:none;stroke:#FFFFFF;stroke-width:0.5;stroke-miterlimit:10;}
 </style>
 <g transform="matrix(1,0,0,1,-269.823,-1060.79)">
 	<g transform="matrix(1,0,0,1,-526.066,868.67)">
