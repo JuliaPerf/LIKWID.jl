@@ -155,4 +155,4 @@ Region saxpy_gpu, Group 1: FLOPS_SP
 
 ## Creators
 
-LIKWID.jl is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) within the national HPC initiative [NHR](https://www.nhr-gs.de/) and the [MIT JuliaLab](https://julia.mit.edu/).
+LIKWID.jl is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) within the german, national HPC initiative [NHR](https://www.nhr-gs.de/) and the [MIT JuliaLab](https://julia.mit.edu/).
