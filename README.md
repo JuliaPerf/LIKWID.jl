@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="390px" src="https://raw.githubusercontent.com/JuliaPerf/LIKWID.jl/main/docs/src/assets/logo_with_txt.svg">
+  <img width="390px" src="https://raw.githubusercontent.com/JuliaPerf/LIKWID.jl/main/docs/src/assets/logo_with_txt.jpg">
 </div>
 
 <br>
