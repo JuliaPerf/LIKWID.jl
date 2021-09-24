@@ -69,11 +69,6 @@ OrderedCollections.OrderedDict{String, Float64} with 7 entries:
   "FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE" => 0.0
 ```
 
-```@repl
-using LIKWID
-LIKWID.PerfMon.get_groups()
-```
-
 ## Functions
 
 ```@autodocs

@@ -69,7 +69,7 @@ get_number_of_metrics(groupid::Integer) = LibLikwid.perfmon_getNumberOfMetrics(g
 Return a list of all available perfmon groups.
 
 # Examples
-```julia-repl
+```jldoctest; setup = :(using LIKWID)
 julia> LIKWID.PerfMon.get_groups()
 8-element Vector{LIKWID.GroupInfoCompact}:
  DATA => Load to store ratio
