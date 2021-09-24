@@ -67,6 +67,20 @@ get_number_of_metrics(groupid::Integer) = LibLikwid.perfmon_getNumberOfMetrics(g
 
 """
 Return a list of all available perfmon groups.
+
+# Examples
+```julia-repl
+julia> LIKWID.PerfMon.get_groups()
+8-element Vector{LIKWID.GroupInfoCompact}:
+ DATA => Load to store ratio
+ FLOPS_DP => Double Precision MFLOP/s
+ BRANCH => Branch prediction miss rate/ratio
+ ENERGY => Power and Energy consumption
+ FLOPS_AVX => Packed AVX MFLOP/s
+ DIVIDE => Divide unit information
+ FLOPS_SP => Single Precision MFLOP/s
+ TMA => Top down cycle allocation
+```
 """
 function get_groups()
     if !topo_initialized[]

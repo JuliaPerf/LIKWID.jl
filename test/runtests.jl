@@ -266,8 +266,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         
         # According to @TomTheBear, this shouldn't be used yet
         @testset "GPU PerfMon / NvMon" begin
-            @test_throws MethodError LIKWID.Nvmon.init()
             @test LIKWID.Nvmon.init([0])
+            @test LIKWID.Nvmon.init()
             @test LIKWID.Nvmon.get_number_of_gpus() == 1
             @test LIKWID.Nvmon.get_number_of_groups() == 0
             groups = LIKWID.Nvmon.get_groups(0)
