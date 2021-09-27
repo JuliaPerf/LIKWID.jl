@@ -141,7 +141,7 @@ test-julia/nightly:
 
 
 # LIKWID.jl Documentation
-documentation:
+docs/build-and-deploy:
   stage: docs
   tags:
     - testcluster
@@ -174,13 +174,5 @@ documentation:
     - export JULIA_CUDA_USE_BINARYBUILDER=false
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
-    - bin/julia --color=yes --project=. -e '
-        println("--- :julia: Instantiating project")
-        using Pkg
-        Pkg.instantiate()
-        Pkg.activate("docs")
-        Pkg.instantiate()
-        push!(LOAD_PATH, @__DIR__)
-        println("+++ :julia: Building documentation")
-        include("docs/make.jl")'
+    - bin/julia --color=yes --project=. build_docs.jl
   allow_failure: true
