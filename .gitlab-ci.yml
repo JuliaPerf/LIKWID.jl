@@ -86,6 +86,8 @@ test-julia/1.7-rc1:
   rules:
     - changes:
       - "README.md"
+      - "docs/**/*.md"
+      - "docs/make.jl"
       when: never
     - when: always
   needs:
@@ -118,6 +120,8 @@ test-julia/nightly:
   rules:
     - changes:
       - "README.md"
+      - "docs/**/*.md"
+      - "docs/make.jl"
       when: never
     - when: always
   before_script:
