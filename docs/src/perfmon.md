@@ -15,8 +15,8 @@ A = rand(128, 64)
 B = rand(64, 128)
 C = zeros(128, 128)
 
-ncpus = 1
-LIKWID.PerfMon.init([0])
+cpu = 0
+LIKWID.PerfMon.init([cpu])
 groupid = LIKWID.PerfMon.add_event_set("FLOPS_DP")
 LIKWID.PerfMon.setup_counters(groupid)
 
@@ -33,7 +33,14 @@ LIKWID.PerfMon.finalize()
 # output
 
 ERROR - [./src/power.c:power_init:288] Cannot read MSR TURBO_RATIO_LIMIT_CORES
-cpu = 0
+ERROR: The selected register PMC0 is in use.
+Please run likwid with force option (-f, --force) to overwrite settings
+ERROR: The selected register PMC1 is in use.
+Please run likwid with force option (-f, --force) to overwrite settings
+ERROR: The selected register PMC2 is in use.
+Please run likwid with force option (-f, --force) to overwrite settings
+ERROR: The selected register PMC3 is in use.
+Please run likwid with force option (-f, --force) to overwrite settings
 ```
 
 ```@example
@@ -45,17 +52,10 @@ A = rand(128, 64)
 B = rand(64, 128)
 C = zeros(128, 128)
 
-# ncpus = LIKWID.get_cpu_topology().numCoresPerSocket
-ncpus = 1
-cpus = collect(0:ncpus-1)
-LIKWID.PerfMon.init(cpus)
+cpu = 0
+LIKWID.PerfMon.init([cpu])
 groupid = LIKWID.PerfMon.add_event_set("FLOPS_DP")
 LIKWID.PerfMon.setup_counters(groupid)
-LIKWID.PerfMon.start_counters()
-for _ in 1:100
-    mul!(C, A, B)
-end
-LIKWID.PerfMon.stop_counters()
 
 LIKWID.PerfMon.start_counters()
 for _ in 1:100
@@ -63,15 +63,8 @@ for _ in 1:100
 end
 LIKWID.PerfMon.stop_counters()
 
-for cpu in cpus
-    @show cpu
-    d = LIKWID.PerfMon.get_metric_results(groupid, cpu)
-    display(d)
-    println()
-    d = LIKWID.PerfMon.get_event_results(groupid, cpu)
-    display(d)
-    println()
-end
+d = LIKWID.PerfMon.get_metric_results(groupid, cpu)
+display(d)
 LIKWID.PerfMon.finalize()
 ```
 
