@@ -71,15 +71,27 @@ Return a list of all available perfmon groups.
 # Examples
 ```jldoctest
 julia> LIKWID.PerfMon.get_groups()
-8-element Vector{LIKWID.GroupInfoCompact}:
- DATA => Load to store ratio
- FLOPS_DP => Double Precision MFLOP/s
- BRANCH => Branch prediction miss rate/ratio
+30-element Vector{LIKWID.GroupInfoCompact}:
+ MEM_SP => Overview of arithmetic and main memory performance
+ CYCLE_ACTIVITY => Cycle Activities
  ENERGY => Power and Energy consumption
- FLOPS_AVX => Packed AVX MFLOP/s
- DIVIDE => Divide unit information
- FLOPS_SP => Single Precision MFLOP/s
+ UOPS_RETIRE => UOPs retirement
+ PMM => Intel Optane DC bandwidth in MBytes/s
+ TLB_INSTR => L1 Instruction TLB miss rate/ratio
+ DATA => Load to store ratio
+ UOPS_ISSUE => UOPs issueing
+ L2CACHE => L2 cache miss rate/ratio
+ L2 => L2 cache bandwidth in MBytes/s
+ ⋮
  TMA => Top down cycle allocation
+ CLOCK => Power and Energy consumption
+ FLOPS_DP => Double Precision MFLOP/s
+ CYCLE_STALLS => Cycle Activities (Stalls)
+ L3 => L3 cache bandwidth in MBytes/s
+ UPI => UPI traffic
+ L3NEW => L3 cache bandwidth in MBytes/s
+ L3PF => L3 cache bandwidth in MBytes/s
+ L2L3 => L3 cache bandwidth in MBytes/s
 ```
 """
 function get_groups()
