@@ -27,8 +27,8 @@ end
 LIKWID.PerfMon.stop_counters()
 
 d = LIKWID.PerfMon.get_metric_results(groupid, cpu)
-display(d)
 LIKWID.PerfMon.finalize()
+d
 
 # output
 
@@ -41,31 +41,6 @@ ERROR: The selected register PMC2 is in use.
 Please run likwid with force option (-f, --force) to overwrite settings
 ERROR: The selected register PMC3 is in use.
 Please run likwid with force option (-f, --force) to overwrite settings
-```
-
-```@example
-# perfmon.jl
-using LIKWID
-using LinearAlgebra
-
-A = rand(128, 64)
-B = rand(64, 128)
-C = zeros(128, 128)
-
-cpu = 0
-LIKWID.PerfMon.init([cpu])
-groupid = LIKWID.PerfMon.add_event_set("FLOPS_DP")
-LIKWID.PerfMon.setup_counters(groupid)
-
-LIKWID.PerfMon.start_counters()
-for _ in 1:100
-    mul!(C, A, B)
-end
-LIKWID.PerfMon.stop_counters()
-
-d = LIKWID.PerfMon.get_metric_results(groupid, cpu)
-display(d)
-LIKWID.PerfMon.finalize()
 ```
 
 ## Functions
