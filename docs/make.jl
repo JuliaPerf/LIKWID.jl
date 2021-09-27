@@ -2,9 +2,10 @@
 using Documenter, LIKWID
 
 makedocs(
+    sitename = "LIKWID.jl",
+    authors = "Carsten Bauer",
     modules = [LIKWID],
     doctest = false,
-    sitename = "LIKWID.jl",
     pages = [
         "LIKWID" => "index.md",
         "Marker API" => [

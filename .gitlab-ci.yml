@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - docs
 
 # This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa'
 # The build result is stored as artifact for the test jobs
@@ -11,8 +12,6 @@ build-likwid:
   rules:
     - changes:
       - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
       when: never
     - when: always
   variables:
@@ -57,8 +56,6 @@ test-julia/1.6:
   rules:
     - changes:
       - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
       when: never
     - when: always
   needs:
@@ -89,8 +86,6 @@ test-julia/1.7-rc1:
   rules:
     - changes:
       - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
       when: never
     - when: always
   needs:
@@ -123,8 +118,6 @@ test-julia/nightly:
   rules:
     - changes:
       - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
       when: never
     - when: always
   before_script:
@@ -147,3 +140,47 @@ test-julia/nightly:
   allow_failure: true
 
 
+# LIKWID.jl Documentation
+documentation:
+  stage: docs
+  tags:
+    - testcluster
+  variables:
+    SLURM_NODELIST: medusa # This is required to run the job on the specified node
+    SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
+    LIKWID_VERSION: 5.2.0
+    CUDA_MODULE: cuda/11.0
+  needs:
+    job: build-likwid
+  rules:
+    - changes:
+      - "README.md"
+      when: never
+    - when: always
+  before_script:
+    - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
+    - make local
+    - cd $CI_PROJECT_DIR
+    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
+    - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
+  script:
+    - echo "PATH= $PATH"
+    - echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
+    - echo "CI= $CI"
+    - ls -la
+    - module load "$CUDA_MODULE"
+    - likwid-topology
+    - likwid-perfctr -i
+    - export JULIA_CUDA_USE_BINARYBUILDER=false
+    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
+    - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
+    - bin/julia --color=yes --project=. -e '
+        println("--- :julia: Instantiating project")
+        using Pkg
+        Pkg.instantiate()
+        Pkg.activate("docs")
+        Pkg.instantiate()
+        push!(LOAD_PATH, @__DIR__)
+        println("+++ :julia: Building documentation")
+        include("docs/make.jl")'
+  allow_failure: true
