@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - test-devel
   - documentation
 
 # This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa'
@@ -44,7 +45,7 @@ build-likwid:
     expire_in: 1 week
 
 # This job tests the LIKWID.jl interface with Julia 1.6
-test-julia/1.6:
+julia/1.6:
   stage: test
   tags:
     - testcluster
@@ -74,7 +75,7 @@ test-julia/1.6:
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
     
 # This job tests the LIKWID.jl interface with Julia 1.7-rc1
-test-julia/1.7-rc1:
+julia/1.7-rc1:
   stage: test
   tags:
     - testcluster
@@ -106,8 +107,8 @@ test-julia/1.7-rc1:
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
 
 # This job tests the LIKWID.jl interface with Julia nightly build
-test-julia/nightly:
-  stage: test
+julia/nightly:
+  stage: test-devel
   tags:
     - testcluster
   variables:
