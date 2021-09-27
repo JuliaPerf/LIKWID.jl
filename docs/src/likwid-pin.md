@@ -1,3 +1,7 @@
+```@setup likwid
+using LIKWID
+```
+
 # likwid-pin
 
 Pinning threads to cores. For details, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/Likwid-Pin).
@@ -43,6 +47,6 @@ In general, `likwid-pin` pins all pthread-threads. However, `julia` involves mor
 
 To work around this, we need to provide a mask to `likwid-pin` via the `-s` option. To compute an appropriate mask for `N` "Julia user threads" you may use the helper function `LIKWID.pin_mask(N)`:
 
-```@repl
+```@repl likwid
 LIKWID.pin_mask(4)
 ```
