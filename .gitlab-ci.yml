@@ -57,6 +57,9 @@ julia/1.6:
   rules:
     - changes:
       - "README.md"
+      - "docs/**/*.md"
+      - "docs/make.jl"
+      - "docs/build_docs.jl"
       when: never
     - when: always
   needs:
@@ -89,6 +92,7 @@ julia/1.7-rc1:
       - "README.md"
       - "docs/**/*.md"
       - "docs/make.jl"
+      - "docs/build_docs.jl"
       when: never
     - when: always
   needs:
@@ -123,6 +127,7 @@ julia/nightly:
       - "README.md"
       - "docs/**/*.md"
       - "docs/make.jl"
+      - "docs/build_docs.jl"
       when: never
     - when: always
   before_script:
