@@ -5,4 +5,4 @@ Pkg.instantiate()
 # Pkg.instantiate()
 # push!(LOAD_PATH, @__DIR__)
 println("+++ :julia: Building documentation")
-include("docs/make.jl")'
+include("make.jl")'
