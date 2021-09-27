@@ -1,7 +1,7 @@
 stages:
   - build
   - test
-  - docs
+  - documentation
 
 # This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa'
 # The build result is stored as artifact for the test jobs
@@ -145,8 +145,8 @@ test-julia/nightly:
 
 
 # LIKWID.jl Documentation
-docs/build-and-deploy:
-  stage: docs
+build-and-deploy:
+  stage: documentation
   tags:
     - testcluster
   variables:
