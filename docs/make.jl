@@ -6,7 +6,8 @@ makedocs(
     sitename = "LIKWID.jl",
     authors = "Carsten Bauer",
     modules = [LIKWID],
-    doctest = false,
+    doctest = :fix,
+    # doctest = true,
     pages = [
         "LIKWID" => "index.md",
         "Marker API" => [
