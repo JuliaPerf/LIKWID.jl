@@ -178,5 +178,6 @@ build-and-deploy:
     - export JULIA_CUDA_USE_BINARYBUILDER=false
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
-    - bin/julia --color=yes --project=. build_docs.jl
+    - cd docs
+    - ../bin/julia --color=yes --project=. ci_build_docs.jl
   allow_failure: true
