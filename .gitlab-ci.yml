@@ -180,6 +180,5 @@ build-and-deploy:
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - cd docs
-    - ../bin/julia --color=yes --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.build(verbose=true);'
-    - ../bin/julia --color=yes --project=. make.jl
+    - ../bin/julia --color=yes ci_build_docs.jl
   allow_failure: true
