@@ -44,6 +44,5 @@ In general, `likwid-pin` pins all pthread-threads. However, `julia` involves mor
 To work around this, we need to provide a mask to `likwid-pin` via the `-s` option. To compute an appropriate mask for `N` "Julia user threads" you may use the helper function `LIKWID.pin_mask(N)`:
 
 ```@repl
-using LIKWID
 LIKWID.pin_mask(4)
 ```

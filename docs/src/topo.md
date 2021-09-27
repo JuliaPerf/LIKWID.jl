@@ -6,7 +6,6 @@ The basis functionality of `likwid-topology`.
 
 Query CPU topology information:
 ```@repl
-using LIKWID
 topo = LIKWID.get_cpu_topology()
 topo.threadPool
 topo.cacheLevels
@@ -14,14 +13,12 @@ topo.cacheLevels
 
 Get detailed CPU information:
 ```@repl
-using LIKWID
 cpuinfo = LIKWID.get_cpu_info()
 ```
 
 Query information about NUMA nodes:
 
 ```@repl
-using LIKWID
 numa = LIKWID.get_numa_topology()
 numa.nodes
 numa_node = first(numa.nodes)
@@ -30,7 +27,6 @@ numa_node = first(numa.nodes)
 ## Graphical output
 Currently, LIKWID.jl doesn't feature a native graphical visualization of the CPU topology. However, it provides a small "wrapper function" around `likwid-topology -g` which should give you an output like this:
 ```@repl
-using LIKWID
 LIKWID.print_cpu_topology()
 ```
 
@@ -61,6 +57,6 @@ LIKWID.NumaNode
 ## Supported CPUs
 
 ```@repl
-using LIKWID; LIKWID.print_supported_cpus()
+LIKWID.print_supported_cpus()
 LIKWID.print_supported_cpus(; cprint=false) # hide
 ```

@@ -1,6 +1,7 @@
 # push!(LOAD_PATH,"../src/")
 using Documenter, LIKWID
 
+DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID); recursive=true)
 makedocs(
     sitename = "LIKWID.jl",
     authors = "Carsten Bauer",
