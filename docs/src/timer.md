@@ -6,7 +6,12 @@ using LIKWID
 
 ## Example
 
-Clock timing:
+Timing based on CPU clock:
+```@repl likwid
+LIKWID.Timer.@timeit sleep(1)
+```
+
+Essentially, this is equivalent to the following manual sequence.
 ```@repl likwid
 LIKWID.Timer.init()
 t_start = LIKWID.Timer.start_clock()
@@ -28,4 +33,6 @@ LIKWID.Timer.start_clock
 LIKWID.Timer.stop_clock
 LIKWID.Timer.get_clock
 LIKWID.Timer.get_clock_cycles
+LIKWID.Timer.timeit
+LIKWID.Timer.@timeit
 ```

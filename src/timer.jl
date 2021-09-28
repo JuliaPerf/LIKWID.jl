@@ -88,4 +88,49 @@ function get_clock_cycles(timer::LibLikwid.TimerData)
     return Int(LibLikwid.timer_printCycles(Ref(timer)))
 end
 
+"""
+    timeit(f)
+Time the given function `f` using [`Timer.start_clock`](@ref),
+[`Timer.stop_clock`](@ref), etc. under the hood. Automatically
+initializes and finalizes the timer module.
+
+# Examples
+```julia
+julia> LIKWID.Timer.timeit() do
+           sleep(1)
+       end
+(clock = 1.0008815780376372, cycles = 3603224844)
+```
+"""
+function timeit(f)
+    init() || error("Couldn't init LIKWIDs timer module.")
+    try
+        t_start = start_clock()
+        f()
+        t_stop = stop_clock(t_start)
+
+        return (clock=get_clock(t_stop), cycles=get_clock_cycles(t_stop))
+    finally
+        finalize()
+    end
+end
+
+"""
+Convenience macro for [`Timer.timeit`](@ref).
+
+# Examples
+```julia
+julia> LIKWID.Timer.@timeit sleep(1)
+(clock = 1.0008815780376372, cycles = 3603224844)
+```
+"""
+macro timeit(expr)
+    q = quote
+        LIKWID.Timer.timeit() do
+            $(expr)
+        end
+    end
+    return esc(q)
+end
+
 end # module
