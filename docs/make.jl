@@ -21,7 +21,7 @@ makedocs(
             "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
             "NVIDIA monitoring" => "nvmon.md",
-            "Timer" => "timer.md",
+            "CPU clock timer" => "timer.md",
             "Affinity" => "affinity.md",
         ],
         "CLI Tools" => [
