@@ -20,11 +20,13 @@ makedocs(
         "Library" => [
             "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
+            "GPU Topology" => "topo_gpu.md",
             "NVIDIA monitoring" => "nvmon.md",
             "CPU clock timer" => "timer.md",
             "CPU temperature" => "temperature.md",
             "Power / Energy" => "power.md",
             "Affinity" => "affinity.md",
+            "HPM / Access" => "access.md",
         ],
         "CLI Tools" => [
             "likwid-pin" => "likwid-pin.md",

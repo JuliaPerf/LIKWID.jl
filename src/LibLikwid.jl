@@ -1419,6 +1419,7 @@ struct TurboBoost
     steps::Ptr{Cdouble}
 end
 
+"Different types of power domains"
 @cenum PowerType::UInt32 begin
     PKG = 0
     PP0 = 1

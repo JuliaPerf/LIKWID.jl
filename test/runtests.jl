@@ -157,12 +157,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     end
 
     @testset "Access / HPM" begin
-        @test LIKWID.hpmmode(0)
-        @test LIKWID.hpmmode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
-        @test LIKWID.init_hpm()
-        @test typeof(LIKWID.hpm_add_thread(0)) == Int
+        @test LIKWID.HPM.mode(0)
+        @test LIKWID.HPM.mode(LIKWID.LibLikwid.ACCESSMODE_DIRECT)
+        @test LIKWID.HPM.init()
+        @test typeof(LIKWID.HPM.add_thread(0)) == Int
         # @test LIKWID.hpm_add_thread(0) != -1
-        @test isnothing(LIKWID.finalize_hpm())
+        @test isnothing(LIKWID.HPM.finalize())
     end
 
     @testset "PerfMon" begin

@@ -1,3 +1,4 @@
+"Initialize LIKWIDs GPU topology module."
 function init_topology_gpu()
     ret = LibLikwid.topology_gpu_init()
     if ret == 0
@@ -60,6 +61,7 @@ function _build_jl_gputopo()
     return nothing
 end
 
+"Get GPU topology"
 function get_gpu_topology()
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
@@ -67,6 +69,7 @@ function get_gpu_topology()
     return gputopo[]
 end
 
+"Finalize LIKWIDs GPU topology module."
 function finalize_topology_gpu()
     LibLikwid.topology_gpu_finalize()
     gputopo_initialized[] = false

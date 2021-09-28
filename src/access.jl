@@ -1,4 +1,14 @@
-function hpmmode(mode::Union{Integer, LibLikwid.AccessMode})
+module HPM
+
+using ..LIKWID: LibLikwid, access_initialized
+
+"""
+Sets the mode how the MSR and PCI registers should be accessed. Available options:
+  * `0` or `LibLikwid.ACCESSMODE_DIRECT`: direct access (propably root priviledges required)
+  * `1` or `LibLikwid.ACCESSMODE_DAEMON`: accesses through the access daemon
+Must be called **before** [`HPM.init`](@ref).
+"""
+function mode(mode::Union{Integer, LibLikwid.AccessMode})
     if mode == LibLikwid.ACCESSMODE_DIRECT || mode == LibLikwid.ACCESSMODE_DAEMON
         LibLikwid.HPMmode(mode)
         return true
@@ -6,7 +16,10 @@ function hpmmode(mode::Union{Integer, LibLikwid.AccessMode})
     return false
 end
 
-function init_hpm()
+"""
+Initialize the access module internals to either the MSR/PCI files or the access daemon
+"""
+function init()
     err = LibLikwid.HPMinit()
     if err == 0
         access_initialized[] = true
@@ -15,7 +28,10 @@ function init_hpm()
     return false
 end
 
-function hpm_add_thread(cpuid)
+"""
+Add the given CPU to the access module. This opens the commnunication to either the MSR/PCI files or the access daemon.
+"""
+function add_thread(cpuid)
     if !access_initialized[]
         return -1
     end
@@ -23,8 +39,13 @@ function hpm_add_thread(cpuid)
     return Int(ret)
 end
 
-function finalize_hpm()
+"""
+Close the connections to the MSR/PCI files or the access daemon.
+"""
+function finalize()
     LibLikwid.HPMfinalize()
     access_initialized[] = false
     return nothing
 end
+
+end # module

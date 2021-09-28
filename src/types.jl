@@ -94,6 +94,7 @@ struct NumaTopology
     nodes::Vector{NumaNode}
 end
 
+"An affinity domain"
 struct AffinityDomain
     tag::String
     numberOfProcessors::Int
@@ -101,6 +102,7 @@ struct AffinityDomain
     processorList::Vector{Int}
 end
 
+"Information about the affinity domains"
 struct AffinityDomains
     numberOfSocketDomains::Int
     numberOfNumaDomains::Int
@@ -112,6 +114,7 @@ struct AffinityDomains
     domains::Vector{AffinityDomain}
 end
 
+"Turbo boost information"
 struct TurboBoost
     numSteps::Int
     steps::Vector{Float64}
@@ -127,6 +130,7 @@ Base.show(io::IO, t::TurboBoost) = print(io, "TurboBoost()")
 #     PLATFORM = 4
 # end
 
+"Power domain information"
 struct PowerDomain
     id::Int
     type::LibLikwid.PowerType
@@ -145,6 +149,7 @@ end
 
 Base.show(io::IO, pd::PowerDomain) = print(io, "PowerDomain($(pd.type), ...)")
 
+"Power information"
 struct PowerInfo
     baseFrequency::Float64
     minFrequency::Float64
@@ -182,6 +187,7 @@ end
 
 Base.show(io::IO, gi::GroupInfoCompact) = print(io, "$(gi.name) => $(gi.shortinfo)")
 
+"Detailed information about a GPU device"
 struct GpuDevice
     devid::Int
     numaNode::Int
@@ -219,6 +225,7 @@ end
 
 Base.show(io::IO, d::GpuDevice) = print(io, "GpuDevice($(d.name), ...)")
 
+"Topology information of GPUs"
 struct GpuTopology
     numDevices::Int
     devices::Vector{GpuDevice}

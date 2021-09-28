@@ -20,3 +20,10 @@ LIKWID.finalize_affinity
 LIKWID.get_affinity
 LIKWID.cpustr_to_cpulist
 ```
+
+## Types
+
+```@docs
+LIKWID.AffinityDomains
+LIKWID.AffinityDomain
+```

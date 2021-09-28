@@ -35,3 +35,12 @@ LIKWID.Power.stop_power
 LIKWID.Power.get_power
 LIKWID.Power.measure
 ```
+
+## Types
+
+```@docs
+LIKWID.PowerInfo
+LIKWID.PowerDomain
+LIKWID.LibLikwid.PowerType
+LIKWID.TurboBoost
+```
