@@ -2,6 +2,7 @@ module Power
 
 using ..LIKWID:
     LibLikwid, power_initialized, topo_initialized, _powerinfo, powerinfo, TurboBoost, PowerDomain, PowerInfo, init_topology
+using Unitful
 
 const POWER_DOMAIN_SUPPORT_STATUS = UInt64(1) << 0
 const POWER_DOMAIN_SUPPORT_LIMIT = UInt64(1) << 1
@@ -10,7 +11,7 @@ const POWER_DOMAIN_SUPPORT_PERF = UInt64(1) << 3
 const POWER_DOMAIN_SUPPORT_INFO = UInt64(1) << 4
 
 """
-Initialize energy measurements on specific CPU.
+Initialize power measurements for the given CPU.
 Returns the RAPL status, i.e. `false` (no RAPL) or `true` (RAPL working).
 """
 function init(cpuid::Integer)
@@ -25,13 +26,13 @@ function init(cpuid::Integer)
     return false
 end
 
-# "helper"
 function init()
     power_initialized[] && return true
     init_topology()
     return init(0)
 end
 
+"Finalize power measurements."
 function finalize()
     LibLikwid.power_finalize()
     power_initialized[] = false
@@ -80,6 +81,10 @@ function _build_jl_power()
     return nothing
 end
 
+"""
+    get_power_info() -> LIKWID.PowerInfo
+Get power / energy information.
+"""
 function get_power_info()
     if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
@@ -114,14 +119,42 @@ end
 
 """
     get_power(p_start::Integer, p_stop::Integer, domainid::Integer)
-Calculate the uJ from the values retrieved by `start_power()`
+Calculate the μJ from the values retrieved by `start_power()`
 and `stop_power()`.
 """
 function get_power(p_start::Integer, p_stop::Integer, domainid::Integer)
     pt = LibLikwid.PowerType(domainid)
     pd = LibLikwid.PowerData(pt, p_start, p_stop)
     energy = LibLikwid.power_printEnergy(Ref(pd))
-    return energy
+    return energy * u"μJ"
+end
+
+"""
+    measure(f; cpuid::Integer=0, domainid::Integer)
+Measure / calculate the energy for the given `cpuid` and `domainid`
+over the execution of the function `f` using [`Power.start_power`](@ref),
+[`Power.stop_power`](@ref), etc. under the hood. Automatically
+initializes and finalizes the power module.
+
+# Examples
+```julia
+julia> LIKWID.Power.measure(; cpuid=0, domainid=0) do
+           sleep(1)
+       end
+15.13702392578125 μJ
+```
+"""
+function measure(f; cpuid::Integer=0, domainid::Integer)
+    init(cpuid) || error("Couldn't init LIKWIDs power module.")
+    try
+        p_start = start_power(cpuid, domainid)
+        f()
+        p_stop = stop_power(cpuid, domainid)
+
+        return get_power(p_start, p_stop, domainid)
+    finally
+        finalize()
+    end
 end
 
 end # module

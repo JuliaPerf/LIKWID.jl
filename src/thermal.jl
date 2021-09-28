@@ -1,5 +1,5 @@
 """
-Initialize thermal measurements on specific CPU.
+Initialize thermal measurements on the given CPU.
 """
 function init_thermal(cpuid::Integer)
     LibLikwid.thermal_init(cpuid)
@@ -7,9 +7,9 @@ function init_thermal(cpuid::Integer)
 end
 
 """
-Read the current thermal value of a specific CPU.
+Read the current temperature of the given CPU.
 """
-function read_thermal(cpuid::Integer)
+function get_temperature(cpuid::Integer)
     init_thermal(cpuid)
     data = Ref(zero(UInt32))
     LibLikwid.thermal_read(cpuid, data)

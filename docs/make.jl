@@ -22,6 +22,8 @@ makedocs(
             "Performance monitoring" => "perfmon.md",
             "NVIDIA monitoring" => "nvmon.md",
             "CPU clock timer" => "timer.md",
+            "CPU temperature" => "temperature.md",
+            "Power / Energy" => "power.md",
             "Affinity" => "affinity.md",
         ],
         "CLI Tools" => [

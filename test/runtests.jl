@@ -3,6 +3,7 @@ using LIKWID
 using CUDA
 using Libdl
 using OrderedCollections
+using Unitful
 
 # check if we are a GitHub runner
 const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
@@ -112,7 +113,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
     @testset "Thermal" begin
         @test LIKWID.init_thermal(0)
-        @test isinteger(LIKWID.read_thermal(0))
+        @test isinteger(LIKWID.get_temperature(0))
     end
 
     @testset "Power / Energy" begin
@@ -134,6 +135,14 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(pd.supportPerf) == Bool
         @test typeof(pd.supportPolicy) == Bool
         @test typeof(pd.supportLimit) == Bool
+
+        p_start = LIKWID.Power.start_power(0, 0)
+        @test typeof(p_start) == Int64
+        sleep(0.5)
+        p_stop = LIKWID.Power.stop_power(0, 0)
+        @test typeof(p_stop) == Int64
+        res = LIKWID.Power.get_power(p_start, p_stop, 0)
+        @test unit(res) == u"μJ"
         @test isnothing(LIKWID.Power.finalize())
     end
 
