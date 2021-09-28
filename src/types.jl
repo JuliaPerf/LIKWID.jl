@@ -179,6 +179,7 @@ struct Likwid_Configuration
     maxNumNodes::Int
 end
 
+"Essential information about a performance group"
 struct GroupInfoCompact
     name::String
     shortinfo::String

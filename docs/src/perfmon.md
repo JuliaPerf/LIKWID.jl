@@ -64,3 +64,9 @@ OrderedCollections.OrderedDict{String, Float64} with 7 entries:
 ```@autodocs
 Modules = [LIKWID.PerfMon]
 ```
+
+## Types
+
+```@docs
+LIKWID.GroupInfoCompact
+```
