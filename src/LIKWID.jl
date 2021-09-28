@@ -1,6 +1,7 @@
 module LIKWID
 import Base.Threads
 using Libdl
+using Unitful
 
 # liblikwid
 const liblikwid = "liblikwid"

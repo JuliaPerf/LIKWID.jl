@@ -7,11 +7,11 @@ function init_thermal(cpuid::Integer)
 end
 
 """
-Read the current temperature of the given CPU.
+Read the current temperature of the given CPU in degrees Celsius.
 """
 function get_temperature(cpuid::Integer)
     init_thermal(cpuid)
     data = Ref(zero(UInt32))
     LibLikwid.thermal_read(cpuid, data)
-    return Int(data[])
+    return Int(data[]) * u"°C"
 end

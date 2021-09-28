@@ -113,7 +113,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
     @testset "Thermal" begin
         @test LIKWID.init_thermal(0)
-        @test isinteger(LIKWID.get_temperature(0))
+        @test isinteger(ustrip(LIKWID.get_temperature(0)))
+        @test unit(LIKWID.get_temperature(0)) == u"°C"
     end
 
     @testset "Power / Energy" begin
