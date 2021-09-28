@@ -39,8 +39,6 @@ build-likwid:
       - if [ -e likwid-setFreq ]; then rm likwid-setFreq; fi
       - chmod +x likwid-topology
       - ./likwid-topology
-      - ./likwid-perfctr -i
-      - ./likwid-perfctr -a
   artifacts:
     paths:
       - likwid-$LIKWID_VERSION
