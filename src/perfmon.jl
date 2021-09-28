@@ -32,6 +32,7 @@ function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthre
 end
 
 init(cpus::AbstractVector{<:Integer}) = init(convert(Vector{Int32}, cpus))
+init(cpu::Integer) = init(Int32[cpu])
 
 function finalize()
     LibLikwid.perfmon_finalize()

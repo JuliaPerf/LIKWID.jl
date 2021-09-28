@@ -156,6 +156,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     end
 
     @testset "PerfMon" begin
+        @test LIKWID.PerfMon.init(0)
         @test LIKWID.PerfMon.init([0])
         @test LIKWID.PerfMon.get_number_of_threads() == 1
         @test LIKWID.PerfMon.get_number_of_groups() == 0
