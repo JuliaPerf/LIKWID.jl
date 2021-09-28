@@ -50,3 +50,9 @@ To work around this, we need to provide a mask to `likwid-pin` via the `-s` opti
 ```@repl likwid
 LIKWID.pin_mask(4)
 ```
+
+## Functions
+
+```@docs
+LIKWID.pin_mask
+```
