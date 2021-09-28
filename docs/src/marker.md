@@ -87,33 +87,46 @@ Region matmul, Group 1: FLOPS_DP
 +----------------------+------------+
 ```
 
-<!-- ## Most important Functions
-
-```@docs
-LIKWID.Marker.init()
-LIKWID.Marker.startregion(regiontag::AbstractString)
-LIKWID.Marker.stopregion(regiontag::AbstractString)
-LIKWID.Marker.close()
-``` -->
-
 ## `likwid-perfctr` in a nutshell
 
 **Most importantly**, you need to use the `-m` option to activate the marker API.
 
 To list the available performance groups, run `likwid-perfctr -a`:
 ```
-Group name      Description
+PerfMon group name	Description
 --------------------------------------------------------------------------------
-     DATA       Load to store ratio
- FLOPS_DP       Double Precision MFLOP/s
-   BRANCH       Branch prediction miss rate/ratio
-   ENERGY       Power and Energy consumption
-FLOPS_AVX       Packed AVX MFLOP/s
-   DIVIDE       Divide unit information
- FLOPS_SP       Single Precision MFLOP/s
-      TMA       Top down cycle allocation
+        MEM_SP	Overview of arithmetic and main memory performance
+CYCLE_ACTIVITY	Cycle Activities
+        ENERGY	Power and Energy consumption
+   UOPS_RETIRE	UOPs retirement
+           PMM	Intel Optane DC bandwidth in MBytes/s
+     TLB_INSTR	L1 Instruction TLB miss rate/ratio
+          DATA	Load to store ratio
+    UOPS_ISSUE	UOPs issueing
+       L2CACHE	L2 cache miss rate/ratio
+            L2	L2 cache bandwidth in MBytes/s
+     FLOPS_AVX	Packed AVX MFLOP/s
+           MEM	Main memory bandwidth in MBytes/s
+        BRANCH	Branch prediction miss rate/ratio
+      FLOPS_SP	Single Precision MFLOP/s
+        MEM_DP	Overview of arithmetic and main memory performance
+       L3CACHE	L3 cache miss rate/ratio
+           UPI	UPI data traffic
+     UOPS_EXEC	UOPs execution
+      TLB_DATA	L2 data TLB miss rate/ratio
+        CACHES	Cache bandwidth in MBytes/s
+        DIVIDE	Divide unit information
+           TMA	Top down cycle allocation
+         CLOCK	Power and Energy consumption
+      FLOPS_DP	Double Precision MFLOP/s
+  CYCLE_STALLS	Cycle Activities (Stalls)
+            L3	L3 cache bandwidth in MBytes/s
+           UPI	UPI traffic
+         L3NEW	L3 cache bandwidth in MBytes/s
+          L3PF	L3 cache bandwidth in MBytes/s
+          L2L3	L3 cache bandwidth in MBytes/s
 ```
-These groups can be passed to the command line option `-g`.
+These groups can be passed to the command line option `-g`. Note that you can also query the available performance groups programmatically using [`LIKWID.PerfMon.get_groups()`](@ref).
 
 Another important option is `-C <list>`:
 > Processor ids to pin threads and measure, e.g. 1,2-4,8. For information about the `<list>` syntax, see `likwid-pin`.

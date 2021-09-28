@@ -73,11 +73,11 @@ To list the available GPU performance groups, run `likwid-perfctr -a` and look f
 NvMon group name	Description
 --------------------------------------------------------------------------------
     DATA	Load to store ratio
-FLOPS_DP	Double-precision floating point
-FLOPS_HP	Half-precision floating point
 FLOPS_SP	Single-precision floating point
+FLOPS_HP	Half-precision floating point
+FLOPS_DP	Double-precision floating point
 ```
-These groups can be passed to the command line option `-W`.
+These groups can be passed to the command line option `-W`. Note that you can also query the available GPU performance groups programmatically using [`LIKWID.NvMon.get_groups(gpuid::Integer)`](@ref).
 
 Another important option is `-G <list>`, where `<list>` is a list of GPUs to monitor. Note that GPU ids start with zero (not one).
 
