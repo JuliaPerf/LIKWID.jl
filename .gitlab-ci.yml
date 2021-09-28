@@ -143,6 +143,7 @@ julia/nightly:
     - module load "$CUDA_MODULE"
     - likwid-topology
     - likwid-perfctr -i
+    - likwid-perfctr -a
     - export JULIA_CUDA_USE_BINARYBUILDER=false
     - wget https://julialangnightlies-s3.julialang.org/bin/linux/x64/julia-latest-linux64.tar.gz
     - tar --strip-components=1 -xf julia-latest-linux64.tar.gz

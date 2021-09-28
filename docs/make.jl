@@ -1,9 +1,11 @@
 # push!(LOAD_PATH,"../src/")
-using Documenter, LIKWID
+using Documenter
+using CUDA
+using LIKWID
 
 const ci = get(ENV, "CI", "") == "true"
 
-DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID); recursive=true)
+DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive=true)
 makedocs(
     sitename = "LIKWID.jl",
     authors = "Carsten Bauer",
@@ -18,6 +20,7 @@ makedocs(
         "Library" => [
             "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
+            "NVIDIA monitoring" => "nvmon.md",
         ],
         "CLI Tools" => [
             "likwid-pin" => "likwid-pin.md",

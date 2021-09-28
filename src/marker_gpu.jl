@@ -1,9 +1,9 @@
 module GPUMarker
 
-using ..LIKWID: LibLikwid, Nvmon, gpusupport, capture_stderr!
+using ..LIKWID: LibLikwid, NvMon, gpusupport, capture_stderr!
 
 """
-Initialize the Nvmon Marker API of the LIKWID library. Must be called previous to all other functions.
+Initialize the NvMon Marker API of the LIKWID library. Must be called previous to all other functions.
 """
 function init()
     gpusupport() || error(
@@ -48,8 +48,8 @@ Get the intermediate results of the region identified by `regiontag`. On success
     * `count`: the number of calls.
 """
 function getregion(regiontag::AbstractString)
-    current_group = Nvmon.get_id_of_active_group()
-    nevents = Ref(Nvmon.get_number_of_events(current_group))
+    current_group = NvMon.get_id_of_active_group()
+    nevents = Ref(NvMon.get_number_of_events(current_group))
     events_ref = Ref{Ptr{Float64}}()
     time = Ref(0.0)
     count = Ref(Int32(0))

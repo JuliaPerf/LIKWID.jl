@@ -1,4 +1,4 @@
-module Nvmon
+module NvMon
 
 using ..LIKWID:
     LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology
@@ -55,6 +55,32 @@ get_number_of_metrics(groupid::Integer) = LibLikwid.nvmon_getNumberOfMetrics(gro
 
 """
 Return a list of all available nvmon groups for the GPU identified by `gpuid`.
+
+# Examples
+```jldoctest
+julia> LIKWID.NvMon.get_groups()
+30-element Vector{LIKWID.GroupInfoCompact}:
+ MEM_SP => Overview of arithmetic and main memory performance
+ CYCLE_ACTIVITY => Cycle Activities
+ ENERGY => Power and Energy consumption
+ UOPS_RETIRE => UOPs retirement
+ PMM => Intel Optane DC bandwidth in MBytes/s
+ TLB_INSTR => L1 Instruction TLB miss rate/ratio
+ DATA => Load to store ratio
+ UOPS_ISSUE => UOPs issueing
+ L2CACHE => L2 cache miss rate/ratio
+ L2 => L2 cache bandwidth in MBytes/s
+ ⋮
+ TMA => Top down cycle allocation
+ CLOCK => Power and Energy consumption
+ FLOPS_DP => Double Precision MFLOP/s
+ CYCLE_STALLS => Cycle Activities (Stalls)
+ L3 => L3 cache bandwidth in MBytes/s
+ UPI => UPI traffic
+ L3NEW => L3 cache bandwidth in MBytes/s
+ L3PF => L3 cache bandwidth in MBytes/s
+ L2L3 => L3 cache bandwidth in MBytes/s
+```
 """
 function get_groups(gpuid::Integer=0)
     if !gputopo_initialized[]

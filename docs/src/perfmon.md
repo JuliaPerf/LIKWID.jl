@@ -4,9 +4,9 @@ The basis functionality of `likwid-perfctr`.
 
 ## Example
 
-(See [https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfmon](https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfmon). Run as `julia perfmon.jl`.)
+(See [https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfmon](https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfmon).)
 
-```jldoctest
+```julia
 # perfmon.jl
 using LIKWID
 using LinearAlgebra
@@ -33,20 +33,30 @@ edict = LIKWID.PerfMon.get_event_results(groupid, cpu)
 display(edict)
 
 LIKWID.PerfMon.finalize()
+```
 
-# output
+Running the above with `julia perfmon.jl` one obtains (modulo architectural differences):
 
+```
 OrderedCollections.OrderedDict{String, Float64} with 10 entries:
-  "Runtime (RDTSC) [s]"  => 0.721781
-  "Runtime unhalted [s]" => 0.807824
-  "Clock [MHz]"          => 3789.97
-  "CPI"                  => 0.630098
-  "DP [MFLOP/s]"         => 36.8887
-  "AVX DP [MFLOP/s]"     => 36.8865
-  "AVX512 DP [MFLOP/s]"  => 36.8865
-  "Packed [MUOPS/s]"     => 4.61082
-  "Scalar [MUOPS/s]"     => 0.00216963
-  "Vectorization ratio"  => 99.953
+  "Runtime (RDTSC) [s]" => 0.447041
+  "Runtime unhalted [s]" => 0.00339698
+  "Clock [MHz]" => 4597.86
+  "CPI" => 0.494021
+  "DP [MFLOP/s]" => 59.5561
+  "AVX DP [MFLOP/s]" => 0.0
+  "AVX512 DP [MFLOP/s]" => 0.0
+  "Packed [MUOPS/s]" => 29.778
+  "Scalar [MUOPS/s]" => 7.82926e-5
+  "Vectorization ratio" => 99.9997
+OrderedCollections.OrderedDict{String, Float64} with 7 entries:
+  "INSTR_RETIRED_ANY" => 2.47543e7
+  "CPU_CLK_UNHALTED_CORE" => 1.22292e7
+  "CPU_CLK_UNHALTED_REF" => 9.5751e6
+  "FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE" => 1.3312e7
+  "FP_ARITH_INST_RETIRED_SCALAR_DOUBLE" => 35.0
+  "FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE" => 0.0
+  "FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE" => 0.0
 ```
 
 ## Functions
