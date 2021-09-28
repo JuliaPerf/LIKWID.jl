@@ -1,3 +1,4 @@
+"Initialize LIKWIDs affinity domain module."
 function init_affinity()
     LibLikwid.affinity_init()
     _affinity[] = unsafe_load(LibLikwid.get_affinityDomains())
@@ -6,6 +7,7 @@ function init_affinity()
     return true
 end
 
+"Close and finalize LIKWIDs affinity domain module."
 function finalize_affinity()
     LibLikwid.affinity_finalize()
     affinity_initialized[] = false
@@ -43,6 +45,7 @@ function _build_jl_affinity()
     return nothing
 end
 
+"Query affinity domain information"
 function get_affinity()
     if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
@@ -56,6 +59,7 @@ function get_affinity()
     return affinity[]
 end
 
+"Transform a valid cpu string in LIKWID syntax into a list of CPU IDs"
 function cpustr_to_cpulist(cpustr::AbstractString)
     if !config_initialized[]
         init_configuration() || error("Couldn't init configuration.")

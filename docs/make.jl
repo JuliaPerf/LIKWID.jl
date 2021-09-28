@@ -21,6 +21,7 @@ makedocs(
             "CPU / NUMA Topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
             "NVIDIA monitoring" => "nvmon.md",
+            "Affinity" => "affinity.md",
         ],
         "CLI Tools" => [
             "likwid-pin" => "likwid-pin.md",
