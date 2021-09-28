@@ -104,7 +104,7 @@ end
 Get the CPU topology of the machine.
 
 Automatically initializes the topology and NUMA modules,
-i.e. calls [`init_topology`](@ref) and [`init_numa`](@ref).
+i.e. calls [`LIKWID.init_topology`](@ref) and [`LIKWID.init_numa`](@ref).
 """
 function get_cpu_topology()
     if !topo_initialized[]
@@ -121,7 +121,7 @@ end
 Get detailed information about the CPU.
 
 Automatically initializes the topology and NUMA modules,
-i.e. calls [`init_topology`](@ref) and [`init_numa`](@ref).
+i.e. calls [`LIKWID.init_topology`](@ref) and [`LIKWID.init_numa`](@ref).
 """
 function get_cpu_info()
     if !topo_initialized[]

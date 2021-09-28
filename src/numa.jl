@@ -45,7 +45,7 @@ end
 Get the NUMA topology of the machine.
 
 Automatically initializes the topology, NUMA, and affinity modules,
-i.e. calls [`init_topology`](@ref), [`init_numa`](@ref), and [`init_affinity`](@ref).
+i.e. calls [`LIKWID.init_topology`](@ref), [`LIKWID.init_numa`](@ref), and [`LIKWID.init_affinity`](@ref).
 """
 function get_numa_topology()
     if !topo_initialized[]
