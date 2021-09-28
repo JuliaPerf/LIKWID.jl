@@ -1,20 +1,19 @@
-cpu = 0
 OrderedCollections.OrderedDict{String, Float64} with 10 entries:
-  "Runtime (RDTSC) [s]" => 0.0719716
-  "Runtime unhalted [s]" => 0.0172482
-  "Clock [MHz]" => 4585.47
-  "CPI" => 1.83921
-  "DP [MFLOP/s]" => 369.924
+  "Runtime (RDTSC) [s]" => 0.447041
+  "Runtime unhalted [s]" => 0.00339698
+  "Clock [MHz]" => 4597.86
+  "CPI" => 0.494021
+  "DP [MFLOP/s]" => 59.5561
   "AVX DP [MFLOP/s]" => 0.0
   "AVX512 DP [MFLOP/s]" => 0.0
-  "Packed [MUOPS/s]" => 184.962
-  "Scalar [MUOPS/s]" => 0.0
-  "Vectorization ratio" => 100.0
+  "Packed [MUOPS/s]" => 29.778
+  "Scalar [MUOPS/s]" => 7.82926e-5
+  "Vectorization ratio" => 99.9997
 OrderedCollections.OrderedDict{String, Float64} with 7 entries:
-  "INSTR_RETIRED_ANY" => 3.37623e7
-  "CPU_CLK_UNHALTED_CORE" => 6.2096e7
-  "CPU_CLK_UNHALTED_REF" => 4.87528e7
+  "INSTR_RETIRED_ANY" => 2.47543e7
+  "CPU_CLK_UNHALTED_CORE" => 1.22292e7
+  "CPU_CLK_UNHALTED_REF" => 9.5751e6
   "FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE" => 1.3312e7
-  "FP_ARITH_INST_RETIRED_SCALAR_DOUBLE" => 0.0
+  "FP_ARITH_INST_RETIRED_SCALAR_DOUBLE" => 35.0
   "FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE" => 0.0
   "FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE" => 0.0
