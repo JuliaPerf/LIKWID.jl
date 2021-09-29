@@ -11,8 +11,10 @@ build-likwid:
   tags:
     - testcluster
   only:
+    - main
     - pushes
     - tags
+    - external_pull_requests
 #   rules:
 #     - changes:
 #       - "README.md"
@@ -165,7 +167,8 @@ julia/1.6-examples:
     CUDA_MODULE: cuda/11.0
   rules:
     - changes:
-      - "examples/**/*.jl"
+      - "examples/**/*"
+      - ".gitlab-ci.yml"
       when: on_success
     - when: never
   needs:
@@ -183,6 +186,20 @@ julia/1.6-examples:
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - export PATH=bin:$PATH
     - julia -e 'versioninfo()'
+    - cd examples/perfctr
+    - sh perfctr.sh
+    - cat perfctr.out
+    - sh perfmon.sh
+    - cat perfmon.out
+    - cd ../..
+    - cd examples/perfctr_gpu
+    - sh perfctr_gpu.sh
+    - cat perfctr_gpu.out
+    - cd ../..
+    - cd examples/perfctr_saxpy
+    - sh perfctr_saxpy.sh
+    - cat perfctr_saxpy.out
+    - cd ../..
     # - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
   allow_failure: true
 
@@ -199,8 +216,10 @@ build-and-deploy:
   needs:
     job: build-likwid
   only:
+    - main
     - pushes
     - tags
+    - external_pull_requests
 #   rules:
 #     - changes:
 #       - "README.md"
