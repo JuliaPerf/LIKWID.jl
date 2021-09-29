@@ -190,6 +190,9 @@ julia/1.6-examples:
     - export PATH=bin:$PATH
     - julia -E '1+2'
     - cd examples/perfctr
+    - likwid-perfctr -C 0 -g FLOPS_DP -m julia -E '1+2'
+    - likwid-perfctr -C 0 -g FLOPS_DP -m julia --project=../.. -E '1+2'
+    - likwid-perfctr -C 0 -g FLOPS_DP -m julia --project=../.. -E 'include("perfctr.jl")'
     - sh perfctr.sh
     - cat perfctr.out
     - sh perfmon.sh
