@@ -13,11 +13,11 @@ build-likwid:
   only:
     - pushes
     - tags
-  rules:
-    - changes:
-      - "README.md"
-      when: never
-    - when: always
+#   rules:
+#     - changes:
+#       - "README.md"
+#       when: never
+#     - when: always
   variables:
     SLURM_NODELIST: medusa
     LIKWID_MODULE: likwid/5.2-dev
@@ -201,11 +201,11 @@ build-and-deploy:
   only:
     - pushes
     - tags
-  rules:
-    - changes:
-      - "README.md"
-      when: never
-    - when: always
+#   rules:
+#     - changes:
+#       - "README.md"
+#       when: never
+#     - when: always
   before_script:
     - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
     - make local
