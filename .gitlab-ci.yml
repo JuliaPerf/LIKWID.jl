@@ -154,7 +154,6 @@ julia/nightly:
   allow_failure: true
 
 # Run/Test examples in `examples/`
-# This job tests the LIKWID.jl interface with Julia 1.6
 julia/1.6-examples:
   stage: test
   tags:
@@ -226,42 +225,4 @@ build-and-deploy:
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - cd docs
     - ../bin/julia --color=yes build_docs.jl
-  allow_failure: true
-
-# NEW TAG:
-
-# LIKWID.jl Documentation (tagged)
-# tagged:
-#   stage: documentation
-#   tags:
-#     - testcluster
-#   variables:
-#     SLURM_NODELIST: medusa # This is required to run the job on the specified node
-#     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
-#     LIKWID_VERSION: 5.2.0
-#     CUDA_MODULE: cuda/11.0
-#   needs:
-#     job: build-likwid
-#   only:
-#     - tags
-#   before_script:
-#     - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
-#     - make local
-#     - cd $CI_PROJECT_DIR
-#     - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
-#     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
-#   script:
-#     - echo "PATH= $PATH"
-#     - echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
-#     - echo "CI= $CI"
-#     - ls -la
-#     - module load "$CUDA_MODULE"
-#     - likwid-topology
-#     - likwid-perfctr -i
-#     - likwid-perfctr -a
-#     - export JULIA_CUDA_USE_BINARYBUILDER=false
-#     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
-#     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
-#     - cd docs
-#     - ../bin/julia --color=yes build_docs.jl
-#   allow_failure: true
+  allow_failure: false
