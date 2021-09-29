@@ -1,4 +1,4 @@
-# likwid-perfctr -C 0 -g FLOPS_DP -m julia perfctr.jl
+# perfctr.jl
 using LIKWID
 using LinearAlgebra
 

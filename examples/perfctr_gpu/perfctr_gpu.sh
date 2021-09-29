@@ -1,0 +1,1 @@
+likwid-perfctr -G 0 -W FLOPS_SP -m julia --project=. perfctr_gpu.jl > perfctr_gpu.out
