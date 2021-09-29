@@ -1,54 +1,49 @@
-INFO: You are running LIKWID in a cpuset with 1 CPUs. Taking given IDs as logical ID in cpuset
 --------------------------------------------------------------------------------
-CPU name:	Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
-CPU type:	Intel Skylake SP processor
-CPU clock:	2.20 GHz
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 Region saxpy_cpu, Group 1: FLOPS_SP
-+-------------------+-------------+
-|    Region Info    | HWThread 10 |
-+-------------------+-------------+
-| RDTSC Runtime [s] |    0.104644 |
-|     call count    |           1 |
-+-------------------+-------------+
-
-+------------------------------------------+---------+-------------+
-|                   Event                  | Counter | HWThread 10 |
-+------------------------------------------+---------+-------------+
-|             INSTR_RETIRED_ANY            |  FIXC0  |    60497320 |
-|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |   300657400 |
-|           CPU_CLK_UNHALTED_REF           |  FIXC2  |   228230300 |
-| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |           0 |
-|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |         111 |
-| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |    25000000 |
-| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |           0 |
-+------------------------------------------+---------+-------------+
-
-+----------------------+-------------+
-|        Metric        | HWThread 10 |
-+----------------------+-------------+
-|  Runtime (RDTSC) [s] |      0.1046 |
-| Runtime unhalted [s] |      0.1367 |
-|      Clock [MHz]     |   2897.9539 |
-|          CPI         |      4.9698 |
-|     SP [MFLOP/s]     |   1911.2503 |
-|   AVX SP [MFLOP/s]   |   1911.2492 |
-|  AVX512 SP [MFLOP/s] |           0 |
-|   Packed [MUOPS/s]   |    238.9062 |
-|   Scalar [MUOPS/s]   |      0.0011 |
-|  Vectorization ratio |     99.9996 |
-+----------------------+-------------+
-
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.090796 |
+|     call count    |          1 |
++-------------------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |   59866700 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  344927500 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  298780700 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |        111 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |   25000000 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.0908 |
+| Runtime unhalted [s] |     0.1045 |
+|      Clock [MHz]     |  3809.5859 |
+|          CPI         |     5.7616 |
+|     SP [MFLOP/s]     |  2202.7354 |
+|   AVX SP [MFLOP/s]   |  2202.7341 |
+|  AVX512 SP [MFLOP/s] |          0 |
+|   Packed [MUOPS/s]   |   275.3418 |
+|   Scalar [MUOPS/s]   |     0.0012 |
+|  Vectorization ratio |    99.9996 |
++----------------------+------------+
 Region saxpy_gpu, Group 1: FLOPS_SP
 +-------------------+----------+
 |    Region Info    |   GPU 0  |
 +-------------------+----------+
-| RDTSC Runtime [s] | 0.013071 |
+| RDTSC Runtime [s] | 0.010824 |
 |     call count    |        1 |
 +-------------------+----------+
-
 +----------------------------------------------------+---------+-----------+
 |                        Event                       | Counter |   GPU 0   |
 +----------------------------------------------------+---------+-----------+
@@ -56,11 +51,9 @@ Region saxpy_gpu, Group 1: FLOPS_SP
 | SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM |   GPU1  |         0 |
 | SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM |   GPU2  | 100000000 |
 +----------------------------------------------------+---------+-----------+
-
 +---------------------+------------+
 |        Metric       |    GPU 0   |
 +---------------------+------------+
-| Runtime (RDTSC) [s] |     0.0131 |
-|     SP [MFLOP/s]    | 15300.8959 |
+| Runtime (RDTSC) [s] |     0.0108 |
+|     SP [MFLOP/s]    | 18477.1502 |
 +---------------------+------------+
-

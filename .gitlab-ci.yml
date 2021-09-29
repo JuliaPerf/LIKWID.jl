@@ -170,7 +170,9 @@ julia/1.7-examples:
     CUDA_MODULE: cuda/11.0
   rules:
     - changes:
-      - "examples/**/*"
+      - "examples/**/*.sh"
+      - "examples/**/*.jl"
+      - "examples/**/*.toml"
       - ".gitlab-ci.yml"
       when: on_success
     - when: never
