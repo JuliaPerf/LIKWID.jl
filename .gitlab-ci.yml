@@ -188,22 +188,20 @@ julia/1.6-examples:
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - export PATH=$PWD/bin:$PATH
-    - julia -E '1+2'
+    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
     - cd examples/perfctr
-    - likwid-perfctr -C 0 -g FLOPS_DP -m ../../bin/julia -E '1+2'
-    - likwid-perfctr -C 0 -g FLOPS_DP -m julia -E '1+2'
-    - likwid-perfctr -C 0 -g FLOPS_DP -m ../../bin/julia --project=../.. -E '1+2'
-    - likwid-perfctr -C 0 -g FLOPS_DP -m ../../bin/julia --project=../.. -E 'include("perfctr.jl")'
     - sh perfctr.sh
     - cat perfctr.out
     - sh perfmon.sh
     - cat perfmon.out
     - cd ../..
     - cd examples/perfctr_gpu
+    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
     - sh perfctr_gpu.sh
     - cat perfctr_gpu.out
     - cd ../..
     - cd examples/perfctr_saxpy
+    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
     - sh perfctr_saxpy.sh
     - cat perfctr_saxpy.out
     - cd ../..
