@@ -31,6 +31,9 @@ makedocs(
         "CLI Tools" => [
             "likwid-pin" => "likwid-pin.md",
         ],
+        "Examples" => [
+            "SAXPY CPU+GPU" => "examples/saxpy.md",
+        ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
 )

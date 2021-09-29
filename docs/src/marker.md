@@ -27,6 +27,49 @@ LIKWID.Marker.close()
 Running this file with the command `likwid-perfctr -C 0 -g FLOPS_DP -m julia perfctr.jl` one should obtain something like the following:
 ```
 --------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region matmul, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.621329 |
+|     call count    |          1 |
++-------------------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 4151839000 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 2548859000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 2004161000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |       1572 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |          0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |   26624000 |
++------------------------------------------+---------+------------+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.6213 |
+| Runtime unhalted [s] |     0.7724 |
+|      Clock [MHz]     |  4196.5492 |
+|          CPI         |     0.6139 |
+|     DP [MFLOP/s]     |   342.8031 |
+|   AVX DP [MFLOP/s]   |   342.8006 |
+|  AVX512 DP [MFLOP/s] |   342.8006 |
+|   Packed [MUOPS/s]   |    42.8501 |
+|   Scalar [MUOPS/s]   |     0.0025 |
+|  Vectorization ratio |    99.9941 |
++----------------------+------------+
+```
+### SIMD / AVX
+
+Let's run the same example on a Rocketlacke processor. We might get the following.
+```
+--------------------------------------------------------------------------------
 CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
 CPU type:	Intel Rocketlake processor
 CPU clock:	3.60 GHz
@@ -68,7 +111,7 @@ Region matmul, Group 1: FLOPS_DP
 +----------------------+------------+
 ```
 
-**Sidenote**: Given the absence of AVX calls, it seems like OpenBLAS is falling back to a suboptimal Nehalem kernel. If we install [MKL.jl](https://github.com/JuliaLinearAlgebra/MKL.jl) and add `using MKL` to the top of our script above, the metrics table becomes
+Given the absence of AVX calls, it seems like OpenBLAS is falling back to a suboptimal Nehalem kernel. If we install [MKL.jl](https://github.com/JuliaLinearAlgebra/MKL.jl) and add `using MKL` to the top of our script above, the metrics table becomes
 
 ```
 +----------------------+------------+
