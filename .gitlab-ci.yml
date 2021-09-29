@@ -50,6 +50,7 @@ build-likwid:
     expire_in: 1 week
 
 # This job tests the LIKWID.jl interface with Julia 1.6
+# + generates and submits code coverage to codecov.io
 julia/1.6:
   stage: test
   tags:
@@ -80,7 +81,9 @@ julia/1.6:
     - export JULIA_CUDA_USE_BINARYBUILDER=false
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
-    - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
+    - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test(; coverage = true);'
+    - bin/julia --color=yes --project=test/coverage -e 'import Pkg; Pkg.instantiate()'
+    - bin/julia --color=yes --project=test/coverage test/coverage/coverage.jl
     
 # This job tests the LIKWID.jl interface with Julia 1.7-rc1
 julia/1.7-rc1:
@@ -185,6 +188,7 @@ julia/1.6-examples:
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - export PATH=bin:$PATH
+    - julia -E '1+2'
     - cd examples/perfctr
     - sh perfctr.sh
     - cat perfctr.out
