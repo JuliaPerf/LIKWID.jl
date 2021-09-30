@@ -1,0 +1,70 @@
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region scalar_add, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.000002 |
+|     call count    |        100 |
++-------------------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |     426200 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |     778416 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |     780648 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |       1100 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |          0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
++----------------------+--------------+
+|        Metric        |  HWThread 0  |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 1.844947e-06 |
+| Runtime unhalted [s] |       0.0002 |
+|      Clock [MHz]     |    3290.5534 |
+|          CPI         |       1.8264 |
+|     DP [MFLOP/s]     |     596.2231 |
+|   AVX DP [MFLOP/s]   |            0 |
+|  AVX512 DP [MFLOP/s] |            0 |
+|   Packed [MUOPS/s]   |            0 |
+|   Scalar [MUOPS/s]   |     596.2231 |
+|  Vectorization ratio |            0 |
++----------------------+--------------+
+Region matmul, Group 1: FLOPS_DP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.595301 |
+|     call count    |          1 |
++-------------------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 3176059000 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 2220801000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 1897046000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |       1465 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |          0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE |   PMC3  |   26624000 |
++------------------------------------------+---------+------------+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.5953 |
+| Runtime unhalted [s] |     0.6730 |
+|      Clock [MHz]     |  3863.1736 |
+|          CPI         |     0.6992 |
+|     DP [MFLOP/s]     |   357.7913 |
+|   AVX DP [MFLOP/s]   |   357.7888 |
+|  AVX512 DP [MFLOP/s] |   357.7888 |
+|   Packed [MUOPS/s]   |    44.7236 |
+|   Scalar [MUOPS/s]   |     0.0025 |
+|  Vectorization ratio |    99.9945 |
++----------------------+------------+

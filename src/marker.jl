@@ -130,7 +130,7 @@ function region(f, regiontag::AbstractString)
 end
 
 """
-Convenience macro for [`Marker.region`](@ref).
+Convenience macro for flanking code with [`Marker.startregion`](@ref) and [`Marker.stopregion`](@ref).
 
 # Examples
 ```julia
@@ -150,9 +150,9 @@ julia> LIKWID.Marker.close()
 """
 macro region(regiontag, expr)
     q = quote
-        LIKWID.Marker.region($regiontag) do
-            $(expr)
-        end
+        LIKWID.Marker.startregion($regiontag)
+        $(expr)
+        LIKWID.Marker.stopregion($regiontag)
     end
     return esc(q)
 end
