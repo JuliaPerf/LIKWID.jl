@@ -203,6 +203,8 @@ julia/1.7-examples:
     - julia --project=. -e 'import Pkg; Pkg.instantiate()'
     - sh perfctr_gpu.sh
     - cat perfctr_gpu.out
+    - sh perfctr_gpu_convenience.sh
+    - cat perfctr_gpu_convenience.out
     - cd ../..
     - cd examples/perfctr_saxpy
     - julia --project=. -e 'import Pkg; Pkg.instantiate()'

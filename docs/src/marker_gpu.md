@@ -60,6 +60,26 @@ Region matmul, Group 1: FLOPS_SP
 +---------------------+---------+
 ```
 
+### Convenience macro
+
+We provide (and export) the macro `@gpuregion` which can be used to write regions like
+
+```julia
+LIKWID.GPUMarker.startregion("matmul")
+for _ in 1:100
+    mul!(Cgpu, Agpu, Bgpu)
+end
+LIKWID.GPUMarker.stopregion("matmul")
+```
+
+simply as
+
+```julia
+@gpuregion "matmul" for _ in 1:100
+    mul!(Cgpu, Agpu, Bgpu)
+end
+```
+
 ## `likwid-perfctr` in a nutshell
 
 **Most importantly**, as for CPUs, you need to use the `-m` option to activate the marker API.

@@ -1,4 +1,4 @@
-# perfctr.jl
+# perfctr_convenience.jl
 using LIKWID
 using LinearAlgebra
 

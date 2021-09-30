@@ -56,6 +56,8 @@ include("markerfile.jl")
 include("topology_gpu.jl")
 include("nvmon.jl")
 include("marker_gpu.jl")
+import .GPUMarker: gpuregion, @gpuregion
+export gpuregion, @gpuregion
 include("frequency.jl")
 include("pin.jl")
 

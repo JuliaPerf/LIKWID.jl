@@ -377,7 +377,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
                 @test exec(`$julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
             # with active gpu marker api
-            @testset "$f" for f in ["test_marker_gpu.jl"]
+            @testset "$f" for f in ["test_marker_gpu.jl", "test_marker_gpu_convenience.jl"]
                 @test exec(`$perfctr -G 0 -W $(perfgrp_gpu) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
         end
