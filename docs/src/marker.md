@@ -65,6 +65,27 @@ Region matmul, Group 1: FLOPS_DP
 |  Vectorization ratio |    99.9941 |
 +----------------------+------------+
 ```
+
+### Convenience macro
+
+We provide (and export) the macro `@region` which can be used to write regions like
+
+```julia
+LIKWID.Marker.startregion("matmul")
+for _ in 1:100
+    mul!(C, A, B)
+end
+LIKWID.Marker.stopregion("matmul")
+```
+
+simply as
+
+```julia
+@region "matmul" for _ in 1:100
+    mul!(C, A, B)
+end
+```
+
 ### SIMD / AVX
 
 Let's run the same example on a Rocketlacke processor. We might get the following.

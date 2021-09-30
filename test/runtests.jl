@@ -260,7 +260,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
     @testset "Marker API (CPU)" begin
         # with active marker api
-        @testset "$f" for f in ["test_marker.jl"]
+        @testset "$f" for f in ["test_marker.jl", "test_marker_convenience.jl"]
             @test exec(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         end
         # without marker api

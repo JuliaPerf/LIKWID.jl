@@ -50,6 +50,8 @@ include("access.jl")
 include("perfmon.jl")
 include("misc.jl")
 include("marker.jl")
+import .Marker: region, @region
+export region, @region
 include("markerfile.jl")
 include("topology_gpu.jl")
 include("nvmon.jl")
