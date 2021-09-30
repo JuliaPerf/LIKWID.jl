@@ -2,16 +2,16 @@
 using LIKWID
 using LinearAlgebra
 
-LIKWID.Marker.init()
+Marker.init()
 
 A = rand(128, 64)
 B = rand(64, 128)
 C = zeros(128, 128)
 
-LIKWID.Marker.startregion("matmul")
+Marker.startregion("matmul")
 for _ in 1:100
     mul!(C, A, B)
 end
-LIKWID.Marker.stopregion("matmul")
+Marker.stopregion("matmul")
 
-LIKWID.Marker.close()
+Marker.close()

@@ -9,19 +9,19 @@
 using LIKWID
 using LinearAlgebra
 
-LIKWID.Marker.init()
+Marker.init()
 
 A = rand(128, 64)
 B = rand(64, 128)
 C = zeros(128, 128)
 
-LIKWID.Marker.startregion("matmul")
+Marker.startregion("matmul")
 for _ in 1:100
     mul!(C, A, B)
 end
-LIKWID.Marker.stopregion("matmul")
+Marker.stopregion("matmul")
 
-LIKWID.Marker.close()
+Marker.close()
 ```
 
 Running this file with the command `likwid-perfctr -C 0 -g FLOPS_DP -m julia perfctr.jl` one should obtain something like the following:
@@ -71,11 +71,11 @@ Region matmul, Group 1: FLOPS_DP
 We provide (and export) the macro `@region` which can be used to write regions like
 
 ```julia
-LIKWID.Marker.startregion("matmul")
+Marker.startregion("matmul")
 for _ in 1:100
     mul!(C, A, B)
 end
-LIKWID.Marker.stopregion("matmul")
+Marker.stopregion("matmul")
 ```
 
 simply as

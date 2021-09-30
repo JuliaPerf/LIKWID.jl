@@ -100,7 +100,7 @@ Note that `LIKWID.GPUMarker.init()` and `LIKWID.GPUMarker.close()` must be calle
 ```julia
 julia> using LIKWID, CUDA
 
-julia> LIKWID.GPUMarker.init()
+julia> GPUMarker.init()
 
 julia> gpuregion("sleeping...") do
            sleep(1)
@@ -110,7 +110,7 @@ true
 julia> gpuregion(()->CUDA.rand(100), "create rand vec")
 true
 
-julia> LIKWID.GPUMarker.close()
+julia> GPUMarker.close()
 
 ```
 """
@@ -127,7 +127,7 @@ Convenience macro for flanking code with [`GPUMarker.startregion`](@ref) and [`G
 ```julia
 julia> using LIKWID, CUDA
 
-julia> LIKWID.GPUMarker.init()
+julia> GPUMarker.init()
 
 julia> @gpuregion "sleeping..." sleep(1)
 true
@@ -135,7 +135,7 @@ true
 julia> @gpuregion "create rand vec" CUDA.rand(100)
 true
 
-julia> LIKWID.GPUMarker.close()
+julia> GPUMarker.close()
 
 ```
 """

@@ -3,10 +3,10 @@ using LIKWID
 using LinearAlgebra
 
 # julia must have been started with `likwid-perfctr -C ... -g ... -m`
-@assert LIKWID.Marker.isactive()
+@assert Marker.isactive()
 
 # init
-@test isnothing(LIKWID.Marker.init())
+@test isnothing(Marker.init())
 
 N = 100_000_000
 a = 3.141f0
@@ -27,4 +27,4 @@ B = rand(100,100)
 end
 
 # close
-@test isnothing(LIKWID.Marker.close())
+@test isnothing(Marker.close())

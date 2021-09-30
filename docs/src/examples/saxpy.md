@@ -28,21 +28,17 @@ function saxpy_gpu!(z,a,x,y)
     CUDA.@sync z .= a .* x .+ y
 end
 
-LIKWID.Marker.init()
-LIKWID.GPUMarker.init()
+Marker.init()
+GPUMarker.init()
 
 saxpy_cpu!(z,a,x,y)
-LIKWID.Marker.startregion("saxpy_cpu")
-saxpy_cpu!(z,a,x,y)
-LIKWID.Marker.stopregion("saxpy_cpu")
+@region "saxpy_cpu" saxpy_cpu!(z,a,x,y)
 
 saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-LIKWID.GPUMarker.startregion("saxpy_gpu")
-saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-LIKWID.GPUMarker.stopregion("saxpy_gpu")
+@gpuregion "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
 
-LIKWID.Marker.close()
-LIKWID.GPUMarker.close()
+Marker.close()
+GPUMarker.close()
 ```
 
 Possible output:

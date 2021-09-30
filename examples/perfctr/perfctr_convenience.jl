@@ -2,7 +2,7 @@
 using LIKWID
 using LinearAlgebra
 
-LIKWID.Marker.init()
+Marker.init()
 
 A = rand(128, 64)
 B = rand(64, 128)
@@ -18,4 +18,4 @@ end
     end
 end
 
-LIKWID.Marker.close()
+Marker.close()

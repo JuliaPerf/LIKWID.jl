@@ -5,7 +5,7 @@ using CUDA
 
 @assert CUDA.functional()
 
-LIKWID.GPUMarker.init()
+GPUMarker.init()
 
 # Note: CUDA defaults to Float32
 Agpu = CUDA.rand(128, 64)
@@ -16,4 +16,4 @@ Cgpu = CUDA.zeros(128, 128)
     mul!(Cgpu, Agpu, Bgpu)
 end
 
-LIKWID.GPUMarker.close()
+GPUMarker.close()

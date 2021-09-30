@@ -3,7 +3,7 @@ using LIKWID
 
 const MARKERFILE = "markerfile.txt"
 
-LIKWID.Marker.init()
+Marker.init()
 @test LIKWID.MarkerFile.read(MARKERFILE)
 @test LIKWID.MarkerFile.numregions() == 2
 @test LIKWID.MarkerFile.regiontag(0) == "matmul"
@@ -16,4 +16,4 @@ LIKWID.Marker.init()
 @test LIKWID.MarkerFile.regioncount(0,0) == 1
 @test LIKWID.MarkerFile.regionresult(0,0,0) ≈ 3.341458e9
 @test LIKWID.MarkerFile.regionmetric(0,0,0) ≈ 14.57989
-LIKWID.Marker.close()
+Marker.close()

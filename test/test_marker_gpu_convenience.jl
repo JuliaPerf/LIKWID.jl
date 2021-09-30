@@ -6,10 +6,10 @@ using CUDA
 @assert CUDA.functional()
 
 # julia must have been started with `likwid-perfctr -G ... -W ... -m`
-@assert LIKWID.GPUMarker.isactive()
+@assert GPUMarker.isactive()
 
 # init
-@test isnothing(LIKWID.GPUMarker.init())
+@test isnothing(GPUMarker.init())
 
 N = 100_000_000
 a = 3.141f0
@@ -31,6 +31,6 @@ B = CUDA.rand(100,100)
 end
 
 # close
-@test isnothing(LIKWID.GPUMarker.close())
+@test isnothing(GPUMarker.close())
 
 

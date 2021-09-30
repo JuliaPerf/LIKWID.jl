@@ -50,14 +50,16 @@ include("access.jl")
 include("perfmon.jl")
 include("misc.jl")
 include("marker.jl")
+import .Marker
 import .Marker: region, @region
-export region, @region
+export Marker, region, @region
 include("markerfile.jl")
 include("topology_gpu.jl")
 include("nvmon.jl")
 include("marker_gpu.jl")
+import .GPUMarker
 import .GPUMarker: gpuregion, @gpuregion
-export gpuregion, @gpuregion
+export GPUMarker, gpuregion, @gpuregion
 include("frequency.jl")
 include("pin.jl")
 

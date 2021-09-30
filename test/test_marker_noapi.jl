@@ -3,10 +3,10 @@ using LIKWID
 using LinearAlgebra
 
 # julia should NOT have been started with `likwid-perfctr -C ... -g ... -m` for this test file
-@assert !LIKWID.Marker.isactive()
+@assert !Marker.isactive()
 
 # init
-@test isnothing(LIKWID.Marker.init())
+@test isnothing(Marker.init())
 
 N = 100_000_000
 a = 3.141f0
@@ -18,22 +18,22 @@ saxpy!(z,a,x,y) = z .= a .* x .+ y
 
 # regular workflow
 saxpy!(z,a,x,y)
-@test !LIKWID.Marker.startregion("saxpy!")
+@test !Marker.startregion("saxpy!")
 saxpy!(z,a,x,y)
-@test !LIKWID.Marker.stopregion("saxpy!")
+@test !Marker.stopregion("saxpy!")
 
 # nextgroup
-@test isnothing(LIKWID.Marker.nextgroup())
+@test isnothing(Marker.nextgroup())
 
 # registerregion
 A = rand(100,100)
 B = rand(100,100)
-@test !LIKWID.Marker.registerregion("mul")
-@test !LIKWID.Marker.startregion("mul")
+@test !Marker.registerregion("mul")
+@test !Marker.startregion("mul")
 for _ in 1:10
     A * B
 end
-@test !LIKWID.Marker.stopregion("mul")
+@test !Marker.stopregion("mul")
 
 # close
-@test isnothing(LIKWID.Marker.close())
+@test isnothing(Marker.close())

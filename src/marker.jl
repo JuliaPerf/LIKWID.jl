@@ -109,7 +109,7 @@ Note that `LIKWID.Marker.init()` and `LIKWID.Marker.close()` must be called befo
 ```julia
 julia> using LIKWID
 
-julia> LIKWID.Marker.init()
+julia> Marker.init()
 
 julia> region("sleeping...") do
            sleep(1)
@@ -119,7 +119,7 @@ true
 julia> region(()->rand(100), "create rand vec")
 true
 
-julia> LIKWID.Marker.close()
+julia> Marker.close()
 
 ```
 """
@@ -136,7 +136,7 @@ Convenience macro for flanking code with [`Marker.startregion`](@ref) and [`Mark
 ```julia
 julia> using LIKWID
 
-julia> LIKWID.Marker.init()
+julia> Marker.init()
 
 julia> @region "sleeping..." sleep(1)
 true
@@ -144,7 +144,7 @@ true
 julia> @region "create rand vec" rand(100)
 true
 
-julia> LIKWID.Marker.close()
+julia> Marker.close()
 
 ```
 """
