@@ -2,7 +2,14 @@
 
 **Note:** This is a maturing feature. Only NVIDIA GPUs are supported.
 
-## Functions
+## API
+
+```@index
+Pages   = ["nvmon.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@autodocs
 Modules = [LIKWID.NvMon]

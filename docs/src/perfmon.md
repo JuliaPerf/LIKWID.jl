@@ -59,13 +59,20 @@ OrderedCollections.OrderedDict{String, Float64} with 7 entries:
   "FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE" => 3.328e6
 ```
 
-## Functions
+## API
+
+```@index
+Pages   = ["perfmon.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@autodocs
 Modules = [LIKWID.PerfMon]
 ```
 
-## Types
+### Types
 
 ```@docs
 LIKWID.GroupInfoCompact

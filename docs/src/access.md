@@ -4,7 +4,14 @@ using LIKWID
 
 # HPM / Access
 
-## Functions
+## API
+
+```@index
+Pages   = ["access.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@autodocs
 Modules = [LIKWID.HPM]

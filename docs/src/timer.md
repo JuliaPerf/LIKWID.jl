@@ -24,7 +24,14 @@ LIKWID.Timer.get_clock_cycles(t_stop)
 LIKWID.Timer.finalize()
 ```
 
-## Functions
+## API
+
+```@index
+Pages   = ["timer.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@docs
 LIKWID.Timer.init

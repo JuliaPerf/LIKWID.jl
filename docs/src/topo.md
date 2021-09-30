@@ -34,20 +34,28 @@ Currently, LIKWID.jl doesn't feature a native graphical visualization of the CPU
 LIKWID.print_cpu_topology()
 ```
 
-## Functions
+## API
 
-```@docs
-LIKWID.init_topology()
-LIKWID.finalize_topology()
-LIKWID.get_cpu_topology()
-LIKWID.get_cpu_info()
-LIKWID.print_supported_cpus()
-LIKWID.init_numa()
-LIKWID.finalize_numa()
-LIKWID.get_numa_topology()
+```@index
+Pages   = ["topo.md"]
+Order   = [:function, :type]
 ```
 
-## Types
+### Functions
+
+
+```@docs
+LIKWID.init_topology
+LIKWID.finalize_topology
+LIKWID.get_cpu_topology
+LIKWID.get_cpu_info
+LIKWID.print_supported_cpus
+LIKWID.init_numa
+LIKWID.finalize_numa
+LIKWID.get_numa_topology
+```
+
+### Types
 
 ```@docs
 LIKWID.CpuTopology
@@ -56,11 +64,4 @@ LIKWID.HWThread
 LIKWID.CacheLevel
 LIKWID.NumaTopology
 LIKWID.NumaNode
-```
-
-## Supported CPUs
-
-```@repl likwid
-LIKWID.print_supported_cpus()
-LIKWID.print_supported_cpus(; cprint=false) # hide
 ```

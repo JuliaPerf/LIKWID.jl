@@ -24,7 +24,14 @@ end
 ```
 
 
-## Functions
+## API
+
+```@index
+Pages   = ["power.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@docs
 LIKWID.Power.init
@@ -36,7 +43,7 @@ LIKWID.Power.get_power
 LIKWID.Power.measure
 ```
 
-## Types
+### Types
 
 ```@docs
 LIKWID.PowerInfo

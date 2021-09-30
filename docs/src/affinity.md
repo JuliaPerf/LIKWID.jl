@@ -12,7 +12,14 @@ aff = LIKWID.get_affinity()
 aff.domains
 ```
 
-## Functions
+## API
+
+```@index
+Pages   = ["affinity.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@docs
 LIKWID.init_affinity
@@ -21,7 +28,7 @@ LIKWID.get_affinity
 LIKWID.cpustr_to_cpulist
 ```
 
-## Types
+### Types
 
 ```@docs
 LIKWID.AffinityDomains

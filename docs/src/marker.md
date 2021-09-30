@@ -68,7 +68,7 @@ Region matmul, Group 1: FLOPS_DP
 
 ### Convenience macro
 
-We provide (and export) the macro `@region` which can be used to write regions like
+We provide (and export) the macro [`@region`](@ref) which can be used to write regions like
 
 ```julia
 Marker.startregion("matmul")
@@ -200,7 +200,14 @@ Combinding the points above, the full command could look like this: `likwid-perf
 
 For more information, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr).
 
-## Functions
+## API
+
+```@index
+Pages   = ["marker.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@autodocs
 Modules = [LIKWID.Marker]

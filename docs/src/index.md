@@ -12,3 +12,14 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 ```julia
 ] add LIKWID
 ```
+
+## Supported CPUs
+
+```@setup likwid
+using LIKWID
+```
+
+```@repl likwid
+LIKWID.print_supported_cpus()
+LIKWID.print_supported_cpus(; cprint=false) # hide
+```

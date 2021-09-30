@@ -62,7 +62,7 @@ Region matmul, Group 1: FLOPS_SP
 
 ### Convenience macro
 
-We provide (and export) the macro `@gpuregion` which can be used to write regions like
+We provide (and export) the macro [`@gpuregion`](@ref) which can be used to write regions like
 
 ```julia
 GPUMarker.startregion("matmul")
@@ -103,7 +103,14 @@ Combinding the points above, the full command could look like this: `likwid-perf
 
 For more information, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr).
 
-## Functions
+## API
+
+```@index
+Pages   = ["marker_gpu.md"]
+Order   = [:function, :type]
+```
+
+### Functions
 
 ```@autodocs
 Modules = [LIKWID.GPUMarker]

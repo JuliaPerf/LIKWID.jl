@@ -27,6 +27,7 @@ makedocs(
             "Power / Energy" => "power.md",
             "Affinity" => "affinity.md",
             "HPM / Access" => "access.md",
+            "Misc" => "misc.md",
         ],
         "CLI Tools" => [
             "likwid-pin" => "likwid-pin.md",
