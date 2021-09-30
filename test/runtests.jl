@@ -154,6 +154,14 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(p_stop) == Int64
         res = LIKWID.Power.get_power(p_start, p_stop, 0)
         @test unit(res) == u"μJ"
+        
+        # convenience functions / macros
+        res = LIKWID.Power.measure(; cpuid=0, domainid=0) do
+            sleep(0.5)
+        end
+        @test unit(res) == u"μJ"
+        @test typeof(ustrip(res)) == Float64 
+
         @test isnothing(LIKWID.Power.finalize())
     end
 
