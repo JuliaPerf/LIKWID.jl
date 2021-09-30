@@ -61,12 +61,12 @@ julia/1.6:
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
   rules:
-    - changes:
-      - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
-      - "docs/build_docs.jl"
-      when: never
+    # - changes:
+    #   - "README.md"
+    #   - "docs/**/*.md"
+    #   - "docs/make.jl"
+    #   - "docs/build_docs.jl"
+    #   when: never
     - when: on_success
   needs:
     job: build-likwid
@@ -96,12 +96,12 @@ julia/1.7-rc1:
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
   rules:
-    - changes:
-      - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
-      - "docs/build_docs.jl"
-      when: never
+    # - changes:
+    #   - "README.md"
+    #   - "docs/**/*.md"
+    #   - "docs/make.jl"
+    #   - "docs/build_docs.jl"
+    #   when: never
     - when: on_success
   needs:
     job: build-likwid
@@ -131,12 +131,12 @@ julia/nightly:
   needs:
     job: build-likwid
   rules:
-    - changes:
-      - "README.md"
-      - "docs/**/*.md"
-      - "docs/make.jl"
-      - "docs/build_docs.jl"
-      when: never
+    # - changes:
+    #   - "README.md"
+    #   - "docs/**/*.md"
+    #   - "docs/make.jl"
+    #   - "docs/build_docs.jl"
+    #   when: never
     - when: on_success
   before_script:
     - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
@@ -194,6 +194,8 @@ julia/1.7-examples:
     - cd examples/perfctr
     - sh perfctr.sh
     - cat perfctr.out
+    - sh perfctr_convenience.sh
+    - cat perfctr_convenience.out
     - sh perfmon.sh
     - cat perfmon.out
     - cd ../..
