@@ -4,6 +4,7 @@ using CUDA
 using Libdl
 using OrderedCollections
 using Unitful
+using Random
 
 # check if we are a GitHub runner
 const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
@@ -43,7 +44,12 @@ else
     end
 end
 
-const perfctr = `likwid-perfctr`
+@show Threads.nthreads()
+const TEST_THREADS = Threads.nthreads() > 1
+TEST_THREADS || @warn("Threads.nthreads == 1 -> NOT running multithreading tests!")
+
+const likwidperfctr = `likwid-perfctr`
+const likwidpin = `likwid-pin`
 const julia = Base.julia_cmd()
 const testdir = @__DIR__
 const pkgdir = joinpath(@__DIR__, "..")
@@ -53,6 +59,7 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
 exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
 @testset "LIKWID.jl" begin
+    # ------- Regular -------
     @testset "Topology" begin
         @test LIKWID.init_topology()
         cputopo = LIKWID.get_cpu_topology()
@@ -253,15 +260,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
     @testset "Misc" begin
         @test LIKWID.setverbosity(0)
-        @test typeof(LIKWID.get_processor_id()) == Int
-        @test typeof(LIKWID.pinprocess(0)) == Bool
-        @test typeof(LIKWID.pinthread(0)) == Bool
     end
 
     @testset "Marker API (CPU)" begin
         # with active marker api
         @testset "$f" for f in ["test_marker.jl", "test_marker_convenience.jl"]
-            @test exec(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+            @test exec(`$likwidperfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         end
         # without marker api
         @testset "$f" for f in ["test_marker_noapi.jl"]
@@ -271,15 +275,45 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
     @testset "Marker File Reader" begin
         f = "test_markerfile.jl"
-        @test exec(`$perfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+        @test exec(`$likwidperfctr -C 0 -g $(perfgrp) -m $julia --project=$(pkgdir) $(joinpath(testdir, f))`)
     end
 
     @testset "Pylikwid Example" begin
-        include("test_pylikwid.jl")
+        @test exec(`$julia --project=$(pkgdir) $(joinpath(testdir, "test_pylikwid.jl"))`)
+    end
+
+    # ------- Multithreading -------
+    if TEST_THREADS
+        @testset "likwid-pin" begin
+            # LIKWID.finalize() # reset liblikwid
+            topo = LIKWID.get_cpu_topology()
+            ncores = topo.numCoresPerSocket * topo.numSockets
+            
+            N = Threads.nthreads()
+            N ≤ ncores || @warn("Threads.nthreads() == $N > # of available cores!")
+            # N==8: 0xfffffffffffffe01
+            mask = LIKWID.pin_mask(N)
+            maskstr = "0x" * string(mask, pad = sizeof(mask)<<1, base = 16)
+            cores_firstN = string("0-", N-1)
+            cores_firstN_shuffled = join(shuffle(0:N-1), ",")
+            cores_rand = join(shuffle(0:ncores-1)[1:N], ",")
+            
+            @testset "$f" for f in ["test_pin.jl"]
+                withenv("OPENBLAS_NUM_THREADS" => 1) do
+                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN) -m $julia --project=$(pkgdir) $(joinpath(testdir, f)) $(cores_firstN)`)
+                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN_shuffled) -m $julia --project=$(pkgdir) $(joinpath(testdir, f)) $(cores_firstN_shuffled)`)
+                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_rand) -m $julia --project=$(pkgdir) $(joinpath(testdir, f)) $(cores_rand)`)
+                end
+            end
+        end
+
+        @testset "dynamic pinning" begin
+            @test exec(`$julia --project=$(pkgdir) $(joinpath(testdir, "test_pin_dynamic.jl"))`)
+        end
     end
 
     # ------- GPU -------
-    if hascuda
+    if TEST_GPU
         @testset "GPU Topology" begin
             @test LIKWID.init_topology_gpu()
             gputopo = LIKWID.get_gpu_topology()
@@ -378,7 +412,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             end
             # with active gpu marker api
             @testset "$f" for f in ["test_marker_gpu.jl", "test_marker_gpu_convenience.jl"]
-                @test exec(`$perfctr -G 0 -W $(perfgrp_gpu) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
+                @test exec(`$likwidperfctr -G 0 -W $(perfgrp_gpu) -m $julia --project=$(testdir) $(joinpath(testdir, f))`)
             end
         end
     end

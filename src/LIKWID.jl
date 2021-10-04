@@ -63,18 +63,40 @@ export GPUMarker, gpuregion, @gpuregion
 include("frequency.jl")
 include("pin.jl")
 
-function init()
-    # Marker.init()
-    # gpusupport() && GPUMarker.init()
-    # init_topology()
-    # init_numa()
-    # init_perfmon()
+function init(; gpu=false)
+    Marker.init()
+    init_topology()
+    init_numa()
+    init_affinity()
+    PerfMon.init()
+    HPM.init()
+    Timer.init()
+    Power.init()
+    Freq.init()
+    if gpu && gpusupport()
+        GPUMarker.init()
+        init_topology_gpu()
+        NvMon.init()
+    end
     return nothing
 end
 
-function finalize()
+function finalize(; gpu=true)
     Marker.close()
-    return gpusupport() && GPUMarker.close()
+    finalize_topology()
+    finalize_numa()
+    finalize_affinity()
+    PerfMon.finalize()
+    HPM.finalize()
+    Timer.finalize()
+    Power.finalize()
+    Freq.finalize()
+    if gpu && gpusupport()
+        GPUMarker.close()
+        finalize_topology_gpu()
+        NvMon.finalize()
+    end
+    return nothing
 end
 
 end

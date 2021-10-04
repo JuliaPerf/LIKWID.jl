@@ -10,9 +10,9 @@ OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
+CEnum = "0.4"
 OrderedCollections = "1.4"
 Unitful = "1.9"
-CEnum = "0.4"
 julia = "1"
 
 [extras]
@@ -20,7 +20,8 @@ CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "LinearAlgebra", "Printf", "CUDA", "Libdl"]
+test = ["Test", "LinearAlgebra", "Printf", "CUDA", "Libdl", "Random"]
