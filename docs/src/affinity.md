@@ -26,6 +26,12 @@ LIKWID.init_affinity
 LIKWID.finalize_affinity
 LIKWID.get_affinity
 LIKWID.cpustr_to_cpulist
+LIKWID.get_processor_id
+LIKWID.get_processor_ids
+LIKWID.get_processor_id_glibc
+LIKWID.pinprocess
+LIKWID.pinthread
+LIKWID.pinthreads
 ```
 
 ### Types
