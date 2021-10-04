@@ -21,5 +21,5 @@ using LIKWID
 
 ```@repl likwid
 LIKWID.print_supported_cpus()
-LIKWID.print_supported_cpus(; cprint=false) # hide
+Libc.flush_cstdio() # hide
 ```

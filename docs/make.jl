@@ -43,7 +43,7 @@ if ci
     deploydocs(
         repo = "github.com/JuliaPerf/LIKWID.jl.git",
         devbranch = "main",
-        push_preview = false,
+        push_preview = true,
         # target = "site",
     )
 end
