@@ -284,13 +284,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 
     # ------- Multithreading -------
     if TEST_THREADS
-        @testset "likwid-pin" begin
-            # LIKWID.finalize() # reset liblikwid
-            topo = LIKWID.get_cpu_topology()
-            ncores = topo.numCoresPerSocket * topo.numSockets
-            
-            N = Threads.nthreads()
-            N ≤ ncores || @warn("Threads.nthreads() == $N > # of available cores!")
+        # LIKWID.finalize() # reset liblikwid
+        topo = LIKWID.get_cpu_topology()
+        ncores = topo.numCoresPerSocket * topo.numSockets
+        N = Threads.nthreads()
+
+        @testset "likwid-pin" begin    
             # N==8: 0xfffffffffffffe01
             mask = LIKWID.pin_mask(N)
             maskstr = "0x" * string(mask, pad = sizeof(mask)<<1, base = 16)
@@ -300,15 +299,15 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             
             @testset "$f" for f in ["test_pin.jl"]
                 withenv("OPENBLAS_NUM_THREADS" => 1) do
-                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN) -m $julia --project=$(pkgdir) $(joinpath(testdir, f)) $(cores_firstN)`)
-                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN_shuffled) -m $julia --project=$(pkgdir) $(joinpath(testdir, f)) $(cores_firstN_shuffled)`)
-                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_rand) -m $julia --project=$(pkgdir) $(joinpath(testdir, f)) $(cores_rand)`)
+                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN) -m $julia --project=$(pkgdir) -t$(N) $(joinpath(testdir, f)) $(cores_firstN)`)
+                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN_shuffled) -m $julia --project=$(pkgdir) -t$(N) $(joinpath(testdir, f)) $(cores_firstN_shuffled)`)
+                    @test exec(`$likwidpin -s $(maskstr) -C $(cores_rand) -m $julia --project=$(pkgdir) -t$(N) $(joinpath(testdir, f)) $(cores_rand)`)
                 end
             end
         end
 
         @testset "dynamic pinning" begin
-            @test exec(`$julia --project=$(pkgdir) $(joinpath(testdir, "test_pin_dynamic.jl"))`)
+            @test exec(`$julia --project=$(pkgdir) -t$(N) $(joinpath(testdir, "test_pin_dynamic.jl"))`)
         end
     end
 
