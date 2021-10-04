@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>SAXPY CPU+GPU · LIKWID.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.svg" alt="LIKWID.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LIKWID.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">LIKWID</a></li><li><span class="tocitem">Marker API</span><ul><li><a class="tocitem" href="../../marker/">CPU</a></li><li><a class="tocitem" href="../../marker_gpu/">GPU</a></li></ul></li><li><span class="tocitem">Library</span><ul><li><a class="tocitem" href="../../topo/">CPU / NUMA Topology</a></li><li><a class="tocitem" href="../../perfmon/">Performance monitoring</a></li><li><a class="tocitem" href="../../topo_gpu/">GPU Topology</a></li><li><a class="tocitem" href="../../nvmon/">NVIDIA monitoring</a></li><li><a class="tocitem" href="../../timer/">CPU clock timer</a></li><li><a class="tocitem" href="../../temperature/">CPU temperature</a></li><li><a class="tocitem" href="../../power/">Power / Energy</a></li><li><a class="tocitem" href="../../affinity/">Affinity</a></li><li><a class="tocitem" href="../../access/">HPM / Access</a></li><li><a class="tocitem" href="../../misc/">Misc</a></li></ul></li><li><span class="tocitem">CLI Tools</span><ul><li><a class="tocitem" href="../../likwid-pin/">likwid-pin</a></li></ul></li><li><span class="tocitem">Examples</span><ul><li class="is-active"><a class="tocitem" href>SAXPY CPU+GPU</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>SAXPY CPU+GPU</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>SAXPY CPU+GPU</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com//blob/master/docs/src/examples/saxpy.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="SAXPY-CPUGPU"><a class="docs-heading-anchor" href="#SAXPY-CPUGPU">SAXPY CPU+GPU</a><a id="SAXPY-CPUGPU-1"></a><a class="docs-heading-anchor-permalink" href="#SAXPY-CPUGPU" title="Permalink"></a></h1><p>Example that demonstrates using the CPU and GPU Marker API together in one application.</p><pre><code class="language-julia hljs"># saxpy.jl
+using LIKWID
+using CUDA
+using LinearAlgebra
+
+@assert CUDA.functional()
+
+N = 100_000_000
+a = 3.141f0
+z = zeros(Float32, N)
+x = rand(Float32, N)
+y = rand(Float32, N)
+
+z_gpu = CUDA.zeros(Float32, N)
+x_gpu = CUDA.rand(Float32, N)
+y_gpu = CUDA.rand(Float32, N)
+
+function saxpy_cpu!(z,a,x,y)
+    z .= a .* x .+ y
+end
+
+function saxpy_gpu!(z,a,x,y)
+    CUDA.@sync z .= a .* x .+ y
+end
+
+Marker.init()
+GPUMarker.init()
+
+saxpy_cpu!(z,a,x,y)
+@region &quot;saxpy_cpu&quot; saxpy_cpu!(z,a,x,y)
+
+saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+@gpuregion &quot;saxpy_gpu&quot; saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+
+Marker.close()
+GPUMarker.close()</code></pre><p>Possible output:</p><pre><code class="nohighlight hljs">--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region saxpy_cpu, Group 1: FLOPS_SP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.090796 |
+|     call count    |          1 |
++-------------------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |   59866700 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  344927500 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  298780700 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |        111 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |   25000000 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.0908 |
+| Runtime unhalted [s] |     0.1045 |
+|      Clock [MHz]     |  3809.5859 |
+|          CPI         |     5.7616 |
+|     SP [MFLOP/s]     |  2202.7354 |
+|   AVX SP [MFLOP/s]   |  2202.7341 |
+|  AVX512 SP [MFLOP/s] |          0 |
+|   Packed [MUOPS/s]   |   275.3418 |
+|   Scalar [MUOPS/s]   |     0.0012 |
+|  Vectorization ratio |    99.9996 |
++----------------------+------------+
+Region saxpy_gpu, Group 1: FLOPS_SP
++-------------------+----------+
+|    Region Info    |   GPU 0  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.010824 |
+|     call count    |        1 |
++-------------------+----------+
++----------------------------------------------------+---------+-----------+
+|                        Event                       | Counter |   GPU 0   |
++----------------------------------------------------+---------+-----------+
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM |   GPU0  |         0 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM |   GPU1  |         0 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM |   GPU2  | 100000000 |
++----------------------------------------------------+---------+-----------+
++---------------------+------------+
+|        Metric       |    GPU 0   |
++---------------------+------------+
+| Runtime (RDTSC) [s] |     0.0108 |
+|     SP [MFLOP/s]    | 18477.1502 |
++---------------------+------------+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../likwid-pin/">« likwid-pin</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.7 on <span class="colophon-date" title="Monday 4 October 2021 11:29">Monday 4 October 2021</span>. Using Julia version 1.6.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
