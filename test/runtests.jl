@@ -61,7 +61,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
 @testset "LIKWID.jl" begin
     # ------- Regular -------
     @testset "Topology" begin
-            @test LIKWID.init_topology()
+        @test LIKWID.init_topology()
         cputopo = LIKWID.get_cpu_topology()
         @test typeof(cputopo) == LIKWID.CpuTopology
         cpuinfo = LIKWID.get_cpu_info()
