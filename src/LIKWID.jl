@@ -61,7 +61,6 @@ import .GPUMarker
 import .GPUMarker: gpuregion, @gpuregion
 export GPUMarker, gpuregion, @gpuregion
 include("frequency.jl")
-include("pin.jl")
 
 function init(; gpu=false)
     Marker.init()
