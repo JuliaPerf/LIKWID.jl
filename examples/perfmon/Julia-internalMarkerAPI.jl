@@ -213,12 +213,13 @@ function main()
     # using LIKWID_MARKER_SWITCH. These will not be inspected with
     # LIKWID_MARKER_GET, but will instead use the marker file to inspect
     # regions after this parallel block is finished.
-    @threads :static for threadid in 1:NUM_THREADS
-        # The code that is to be measured will be run multiple times to measure
-        # each group specified above. Using perfmon_getNumberOfGroups to get the
-        # number of iterations makes it easy to run the computations once for each
-        # group.
-        for i in 1:PerfMon.get_number_of_groups()
+
+    # The code that is to be measured will be run multiple times to measure
+    # each group specified above. Using perfmon_getNumberOfGroups to get the
+    # number of iterations makes it easy to run the computations once for each
+    # group.
+    for i in 1:PerfMon.get_number_of_groups()
+        @threads :static for threadid in 1:NUM_THREADS
             # Starting and stopping regions should be done in a parallel block. If
             # regions are started/stopped in a serial region, only the master
             # thread will be measured.
@@ -232,23 +233,22 @@ function main()
             Marker.stopregion("copy")
             Marker.stopregion("Total")
         end
+
+        # The barrier after stopping all regions but before switching groups
+        # is absolutely required: without it, some threads may
+        # not have stopped the "copy" and "Total" regions before switching
+        # groups, which causes erroneous results
+
+        # LIKWID_MARKER_SWITCH should only be run by a single thread. If it is
+        # called in a parallel region, it must be preceeded by a barrier and
+        # run in something like a "#pragma omp single" block to ensure only
+        # one thread runs it and all threads have stopped regions before
+        # switching groups.
+        # 
+        # Regions must be switched outside of all regions (e.g. after
+        # "LIKWID_MARKER_STOP" is called for each region)
+        Marker.nextgroup() # === LIKWID_MARKER_SWITCH
     end
-
-    # The barrier after stopping all regions but before switching groups
-    # is absolutely required: without it, some threads may
-    # not have stopped the "copy" and "Total" regions before switching
-    # groups, which causes erroneous results
-
-    # LIKWID_MARKER_SWITCH should only be run by a single thread. If it is
-    # called in a parallel region, it must be preceeded by a barrier and
-    # run in something like a "#pragma omp single" block to ensure only
-    # one thread runs it and all threads have stopped regions before
-    # switching groups.
-    # 
-    # Regions must be switched outside of all regions (e.g. after
-    # "LIKWID_MARKER_STOP" is called for each region)
-    Marker.nextgroup() # === LIKWID_MARKER_SWITCH
-
     println()
 
     # These computations are meaningless, but printing them is an easy way to
