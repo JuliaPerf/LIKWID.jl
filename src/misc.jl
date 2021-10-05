@@ -113,3 +113,25 @@ function capture_stderr(f::Function)
         s = read(path, String)
     end
 end
+
+"""
+List the values of `LIKWID_*` environment variables.
+"""
+function env()
+    d = Dict{String, String}()
+    d["LIKWID_FORCE"] = ""
+    d["LIKWID_NO_ACCESS"] = ""
+    d["LIKWID_PIN"] = ""
+    d["LIKWID_SILENT"] = ""
+    d["LIKWID_SKIP"] = ""
+    d["LIKWID_DEBUG"] = ""
+    d["LIKWID_IGNORE_CPUSET"] = ""
+    d["LIKWID_FILEPATH"] = ""
+    d["LIKWID_THREADS"] = ""
+    d["LIKWID_MPI_CONNECT"] = ""
+    for (k, v) in ENV
+        startswith(k, "LIKWID") || continue
+        d[k] = v
+    end
+    return d
+end

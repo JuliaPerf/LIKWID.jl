@@ -10,6 +10,7 @@ Order   = [:function, :type]
 ### Functions
 
 ```@docs
+LIKWID.env
 LIKWID.setverbosity
 LIKWID.gpusupport
 ```
