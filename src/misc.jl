@@ -1,4 +1,20 @@
 """
+    pinmask(N::Integer) -> mask
+Generates a `mask` that can be supplied to `likwid pin -s <mask>` to pin `N` Julia threads.
+
+Taken from https://discourse.julialang.org/t/thread-affinitization-pinning-julia-threads-to-cores/58069/8.
+"""
+function pinmask(N::Integer)
+    mask = UInt(0)
+    for i in 1:N
+        mask |= 1<<i
+    end
+    return _uint_to_hexmask(~mask) # Invert the mask to only pin Julia threads
+end
+
+_uint_to_hexmask(mask::UInt) = "0x" * string(mask, pad = sizeof(mask)<<1, base = 16)
+
+"""
 Set the verbosity level of the LIKWID library. Returns `true` on success.
 
 Options are:
@@ -125,6 +141,7 @@ function env()
     d["LIKWID_SILENT"] = ""
     d["LIKWID_SKIP"] = ""
     d["LIKWID_DEBUG"] = ""
+    d["LIKWID_FORCE_SETUP"] = ""
     d["LIKWID_IGNORE_CPUSET"] = ""
     d["LIKWID_FILEPATH"] = ""
     d["LIKWID_THREADS"] = ""
@@ -135,3 +152,103 @@ function env()
     end
     return d
 end
+
+"""
+Unset all `LIKWID_*` environment variables (for the current session).
+"""
+function clearenv()
+    for (k, v) in ENV
+        startswith(k, "LIKWID") || continue
+        ENV[k] = ""
+    end
+    return nothing
+end
+
+"""
+Enables the overwriting of counters that are detected to be in-use.
+The environment variable is similar to the `-f`/`--force` command line switch for `likwid-perfctr`.
+"""
+function LIKWID_FORCE end
+
+"""
+The execution does not require the access layer (access to hardware counters).
+For example, this variable is set by `likwid-topology` or `likwid-pin`.
+"""
+function LIKWID_NO_ACCESS end
+
+"""
+The comma-separated list contains the CPUs the application threads should be pinned to.
+Careful, the first CPU in the cpuset must be the last entry because the application is pinned to this CPU per default.
+"""
+function LIKWID_PIN end
+
+"""
+Disable stdout output caused by the library and the scripts.
+Some scripts provide the `-q`/`--quiet` command line switch which provides the same functionality.
+"""
+function LIKWID_SILENT end
+
+"""
+Variable content must be a hexmask.
+This hexmask describes which threads should be skipped while pinning.
+This function is required to avoid pinning the shepherd threads used by some OpenMP and MPI implementations.
+The version 4.3.1 introduced an automatic detection of the shepherd threads.
+In most cases the detection works, but if not, the hexmask overwrites the automatic detection.
+"""
+function LIKWID_SKIP end
+
+"""
+Verbosity settings for the LIKWID library.
+"""
+function LIKWID_DEBUG end
+
+"""
+Always setup all counters in `setupCounters(...)` and don't respect the previous configuration.
+Without this environment variable set, LIKWID writes the configuration to the register only if
+the configuration has changed (compared to the last `setupCounters(...)` call)
+"""
+function LIKWID_FORCE_SETUP end
+
+"""
+LIKWID respects the CPUset of the calling process.
+If you want to measure/run outside of this CPUset, use this environment variable.
+It will not ignore the CPUset but create a new CPUset internally which contains `sysconf(_SC_NPROCESSORS_CONF)` hardware threads.
+"""
+function LIKWID_IGNORE_CPUSET end
+
+"""
+Filepath for the result file of the MarkerAPI.
+"""
+function LIKWID_FILEPATH end
+
+"""
+The CPUs LIKWID is configured to run on (comma-separated list).
+"""
+function LIKWID_THREADS end
+
+"""
+Connection method for Intel MPI. Default is `ssh`, see option `-r` of `mpdboot` or similar.
+"""
+function LIKWID_MPI_CONNECT end
+
+LIKWID_FORCE() = get(ENV, "LIKWID_FORCE", "")
+LIKWID_NO_ACCESS() = get(ENV, "LIKWID_NO_ACCESS", "")
+LIKWID_PIN() = get(ENV, "LIKWID_PIN", "")
+LIKWID_SILENT() = get(ENV, "LIKWID_SILENT", "")
+LIKWID_SKIP() = get(ENV, "LIKWID_SKIP", "")
+LIKWID_DEBUG() = get(ENV, "LIKWID_DEBUG", "")
+LIKWID_IGNORE_CPUSET() = get(ENV, "LIKWID_IGNORE_CPUSET", "")
+LIKWID_FILEPATH() = get(ENV, "LIKWID_FILEPATH", "")
+LIKWID_THREADS() = get(ENV, "LIKWID_THREADS", "")
+LIKWID_MPI_CONNECT() = get(ENV, "LIKWID_MPI_CONNECT", "")
+
+LIKWID_FORCE(v::Bool) = ENV["LIKWID_FORCE"] = Int(v);
+LIKWID_NO_ACCESS(v::Bool) = ENV["LIKWID_NO_ACCESS"] = Int(v);
+LIKWID_PIN(cpustr::AbstractString) = ENV["LIKWID_PIN"] = cpustr;
+LIKWID_SILENT(v::Bool) = ENV["LIKWID_SILENT"] = Int(v);
+LIKWID_SKIP(hexmask::AbstractString) = ENV["LIKWID_SKIP"] = hexmask;
+LIKWID_DEBUG(v::Bool) = ENV["LIKWID_DEBUG"] = Int(v);
+LIKWID_IGNORE_CPUSET(v::Bool) = ENV["LIKWID_IGNORE_CPUSET"] = Int(v);
+LIKWID_FILEPATH(path::AbstractString) = ENV["LIKWID_FILEPATH"] = path;
+LIKWID_THREADS(cpustr::AbstractString) = ENV["LIKWID_THREADS"] = cpustr;
+LIKWID_MPI_CONNECT(x::AbstractString) = ENV["LIKWID_MPI_CONNECT"] = x;
