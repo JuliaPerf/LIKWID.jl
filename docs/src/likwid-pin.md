@@ -45,14 +45,14 @@ If you're wondering about the `-s 0xffffffffffffffe1` option, see [Mask](@ref) b
 
 In general, `likwid-pin` pins all pthread-threads. However, `julia` involves more than the "Julia user threads" specified via the `-t` option. For example, it create an additional unix signal thread (in [`src/signals-unix.c`](https://github.com/JuliaLang/julia/blob/master/src/signals-unix.c#L861)) and - unless `OPENBLAS_NUM_THREADS=1` - the OpenBLAS related threads (`blas_thread_init ()` in `[..]/lib/julia/libopenblas64_.so`). Hence, when you run `likwid-pin -c 0-3 julia -t 4` the four cores (0-3) are actually oversubscribed and multiple "Julia user threads" get pinned to the same core.
 
-To work around this, we need to provide a mask to `likwid-pin` via the `-s` option. To compute an appropriate mask for `N` "Julia user threads" you may use the helper function `LIKWID.pin_mask(N)`:
+To work around this, we need to provide a mask to `likwid-pin` via the `-s` option. To compute an appropriate mask for `N` "Julia user threads" you may use the helper function `LIKWID.pinmask(N)`:
 
 ```@repl likwid
-LIKWID.pin_mask(4)
+LIKWID.pinmask(4)
 ```
 
 ## Functions
 
 ```@docs
-LIKWID.pin_mask
+LIKWID.pinmask
 ```
