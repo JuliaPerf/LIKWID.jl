@@ -262,7 +262,7 @@ LIKWID_NO_ACCESS(v::Bool) = ENV["LIKWID_NO_ACCESS"] = Int(v);
 LIKWID_PIN(cpustr::AbstractString) = ENV["LIKWID_PIN"] = cpustr;
 LIKWID_SILENT(v::Bool) = ENV["LIKWID_SILENT"] = Int(v);
 LIKWID_SKIP(hexmask::AbstractString) = ENV["LIKWID_SKIP"] = hexmask;
-LIKWID_DEBUG(v::Bool) = ENV["LIKWID_DEBUG"] = Int(v);
+LIKWID_DEBUG(v::Int) = ENV["LIKWID_DEBUG"] = v;
 LIKWID_IGNORE_CPUSET(v::Bool) = ENV["LIKWID_IGNORE_CPUSET"] = Int(v);
 LIKWID_FILEPATH(path::AbstractString) = ENV["LIKWID_FILEPATH"] = path;
 LIKWID_MODE(mode) = ENV["LIKWID_MODE"] = mode;

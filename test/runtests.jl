@@ -286,9 +286,9 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         LIKWID.LIKWID_SKIP(LIKWID.pinmask(8))
         @test LIKWID.LIKWID_SKIP() == LIKWID.pinmask(8)
         @test ENV["LIKWID_SKIP"] == LIKWID.pinmask(8)
-        LIKWID.LIKWID_DEBUG(true)
-        @test LIKWID.LIKWID_DEBUG() == "1"
-        @test ENV["LIKWID_DEBUG"] == "1"
+        LIKWID.LIKWID_DEBUG(3)
+        @test LIKWID.LIKWID_DEBUG() == "3"
+        @test ENV["LIKWID_DEBUG"] == "3"
         LIKWID.LIKWID_IGNORE_CPUSET(true)
         @test LIKWID.LIKWID_IGNORE_CPUSET() == "1"
         @test ENV["LIKWID_IGNORE_CPUSET"] == "1"
