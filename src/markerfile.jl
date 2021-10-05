@@ -33,6 +33,11 @@ Return the number of events of the region identified by `ridx`.
 regionevents(ridx) = Int(LibLikwid.perfmon_getEventsOfRegion(ridx))
 
 """
+Return the number of metrics of the region identified by `ridx`.
+"""
+regionmetrics(ridx) = Int(LibLikwid.perfmon_getMetricsOfRegion(ridx))
+
+"""
 Return the number of threads of the region identified by `ridx`.
 """
 regionthreads(ridx) = Int(LibLikwid.perfmon_getThreadsOfRegion(ridx))

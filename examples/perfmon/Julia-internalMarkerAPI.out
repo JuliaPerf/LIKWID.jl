@@ -1,0 +1,196 @@
+calc_flops thread 1 finished measuring group FLOPS_DP.
+Got 7 events, runtime 0.086500 s, and call count 1
+calc_flops thread 3 finished measuring group FLOPS_DP.
+Got 7 events, runtime 0.086711 s, and call count 1
+detailed event results:
+calc_flops thread 2 finished measuring group FLOPS_DP.
+Got 7 events, runtime 0.086721 s, and call count 1
+                       INSTR_RETIRED_ANY:               349331302.000000
+                   CPU_CLK_UNHALTED_CORE:              1380111946.000000
+                    CPU_CLK_UNHALTED_REF:              1019449050.000000
+FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE:                       0.000000
+     FP_ARITH_INST_RETIRED_SCALAR_DOUBLE:               100000024.000000
+FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE:                       0.000000
+detailed event results:
+                       INSTR_RETIRED_ANY:               613362433.000000
+                   CPU_CLK_UNHALTED_CORE:              1520507848.000000
+                    CPU_CLK_UNHALTED_REF:              1121906250.000000
+FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE:                       0.000000
+     FP_ARITH_INST_RETIRED_SCALAR_DOUBLE:               100000067.000000
+FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE:                       0.000000
+detailed event results:
+                       INSTR_RETIRED_ANY:                       0.000000
+                   CPU_CLK_UNHALTED_CORE:                       0.000000
+                    CPU_CLK_UNHALTED_REF:                       0.000000
+FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE:                       0.000000
+     FP_ARITH_INST_RETIRED_SCALAR_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE:                       0.000000
+
+
+final result of flops operations: 1.1520000239950669e17
+
+Marker API measured 3 regions
+Region Total with 7 events and 10 metrics
+Region calc_flops with 7 events and 10 metrics
+Region copy with 7 events and 10 metrics
+
+detailed results follow. Notice that the region "calc_flops"
+will not appear, as it was reset after each time it was measured.
+
+thread :          region :      group :   type :                              result name :                   result value 
+     0 :           Total :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              4288243000.000000 
+     0 :           Total :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              2342121000.000000 
+     0 :           Total :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              1732905000.000000 
+     0 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     0 :           Total :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               200000100.000000 
+     0 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     0 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.482427 
+     0 :           Total :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.650576 
+     0 :           Total :   FLOPS_DP : metric :                              Clock [MHz] :                    4865.705056 
+     0 :           Total :   FLOPS_DP : metric :                                      CPI :                       0.546173 
+     0 :           Total :   FLOPS_DP : metric :                             DP [MFLOP/s] :                     414.570960 
+     0 :           Total :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                     414.570960 
+     0 :           Total :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :               600008800.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :               800051200.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :               591451800.000000 
+     0 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               200000000.000000 
+     0 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.164329 
+     0 :      calc_flops :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.222232 
+     0 :      calc_flops :   FLOPS_DP : metric :                              Clock [MHz] :                    4869.783228 
+     0 :      calc_flops :   FLOPS_DP : metric :                                      CPI :                       1.333399 
+     0 :      calc_flops :   FLOPS_DP : metric :                             DP [MFLOP/s] :                    1217.067670 
+     0 :      calc_flops :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                    1217.067670 
+     0 :      calc_flops :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     0 :            copy :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              3688208000.000000 
+     0 :            copy :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              1542031000.000000 
+     0 :            copy :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              1141423000.000000 
+     0 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     0 :            copy :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :                      22.000000 
+     0 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     0 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.317128 
+     0 :            copy :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.428333 
+     0 :            copy :   FLOPS_DP : metric :                              Clock [MHz] :                    4863.598228 
+     0 :            copy :   FLOPS_DP : metric :                                      CPI :                       0.418098 
+     0 :            copy :   FLOPS_DP : metric :                             DP [MFLOP/s] :                       0.000069 
+     0 :            copy :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                       0.000069 
+     0 :            copy :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     1 :           Total :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              4288246000.000000 
+     1 :           Total :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              2302241000.000000 
+     1 :           Total :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              1703689000.000000 
+     1 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     1 :           Total :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               200000100.000000 
+     1 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     1 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.473765 
+     1 :           Total :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.639499 
+     1 :           Total :   FLOPS_DP : metric :                              Clock [MHz] :                    4864.874834 
+     1 :           Total :   FLOPS_DP : metric :                                      CPI :                       0.536872 
+     1 :           Total :   FLOPS_DP : metric :                             DP [MFLOP/s] :                     422.150077 
+     1 :           Total :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                     422.150077 
+     1 :           Total :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :               600009600.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :               800049400.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :               591495400.000000 
+     1 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               200000000.000000 
+     1 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.164344 
+     1 :      calc_flops :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.222231 
+     1 :      calc_flops :   FLOPS_DP : metric :                              Clock [MHz] :                    4869.413313 
+     1 :      calc_flops :   FLOPS_DP : metric :                                      CPI :                       1.333394 
+     1 :      calc_flops :   FLOPS_DP : metric :                             DP [MFLOP/s] :                    1216.958808 
+     1 :      calc_flops :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                    1216.958808 
+     1 :      calc_flops :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     1 :            copy :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              3688209000.000000 
+     1 :            copy :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              1502140000.000000 
+     1 :            copy :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              1112155000.000000 
+     1 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     1 :            copy :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :                      22.000000 
+     1 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     1 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.308983 
+     1 :            copy :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.417253 
+     1 :            copy :   FLOPS_DP : metric :                              Clock [MHz] :                    4862.462878 
+     1 :            copy :   FLOPS_DP : metric :                                      CPI :                       0.407282 
+     1 :            copy :   FLOPS_DP : metric :                             DP [MFLOP/s] :                       0.000071 
+     1 :            copy :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                       0.000071 
+     1 :            copy :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     2 :           Total :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              4288248000.000000 
+     2 :           Total :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              2310077000.000000 
+     2 :           Total :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              1709417000.000000 
+     2 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     2 :           Total :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               200000100.000000 
+     2 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     2 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.475408 
+     2 :           Total :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.641675 
+     2 :           Total :   FLOPS_DP : metric :                              Clock [MHz] :                    4865.076167 
+     2 :           Total :   FLOPS_DP : metric :                                      CPI :                       0.538699 
+     2 :           Total :   FLOPS_DP : metric :                             DP [MFLOP/s] :                     420.691313 
+     2 :           Total :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                     420.691313 
+     2 :           Total :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :               600010400.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :               800053500.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :               591472500.000000 
+     2 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               200000000.000000 
+     2 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.164338 
+     2 :      calc_flops :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.222233 
+     2 :      calc_flops :   FLOPS_DP : metric :                              Clock [MHz] :                    4869.626797 
+     2 :      calc_flops :   FLOPS_DP : metric :                                      CPI :                       1.333399 
+     2 :      calc_flops :   FLOPS_DP : metric :                             DP [MFLOP/s] :                    1217.003239 
+     2 :      calc_flops :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                    1217.003239 
+     2 :      calc_flops :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     2 :            copy :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              3688209000.000000 
+     2 :            copy :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              1509978000.000000 
+     2 :            copy :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              1117911000.000000 
+     2 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     2 :            copy :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :                      22.000000 
+     2 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     2 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.310626 
+     2 :            copy :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.419430 
+     2 :            copy :   FLOPS_DP : metric :                              Clock [MHz] :                    4862.667750 
+     2 :            copy :   FLOPS_DP : metric :                                      CPI :                       0.409407 
+     2 :            copy :   FLOPS_DP : metric :                             DP [MFLOP/s] :                       0.000071 
+     2 :            copy :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                       0.000071 
+     2 :            copy :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
