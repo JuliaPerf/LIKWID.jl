@@ -295,6 +295,9 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         LIKWID.LIKWID_FILEPATH("asd")
         @test LIKWID.LIKWID_FILEPATH() == "asd"
         @test ENV["LIKWID_FILEPATH"] == "asd"
+        LIKWID.LIKWID_MODE(1)
+        @test LIKWID.LIKWID_MODE() == "1"
+        @test ENV["LIKWID_MODE"] == "1"
         LIKWID.LIKWID_EVENTS("FLOPS_DP|L2|INSTR_RETIRED_ANY:FIXC0")
         @test LIKWID.LIKWID_EVENTS() == "FLOPS_DP|L2|INSTR_RETIRED_ANY:FIXC0"
         @test ENV["LIKWID_EVENTS"] == "FLOPS_DP|L2|INSTR_RETIRED_ANY:FIXC0"
