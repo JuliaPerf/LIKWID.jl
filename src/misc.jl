@@ -133,35 +133,14 @@ end
 """
 List the values of `LIKWID_*` environment variables.
 """
-function env()
-    d = Dict{String, String}()
-    d["LIKWID_FORCE"] = ""
-    d["LIKWID_NO_ACCESS"] = ""
-    d["LIKWID_PIN"] = ""
-    d["LIKWID_SILENT"] = ""
-    d["LIKWID_SKIP"] = ""
-    d["LIKWID_DEBUG"] = ""
-    d["LIKWID_FORCE_SETUP"] = ""
-    d["LIKWID_IGNORE_CPUSET"] = ""
-    d["LIKWID_FILEPATH"] = ""
-    d["LIKWID_MODE"] = ""
-    d["LIKWID_EVENTS"] = ""
-    d["LIKWID_THREADS"] = ""
-    d["LIKWID_MPI_CONNECT"] = ""
-    for (k, v) in ENV
-        startswith(k, "LIKWID") || continue
-        d[k] = v
-    end
-    return d
-end
+env() = filter(x->startswith(x[1], "LIKWID"), ENV)
 
 """
 Unset all `LIKWID_*` environment variables (for the current session).
 """
 function clearenv()
-    for (k, v) in ENV
-        startswith(k, "LIKWID") || continue
-        ENV[k] = ""
+    for k in keys(env())
+        delete!(ENV, k)
     end
     return nothing
 end

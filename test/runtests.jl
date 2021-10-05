@@ -267,10 +267,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test startswith(k, "LIKWID")
         end
         LIKWID.clearenv()
-        for (k, v) in ENV
-            startswith(k, "LIKWID") || continue
-            @test ENV[k] == ""
-        end
+        @test isempty(LIKWID.env())
         LIKWID.LIKWID_FORCE(true)
         @test LIKWID.LIKWID_FORCE() == "1"
         @test ENV["LIKWID_FORCE"] == "1"
