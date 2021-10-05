@@ -144,6 +144,7 @@ function env()
     d["LIKWID_FORCE_SETUP"] = ""
     d["LIKWID_IGNORE_CPUSET"] = ""
     d["LIKWID_FILEPATH"] = ""
+    d["LIKWID_EVENTS"] = ""
     d["LIKWID_THREADS"] = ""
     d["LIKWID_MPI_CONNECT"] = ""
     for (k, v) in ENV
@@ -222,6 +223,12 @@ Filepath for the result file of the MarkerAPI.
 function LIKWID_FILEPATH end
 
 """
+Event string or performance group name.
+Multiple event strings or performance group names can be separated by `|`.
+"""
+function LIKWID_EVENTS end
+
+"""
 The CPUs LIKWID is configured to run on (comma-separated list).
 """
 function LIKWID_THREADS end
@@ -239,6 +246,7 @@ LIKWID_SKIP() = get(ENV, "LIKWID_SKIP", "")
 LIKWID_DEBUG() = get(ENV, "LIKWID_DEBUG", "")
 LIKWID_IGNORE_CPUSET() = get(ENV, "LIKWID_IGNORE_CPUSET", "")
 LIKWID_FILEPATH() = get(ENV, "LIKWID_FILEPATH", "")
+LIKWID_EVENTS() = get(ENV, "LIKWID_EVENTS", "")
 LIKWID_THREADS() = get(ENV, "LIKWID_THREADS", "")
 LIKWID_MPI_CONNECT() = get(ENV, "LIKWID_MPI_CONNECT", "")
 
@@ -250,5 +258,6 @@ LIKWID_SKIP(hexmask::AbstractString) = ENV["LIKWID_SKIP"] = hexmask;
 LIKWID_DEBUG(v::Bool) = ENV["LIKWID_DEBUG"] = Int(v);
 LIKWID_IGNORE_CPUSET(v::Bool) = ENV["LIKWID_IGNORE_CPUSET"] = Int(v);
 LIKWID_FILEPATH(path::AbstractString) = ENV["LIKWID_FILEPATH"] = path;
+LIKWID_EVENTS(eventstr::AbstractString) = ENV["LIKWID_EVENTS"] = eventstr;
 LIKWID_THREADS(cpustr::AbstractString) = ENV["LIKWID_THREADS"] = cpustr;
 LIKWID_MPI_CONNECT(x::AbstractString) = ENV["LIKWID_MPI_CONNECT"] = x;

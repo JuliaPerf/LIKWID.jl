@@ -269,7 +269,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         LIKWID.clearenv()
         for (k, v) in ENV
             startswith(k, "LIKWID") || continue
-            @test ENV[k] = ""
+            @test ENV[k] == ""
         end
         LIKWID.LIKWID_FORCE(true)
         @test LIKWID.LIKWID_FORCE() == "1"
@@ -295,6 +295,9 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         LIKWID.LIKWID_FILEPATH("asd")
         @test LIKWID.LIKWID_FILEPATH() == "asd"
         @test ENV["LIKWID_FILEPATH"] == "asd"
+        LIKWID.LIKWID_EVENTS("FLOPS_DP|L2|INSTR_RETIRED_ANY:FIXC0")
+        @test LIKWID.LIKWID_EVENTS() == "FLOPS_DP|L2|INSTR_RETIRED_ANY:FIXC0"
+        @test ENV["LIKWID_EVENTS"] == "FLOPS_DP|L2|INSTR_RETIRED_ANY:FIXC0"
         LIKWID.LIKWID_THREADS("0,1,2,3")
         @test LIKWID.LIKWID_THREADS() == "0,1,2,3"
         @test ENV["LIKWID_THREADS"] == "0,1,2,3"
