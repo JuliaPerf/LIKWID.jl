@@ -50,9 +50,7 @@ function main()
     #
     # LIKWID_EVENTS="L2|L3" LIKWID_THREADS="0,2,3" LIKWID_FILEPATH="/tmp/likwid_marker.out" LIKWID_ACCESSMODE="1" LIKWID_FORCE="1" julia -t3 Julia-internalMarkerAPI.jl
     #
-    # They are set here to ensure completeness of this example. If you 
-    # specify environment variables at runtime, be sure to pin threads with 
-    # likwid-pin, GOMP_CPU_AFFINITY, or similar.
+    # They are set here to ensure completeness of this example.
 
     # shouldn't be run under likwid-perfctr
     if haskey(ENV, "LIKWID_PIN")
@@ -81,8 +79,6 @@ function main()
     # LIKWID_THREADS must be set to the list of hardware threads that we will use
     # for the Marker API
     LIKWID.LIKWID_THREADS("0,2,3")
-
-    cpus = [0, 2, 3]
 
     # the location the marker file will be stored
     LIKWID.LIKWID_FILEPATH(joinpath(@__DIR__, "likwid_marker.out"))
@@ -116,17 +112,9 @@ function main()
     PerfMon.init()
 
     # Virtual threads must be pinned to a physical thread. This is
-    # demonstrated below. Alternatively, threads may be pinned at runtime
-    # using likwid-pin or similar. If GNU openmp is used, threads may be
-    # pinned by setting the GOMP_CPU_AFFINITY environment variable to the same
-    # cpus specified in LIKWID_THREADS. E.g. if LIKWID_THREADS="0,1,3" then
-    # GOMP_CPU_AFFINITY should be set to "0 1 3"
-    #
-    # Be aware that in the case of openMP, threads will be sequentially
-    # numbered from 0 even if that does not correspond the physical thread
-    # number. This is handy because likwid follows the same convention of
-    # numbering threads sequentially despite the ID of the hardware thread
-    # they are actually pinned to.
+    # demonstrated below. Alternatively, threads may be pinned on julia startup
+    # using likwid-pin or similar.
+    cpus = [0, 2, 3]
     @threads :static for threadid in 1:NUM_THREADS
         LIKWID.pinthread(cpus[threadid])
 
@@ -155,7 +143,7 @@ function main()
     copy_arr = zeros(ARRAY_SIZE)
 
     # First, we will demonstrate measuring a single region, getting results
-    # with LIKWID_MARKER_GET, and resetting the region so that these results
+    # with `Marker.getregion`, and resetting the region so that these results
     # do not affect later measurements
     @threads :static for threadid in 1:NUM_THREADS
         # This region will measure flop-heavy computation. Notice that only the
@@ -210,12 +198,12 @@ function main()
     end
 
     # Next, we'll demonstrate nested regions and measuring multiple groups
-    # using LIKWID_MARKER_SWITCH. These will not be inspected with
-    # LIKWID_MARKER_GET, but will instead use the marker file to inspect
+    # using `Marker.nextgroup`. We will not inspect them with
+    # `Marker.getregion`, but will instead use the marker file to inspect
     # regions after this parallel block is finished.
 
     # The code that is to be measured will be run multiple times to measure
-    # each group specified above. Using perfmon_getNumberOfGroups to get the
+    # each group specified above. Using `PerfMon.get_number_of_groups` to get the
     # number of iterations makes it easy to run the computations once for each
     # group.
     for i in 1:PerfMon.get_number_of_groups()
@@ -239,28 +227,13 @@ function main()
         # not have stopped the "copy" and "Total" regions before switching
         # groups, which causes erroneous results
 
-        # LIKWID_MARKER_SWITCH should only be run by a single thread. If it is
-        # called in a parallel region, it must be preceeded by a barrier and
-        # run in something like a "#pragma omp single" block to ensure only
-        # one thread runs it and all threads have stopped regions before
-        # switching groups.
+        # `Marker.nextgroup` should only be run by a single thread and all
+        # threads have stopped regions before switching groups.
         # 
         # Regions must be switched outside of all regions (e.g. after
-        # "LIKWID_MARKER_STOP" is called for each region)
-        Marker.nextgroup() # === LIKWID_MARKER_SWITCH
+        # `Marker.stopregion` is called for each region)
+        Marker.nextgroup()
     end
-    println()
-
-    # These computations are meaningless, but printing them is an easy way to
-    # ensure the compiler doesn't optimize out the do_flops and do_copy
-    # functions. There are some other options to prevent optimization: First,
-    # those functions may be placed in another file. Second, the user may
-    # declare "c" and "copy_arr" as volatile, though that may negatively
-    # impact performance and is therefore not recommended.
-    #
-    println("final result of flops operations: ", c)
-    # @printf("entry %d of copy_arr: %f\n", c % ARRAY_SIZE,
-    # copy_arr[c % ARRAY_SIZE])
     println()
 
     # Stops performance monitoring and writes to the file specified in the
@@ -279,7 +252,7 @@ function main()
     # a different group or event set, perfmon considers it a new region.
     #
     # Therefore, if we have two regions and 3 groups measured for each,
-    # perfmon_getNumberOfRegions() will return 6.
+    # `MarkerFile.numregions()` will return 6.
     #
     nregions = MarkerFile.numregions()
     println("Marker API measured ", nregions, " regions")
