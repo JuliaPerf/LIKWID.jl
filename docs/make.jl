@@ -11,6 +11,8 @@ const ci = get(ENV, "CI", "") == "true"
 cd(@__DIR__) do
     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
                         repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+    Literate.markdown("src/examples/perfmon.jl", "src/examples/";
+                        repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
 end
 
 @info "Generating Documenter.jl site"
@@ -44,6 +46,7 @@ makedocs(
         "Examples" => [
             "SAXPY CPU+GPU" => "examples/saxpy.md",
             "Pinning Julia threads" => "examples/dynamic_pinning.md",
+            "Monitoring performance" => "examples/perfmon.md",
         ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
