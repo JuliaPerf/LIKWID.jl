@@ -1,0 +1,368 @@
+calc_flops thread 2 finished measuring group FLOPS_DP.
+Got 7 events, runtime 0.125434 s, and call count 1
+calc_flops thread 1 finished measuring group FLOPS_DP.
+Got 7 events, runtime 0.104865 s, and call count 1
+calc_flops thread 3 finished measuring group FLOPS_DP.
+Got 7 events, runtime 0.126111 s, and call count 1
+detailed event results:
+                       INSTR_RETIRED_ANY:               481421498.000000
+                   CPU_CLK_UNHALTED_CORE:              1490118979.000000
+                    CPU_CLK_UNHALTED_REF:              1500338796.000000
+FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE:                       0.000000
+     FP_ARITH_INST_RETIRED_SCALAR_DOUBLE:               100000024.000000
+FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE:                       0.000000
+detailed event results:
+                       INSTR_RETIRED_ANY:               501099357.000000
+                   CPU_CLK_UNHALTED_CORE:              1493603020.000000
+                    CPU_CLK_UNHALTED_REF:              1500919596.000000
+FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE:                       0.000000
+     FP_ARITH_INST_RETIRED_SCALAR_DOUBLE:               100000059.000000
+FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE:                       0.000000
+detailed event results:
+                       INSTR_RETIRED_ANY:                       0.000000
+                   CPU_CLK_UNHALTED_CORE:                       0.000000
+                    CPU_CLK_UNHALTED_REF:                       0.000000
+FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE:                       0.000000
+     FP_ARITH_INST_RETIRED_SCALAR_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE:                       0.000000
+FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE:                       0.000000
+final result of flops operations: 1.7280000320270627e17
+Marker API measured 9 regions
+Region Total with 7 events and 10 metrics
+Region calc_flops with 7 events and 10 metrics
+Region copy with 7 events and 10 metrics
+Region Total with 6 events and 10 metrics
+Region calc_flops with 6 events and 10 metrics
+Region copy with 6 events and 10 metrics
+Region Total with 3 events and 0 metrics
+Region calc_flops with 3 events and 0 metrics
+Region copy with 3 events and 0 metrics
+detailed results follow. Notice that the region "calc_flops"
+will not appear, as it was reset after each time it was measured.
+thread :          region :      group :   type :                              result name :                   result value 
+     0 :           Total :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              2144170000.000000 
+     0 :           Total :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              4205157000.000000 
+     0 :           Total :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              3384639000.000000 
+     0 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     0 :           Total :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               100000100.000000 
+     0 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     0 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       1.027544 
+     0 :           Total :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       1.274339 
+     0 :           Total :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.842134 
+     0 :           Total :   FLOPS_DP : metric :                                      CPI :                       1.961205 
+     0 :           Total :   FLOPS_DP : metric :                             DP [MFLOP/s] :                      97.319531 
+     0 :           Total :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     0 :           Total :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                      97.319531 
+     0 :           Total :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :               300004200.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :               400034300.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :               321978600.000000 
+     0 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               100000000.000000 
+     0 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.097625 
+     0 :      calc_flops :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.121227 
+     0 :      calc_flops :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.845554 
+     0 :      calc_flops :   FLOPS_DP : metric :                                      CPI :                       1.333429 
+     0 :      calc_flops :   FLOPS_DP : metric :                             DP [MFLOP/s] :                    1024.324217 
+     0 :      calc_flops :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     0 :      calc_flops :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                    1024.324217 
+     0 :      calc_flops :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     0 :            copy :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              1844104000.000000 
+     0 :            copy :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              3804958000.000000 
+     0 :            copy :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              3062527000.000000 
+     0 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     0 :            copy :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :                      11.000000 
+     0 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     0 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.928835 
+     0 :            copy :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       1.153062 
+     0 :            copy :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.842894 
+     0 :            copy :   FLOPS_DP : metric :                                      CPI :                       2.063310 
+     0 :            copy :   FLOPS_DP : metric :                             DP [MFLOP/s] :                       0.000012 
+     0 :            copy :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     0 :            copy :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                       0.000012 
+     0 :            copy :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     0 :           Total :         L2 :  event :                        INSTR_RETIRED_ANY :              2144125000.000000 
+     0 :           Total :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :              3529495000.000000 
+     0 :           Total :         L2 :  event :                     CPU_CLK_UNHALTED_REF :              2850757000.000000 
+     0 :           Total :         L2 :  event :                          L1D_REPLACEMENT :                24963950.000000 
+     0 :           Total :         L2 :  event :                              L1D_M_EVICT :                  162733.000000 
+     0 :           Total :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    3556.000000 
+     0 :           Total :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.865524 
+     0 :           Total :         L2 : metric :                     Runtime unhalted [s] :                       1.069585 
+     0 :           Total :         L2 : metric :                              Clock [MHz] :                    4085.541680 
+     0 :           Total :         L2 : metric :                                      CPI :                       1.646124 
+     0 :           Total :         L2 : metric :            L2D load bandwidth [MBytes/s] :                    1845.925901 
+     0 :           Total :         L2 : metric :            L2D load data volume [GBytes] :                       1.597693 
+     0 :           Total :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                      12.033074 
+     0 :           Total :         L2 : metric :           L2D evict data volume [GBytes] :                       0.010415 
+     0 :           Total :         L2 : metric :                  L2 bandwidth [MBytes/s] :                    1858.221918 
+     0 :           Total :         L2 : metric :                  L2 data volume [GBytes] :                       1.608335 
+     0 :      calc_flops :         L2 :  event :                        INSTR_RETIRED_ANY :               300004100.000000 
+     0 :      calc_flops :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :               400035300.000000 
+     0 :      calc_flops :         L2 :  event :                     CPU_CLK_UNHALTED_REF :               331924000.000000 
+     0 :      calc_flops :         L2 :  event :                          L1D_REPLACEMENT :                     231.000000 
+     0 :      calc_flops :         L2 :  event :                              L1D_M_EVICT :                      62.000000 
+     0 :      calc_flops :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                     755.000000 
+     0 :      calc_flops :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.100665 
+     0 :      calc_flops :         L2 : metric :                     Runtime unhalted [s] :                       0.121227 
+     0 :      calc_flops :         L2 : metric :                              Clock [MHz] :                    3977.012303 
+     0 :      calc_flops :         L2 : metric :                                      CPI :                       1.333433 
+     0 :      calc_flops :         L2 : metric :            L2D load bandwidth [MBytes/s] :                       0.146863 
+     0 :      calc_flops :         L2 : metric :            L2D load data volume [GBytes] :                       0.000015 
+     0 :      calc_flops :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                       0.039418 
+     0 :      calc_flops :         L2 : metric :           L2D evict data volume [GBytes] :                       0.000004 
+     0 :      calc_flops :         L2 : metric :                  L2 bandwidth [MBytes/s] :                       0.666287 
+     0 :      calc_flops :         L2 : metric :                  L2 data volume [GBytes] :                       0.000067 
+     0 :            copy :         L2 :  event :                        INSTR_RETIRED_ANY :              1844104000.000000 
+     0 :            copy :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :              3129413000.000000 
+     0 :            copy :         L2 :  event :                     CPU_CLK_UNHALTED_REF :              2518796000.000000 
+     0 :            copy :         L2 :  event :                          L1D_REPLACEMENT :                24963010.000000 
+     0 :            copy :         L2 :  event :                              L1D_M_EVICT :                  162477.000000 
+     0 :            copy :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    1325.000000 
+     0 :            copy :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.763881 
+     0 :            copy :         L2 : metric :                     Runtime unhalted [s] :                       0.948343 
+     0 :            copy :         L2 : metric :                              Clock [MHz] :                    4099.842388 
+     0 :            copy :         L2 : metric :                                      CPI :                       1.696983 
+     0 :            copy :         L2 : metric :            L2D load bandwidth [MBytes/s] :                    2091.466869 
+     0 :            copy :         L2 : metric :            L2D load data volume [GBytes] :                       1.597633 
+     0 :            copy :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                      13.612752 
+     0 :            copy :         L2 : metric :           L2D evict data volume [GBytes] :                       0.010399 
+     0 :            copy :         L2 : metric :                  L2 bandwidth [MBytes/s] :                    2105.190633 
+     0 :            copy :         L2 : metric :                  L2 data volume [GBytes] :                       1.608116 
+     0 :           Total :     Custom :  event :                        INSTR_RETIRED_ANY :              2144126000.000000 
+     0 :           Total :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :              4330782000.000000 
+     0 :           Total :     Custom :  event :                     CPU_CLK_UNHALTED_REF :              3496706000.000000 
+     0 :      calc_flops :     Custom :  event :                        INSTR_RETIRED_ANY :               300004200.000000 
+     0 :      calc_flops :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :               400045700.000000 
+     0 :      calc_flops :     Custom :  event :                     CPU_CLK_UNHALTED_REF :               332942500.000000 
+     0 :            copy :     Custom :  event :                        INSTR_RETIRED_ANY :              1844104000.000000 
+     0 :            copy :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :              3930675000.000000 
+     0 :            copy :     Custom :  event :                     CPU_CLK_UNHALTED_REF :              3163715000.000000 
+     1 :           Total :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              2144126000.000000 
+     1 :           Total :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              4190027000.000000 
+     1 :           Total :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              3372462000.000000 
+     1 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     1 :           Total :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               100000100.000000 
+     1 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     1 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       1.024142 
+     1 :           Total :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       1.269754 
+     1 :           Total :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.841153 
+     1 :           Total :   FLOPS_DP : metric :                                      CPI :                       1.954189 
+     1 :           Total :   FLOPS_DP : metric :                             DP [MFLOP/s] :                      97.642807 
+     1 :           Total :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     1 :           Total :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                      97.642807 
+     1 :           Total :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :               300005400.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :               400041500.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :               321985000.000000 
+     1 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               100000000.000000 
+     1 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.097634 
+     1 :      calc_flops :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.121229 
+     1 :      calc_flops :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.837852 
+     1 :      calc_flops :   FLOPS_DP : metric :                                      CPI :                       1.333448 
+     1 :      calc_flops :   FLOPS_DP : metric :                             DP [MFLOP/s] :                    1024.237872 
+     1 :      calc_flops :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     1 :      calc_flops :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                    1024.237872 
+     1 :      calc_flops :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     1 :            copy :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              1844105000.000000 
+     1 :            copy :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              3789942000.000000 
+     1 :            copy :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              3050443000.000000 
+     1 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     1 :            copy :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :                      11.000000 
+     1 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     1 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.926197 
+     1 :            copy :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       1.148511 
+     1 :            copy :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.840142 
+     1 :            copy :   FLOPS_DP : metric :                                      CPI :                       2.055166 
+     1 :            copy :   FLOPS_DP : metric :                             DP [MFLOP/s] :                       0.000012 
+     1 :            copy :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     1 :            copy :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                       0.000012 
+     1 :            copy :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     1 :           Total :         L2 :  event :                        INSTR_RETIRED_ANY :              2144127000.000000 
+     1 :           Total :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :              3480072000.000000 
+     1 :           Total :         L2 :  event :                     CPU_CLK_UNHALTED_REF :              2823181000.000000 
+     1 :           Total :         L2 :  event :                          L1D_REPLACEMENT :                25463800.000000 
+     1 :           Total :         L2 :  event :                              L1D_M_EVICT :                  145167.000000 
+     1 :           Total :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    4606.000000 
+     1 :           Total :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.856312 
+     1 :           Total :         L2 : metric :                     Runtime unhalted [s] :                       1.054608 
+     1 :           Total :         L2 : metric :                              Clock [MHz] :                    4067.680004 
+     1 :           Total :         L2 : metric :                                      CPI :                       1.623072 
+     1 :           Total :         L2 : metric :            L2D load bandwidth [MBytes/s] :                    1903.141845 
+     1 :           Total :         L2 : metric :            L2D load data volume [GBytes] :                       1.629683 
+     1 :           Total :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                      10.849653 
+     1 :           Total :         L2 : metric :           L2D evict data volume [GBytes] :                       0.009291 
+     1 :           Total :         L2 : metric :                  L2 bandwidth [MBytes/s] :                    1914.335747 
+     1 :           Total :         L2 : metric :                  L2 data volume [GBytes] :                       1.639269 
+     1 :      calc_flops :         L2 :  event :                        INSTR_RETIRED_ANY :               300004600.000000 
+     1 :      calc_flops :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :               400045300.000000 
+     1 :      calc_flops :         L2 :  event :                     CPU_CLK_UNHALTED_REF :               344128000.000000 
+     1 :      calc_flops :         L2 :  event :                          L1D_REPLACEMENT :                     321.000000 
+     1 :      calc_flops :         L2 :  event :                              L1D_M_EVICT :                      94.000000 
+     1 :      calc_flops :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    1224.000000 
+     1 :      calc_flops :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.104372 
+     1 :      calc_flops :         L2 : metric :                     Runtime unhalted [s] :                       0.121231 
+     1 :      calc_flops :         L2 : metric :                              Clock [MHz] :                    3836.069225 
+     1 :      calc_flops :         L2 : metric :                                      CPI :                       1.333464 
+     1 :      calc_flops :         L2 : metric :            L2D load bandwidth [MBytes/s] :                       0.196835 
+     1 :      calc_flops :         L2 : metric :            L2D load data volume [GBytes] :                       0.000021 
+     1 :      calc_flops :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                       0.057640 
+     1 :      calc_flops :         L2 : metric :           L2D evict data volume [GBytes] :                       0.000006 
+     1 :      calc_flops :         L2 : metric :                  L2 bandwidth [MBytes/s] :                       1.005025 
+     1 :      calc_flops :         L2 : metric :                  L2 data volume [GBytes] :                       0.000105 
+     1 :            copy :         L2 :  event :                        INSTR_RETIRED_ANY :              1844104000.000000 
+     1 :            copy :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :              3079979000.000000 
+     1 :            copy :         L2 :  event :                     CPU_CLK_UNHALTED_REF :              2479006000.000000 
+     1 :            copy :         L2 :  event :                          L1D_REPLACEMENT :                25462610.000000 
+     1 :            copy :         L2 :  event :                              L1D_M_EVICT :                  144805.000000 
+     1 :            copy :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    1067.000000 
+     1 :            copy :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.751635 
+     1 :            copy :         L2 : metric :                     Runtime unhalted [s] :                       0.933363 
+     1 :            copy :         L2 : metric :                              Clock [MHz] :                    4099.845126 
+     1 :            copy :         L2 : metric :                                      CPI :                       1.670176 
+     1 :            copy :         L2 : metric :            L2D load bandwidth [MBytes/s] :                    2168.082389 
+     1 :            copy :         L2 : metric :            L2D load data volume [GBytes] :                       1.629607 
+     1 :            copy :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                      12.329811 
+     1 :            copy :         L2 : metric :           L2D evict data volume [GBytes] :                       0.009268 
+     1 :            copy :         L2 : metric :                  L2 bandwidth [MBytes/s] :                    2180.503053 
+     1 :            copy :         L2 : metric :                  L2 data volume [GBytes] :                       1.638943 
+     1 :           Total :     Custom :  event :                        INSTR_RETIRED_ANY :              2144127000.000000 
+     1 :           Total :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :              4323032000.000000 
+     1 :           Total :     Custom :  event :                     CPU_CLK_UNHALTED_REF :              3507277000.000000 
+     1 :      calc_flops :     Custom :  event :                        INSTR_RETIRED_ANY :               300004300.000000 
+     1 :      calc_flops :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :               400042800.000000 
+     1 :      calc_flops :     Custom :  event :                     CPU_CLK_UNHALTED_REF :               349737400.000000 
+     1 :            copy :     Custom :  event :                        INSTR_RETIRED_ANY :              1844105000.000000 
+     1 :            copy :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :              3922941000.000000 
+     1 :            copy :     Custom :  event :                     CPU_CLK_UNHALTED_REF :              3157488000.000000 
+     2 :           Total :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              2144127000.000000 
+     2 :           Total :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              4185372000.000000 
+     2 :           Total :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              3368714000.000000 
+     2 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     2 :           Total :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               100000100.000000 
+     2 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     2 :           Total :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       1.023044 
+     2 :           Total :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       1.268343 
+     2 :           Total :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.842725 
+     2 :           Total :   FLOPS_DP : metric :                                      CPI :                       1.952017 
+     2 :           Total :   FLOPS_DP : metric :                             DP [MFLOP/s] :                      97.747604 
+     2 :           Total :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     2 :           Total :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                      97.747604 
+     2 :           Total :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :               300005400.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :               400043600.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :               321986700.000000 
+     2 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :               100000000.000000 
+     2 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.097660 
+     2 :      calc_flops :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       0.121230 
+     2 :      calc_flops :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.837728 
+     2 :      calc_flops :   FLOPS_DP : metric :                                      CPI :                       1.333455 
+     2 :      calc_flops :   FLOPS_DP : metric :                             DP [MFLOP/s] :                    1023.965818 
+     2 :      calc_flops :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     2 :      calc_flops :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                    1023.965818 
+     2 :      calc_flops :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     2 :            copy :   FLOPS_DP :  event :                        INSTR_RETIRED_ANY :              1844105000.000000 
+     2 :            copy :   FLOPS_DP :  event :                    CPU_CLK_UNHALTED_CORE :              3785278000.000000 
+     2 :            copy :   FLOPS_DP :  event :                     CPU_CLK_UNHALTED_REF :              3046687000.000000 
+     2 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE :                       0.000000 
+     2 :            copy :   FLOPS_DP :  event :      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE :                      11.000000 
+     2 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE :                       0.000000 
+     2 :            copy :   FLOPS_DP :  event : FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                      Runtime (RDTSC) [s] :                       0.925034 
+     2 :            copy :   FLOPS_DP : metric :                     Runtime unhalted [s] :                       1.147098 
+     2 :            copy :   FLOPS_DP : metric :                              Clock [MHz] :                    4099.842895 
+     2 :            copy :   FLOPS_DP : metric :                                      CPI :                       2.052637 
+     2 :            copy :   FLOPS_DP : metric :                             DP [MFLOP/s] :                       0.000012 
+     2 :            copy :   FLOPS_DP : metric :                         AVX DP [MFLOP/s] :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                      AVX512 DP [MFLOP/s] :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                         Packed [MUOPS/s] :                       0.000000 
+     2 :            copy :   FLOPS_DP : metric :                         Scalar [MUOPS/s] :                       0.000012 
+     2 :            copy :   FLOPS_DP : metric :                      Vectorization ratio :                       0.000000 
+     2 :           Total :         L2 :  event :                        INSTR_RETIRED_ANY :              2144128000.000000 
+     2 :           Total :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :              3526374000.000000 
+     2 :           Total :         L2 :  event :                     CPU_CLK_UNHALTED_REF :              2861207000.000000 
+     2 :           Total :         L2 :  event :                          L1D_REPLACEMENT :                25065690.000000 
+     2 :           Total :         L2 :  event :                              L1D_M_EVICT :                  134824.000000 
+     2 :           Total :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    4630.000000 
+     2 :           Total :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.867892 
+     2 :           Total :         L2 : metric :                     Runtime unhalted [s] :                       1.068639 
+     2 :           Total :         L2 : metric :                              Clock [MHz] :                    4067.020540 
+     2 :           Total :         L2 : metric :                                      CPI :                       1.644666 
+     2 :           Total :         L2 : metric :            L2D load bandwidth [MBytes/s] :                    1848.391672 
+     2 :           Total :         L2 : metric :            L2D load data volume [GBytes] :                       1.604204 
+     2 :           Total :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                       9.942178 
+     2 :           Total :         L2 : metric :           L2D evict data volume [GBytes] :                       0.008629 
+     2 :           Total :         L2 : metric :                  L2 bandwidth [MBytes/s] :                    1858.675275 
+     2 :           Total :         L2 : metric :                  L2 data volume [GBytes] :                       1.613129 
+     2 :      calc_flops :         L2 :  event :                        INSTR_RETIRED_ANY :               300004900.000000 
+     2 :      calc_flops :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :               400053800.000000 
+     2 :      calc_flops :         L2 :  event :                     CPU_CLK_UNHALTED_REF :               344893700.000000 
+     2 :      calc_flops :         L2 :  event :                          L1D_REPLACEMENT :                     351.000000 
+     2 :      calc_flops :         L2 :  event :                              L1D_M_EVICT :                     113.000000 
+     2 :      calc_flops :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    1260.000000 
+     2 :      calc_flops :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.104616 
+     2 :      calc_flops :         L2 : metric :                     Runtime unhalted [s] :                       0.121233 
+     2 :      calc_flops :         L2 : metric :                              Clock [MHz] :                    3827.634077 
+     2 :      calc_flops :         L2 : metric :                                      CPI :                       1.333491 
+     2 :      calc_flops :         L2 : metric :            L2D load bandwidth [MBytes/s] :                       0.214729 
+     2 :      calc_flops :         L2 : metric :            L2D load data volume [GBytes] :                       0.000022 
+     2 :      calc_flops :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                       0.069129 
+     2 :      calc_flops :         L2 : metric :           L2D evict data volume [GBytes] :                       0.000007 
+     2 :      calc_flops :         L2 : metric :                  L2 bandwidth [MBytes/s] :                       1.054679 
+     2 :      calc_flops :         L2 : metric :                  L2 data volume [GBytes] :                       0.000110 
+     2 :            copy :         L2 :  event :                        INSTR_RETIRED_ANY :              1844104000.000000 
+     2 :            copy :         L2 :  event :                    CPU_CLK_UNHALTED_CORE :              3126275000.000000 
+     2 :            copy :         L2 :  event :                     CPU_CLK_UNHALTED_REF :              2516269000.000000 
+     2 :            copy :         L2 :  event :                          L1D_REPLACEMENT :                25064470.000000 
+     2 :            copy :         L2 :  event :                              L1D_M_EVICT :                  134438.000000 
+     2 :            copy :         L2 :  event :                    ICACHE_64B_IFTAG_MISS :                    1183.000000 
+     2 :            copy :         L2 : metric :                      Runtime (RDTSC) [s] :                       0.762967 
+     2 :            copy :         L2 : metric :                     Runtime unhalted [s] :                       0.947392 
+     2 :            copy :         L2 : metric :                              Clock [MHz] :                    4099.844494 
+     2 :            copy :         L2 : metric :                                      CPI :                       1.695281 
+     2 :            copy :         L2 : metric :            L2D load bandwidth [MBytes/s] :                    2102.483121 
+     2 :            copy :         L2 : metric :            L2D load data volume [GBytes] :                       1.604126 
+     2 :            copy :         L2 : metric :           L2D evict bandwidth [MBytes/s] :                      11.277064 
+     2 :            copy :         L2 : metric :           L2D evict data volume [GBytes] :                       0.008604 
+     2 :            copy :         L2 : metric :                  L2 bandwidth [MBytes/s] :                    2113.859418 
+     2 :            copy :         L2 : metric :                  L2 data volume [GBytes] :                       1.612806 
+     2 :           Total :     Custom :  event :                        INSTR_RETIRED_ANY :              2144127000.000000 
+     2 :           Total :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :              4325065000.000000 
+     2 :           Total :     Custom :  event :                     CPU_CLK_UNHALTED_REF :              3491109000.000000 
+     2 :      calc_flops :     Custom :  event :                        INSTR_RETIRED_ANY :               300004400.000000 
+     2 :      calc_flops :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :               400037600.000000 
+     2 :      calc_flops :     Custom :  event :                     CPU_CLK_UNHALTED_REF :               331941100.000000 
+     2 :            copy :     Custom :  event :                        INSTR_RETIRED_ANY :              1844104000.000000 
+     2 :            copy :     Custom :  event :                    CPU_CLK_UNHALTED_CORE :              3924959000.000000 
+     2 :            copy :     Custom :  event :                     CPU_CLK_UNHALTED_REF :              3159112000.000000 

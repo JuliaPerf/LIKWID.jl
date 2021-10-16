@@ -21,7 +21,7 @@ end
 threadids = zeros(Int, nthreads())
 procids = zeros(Int, nthreads())
 procids_glibc = zeros(Int, nthreads())
-@threads for i in 1:nthreads()
+@threads :static for i in 1:nthreads()
     threadids[i] = threadid()
     procids[i] = LIKWID.get_processor_id()
     procids_glibc[i] = LIKWID.get_processor_id_glibc()

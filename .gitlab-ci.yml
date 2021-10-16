@@ -199,8 +199,6 @@ julia/1.7-examples:
     - cat perfctr.out
     - sh perfctr_convenience.sh
     - cat perfctr_convenience.out
-    - sh perfmon.sh
-    - cat perfmon.out
     - cd ../..
     - cd examples/perfctr_gpu
     - julia --project=. -e 'import Pkg; Pkg.instantiate()'
@@ -208,6 +206,13 @@ julia/1.7-examples:
     - cat perfctr_gpu.out
     - sh perfctr_gpu_convenience.sh
     - cat perfctr_gpu_convenience.out
+    - cd ../..
+    - cd examples/perfmon
+    - sh perfmon.sh
+    - cat perfmon.out
+    - sh Julia-internalMarkerAPI.sh
+    - cat Julia-internalMarkerAPI.out
+    - cat likwid_marker.out
     - cd ../..
     - cd examples/perfctr_saxpy
     - julia --project=. -e 'import Pkg; Pkg.instantiate()'

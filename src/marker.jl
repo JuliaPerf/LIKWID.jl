@@ -7,7 +7,7 @@ Initialize the Marker API. Must be called previous to all other functions.
 """
 function init()
     LibLikwid.likwid_markerInit()
-    Threads.@threads for i in 1:Threads.nthreads()
+    Threads.@threads :static for i in 1:Threads.nthreads()
         LibLikwid.likwid_markerThreadInit()
     end
     return nothing
@@ -51,7 +51,7 @@ function stopregion(regiontag::AbstractString)
 end
 
 """
-    getregion(regiontag::AbstractString) -> nevents, events, time, count
+    getregion(regiontag::AbstractString, [num_events]) -> nevents, events, time, count
 Get the intermediate results of the region identified by `regiontag`. On success, it returns
     * `nevents`: the number of events in the current group,
     * `events`: a list with all the aggregated event results,
@@ -60,7 +60,11 @@ Get the intermediate results of the region identified by `regiontag`. On success
 """
 function getregion(regiontag::AbstractString)
     current_group = PerfMon.get_id_of_active_group()
-    nevents = Ref(PerfMon.get_number_of_events(current_group))
+    return getregion(regiontag, PerfMon.get_number_of_events(current_group))
+end
+
+function getregion(regiontag::AbstractString, num_events::Integer)
+    nevents = Ref(Int32(num_events))
     events = zeros(nevents[])
     time = Ref(0.0)
     count = Ref(Int32(0))

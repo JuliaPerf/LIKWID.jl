@@ -102,7 +102,7 @@ Get the CPU core IDs of the Julia threads.
 function get_processor_ids()
     N = Threads.nthreads()
     coreids = zeros(Int, N)
-    Threads.@threads for i in 1:N
+    Threads.@threads :static for i in 1:N
         coreids[i] = LIKWID.get_processor_id()
     end
     return coreids
@@ -116,7 +116,7 @@ function pinthreads(coreids::AbstractVector{<:Integer})
     N = Threads.nthreads()
     @assert length(coreids) == N
     @assert minimum(coreids) ≥ 0
-    Threads.@threads for i in 1:N
+    Threads.@threads :static for i in 1:N
         LIKWID.pinthread(coreids[i])
     end
     return nothing
