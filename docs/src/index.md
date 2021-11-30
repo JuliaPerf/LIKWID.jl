@@ -14,6 +14,10 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 ] add LIKWID
 ```
 
+## LIKWID.jl vs LinuxPerf.jl
+
+As per default (and recommendation) LIKWID(.jl) uses a custom [access daemon](https://github.com/RRZE-HPC/likwid/wiki/likwid-accessD) to monitor hardware performance counters. In contrast, [LinuxPerf.jl](https://github.com/JuliaPerf/LinuxPerf.jl) uses Linux's [`perf_events`](https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html). However, it is possible to make LIKWID use `perf_events` as an alternative (inferior) backend. See [here](https://github.com/RRZE-HPC/likwid/wiki/TutorialLikwidPerf) for more information.
+
 ## Supported CPUs
 
 ```@setup likwid
