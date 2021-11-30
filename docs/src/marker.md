@@ -88,7 +88,7 @@ end
 
 ### SIMD / AVX
 
-Let's run the same example on a Rocketlacke processor. We might get the following.
+Let's run the same example as above on a Rocketlacke processor. We might get the following.
 ```
 --------------------------------------------------------------------------------
 CPU name:	11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
@@ -199,6 +199,11 @@ Note that cpu ids start with zero (not one).
 Combinding the points above, the full command could look like this: `likwid-perfctr -C 0 -g FLOPS_DP -m julia`.
 
 For more information, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr).
+
+!!! warning "Multithreading"
+    It is important to note that `likwid-perfctr`s built-in threading pinning through `-C <cores>` doesn't work as expected for Julia when using multiple threads, i.e. `Threads.nthreads() > 1`.
+    Instead, one should use a different mean of pinning threads, e.g. like [`JULIA_EXCLUSIVE=1`](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE) or [ThreadPinning.jl](https://github.com/carstenbauer/ThreadPinning.jl), and use `-c <cores>` (lowercase `c`!),
+    which will instruct LIKWID to only measure on these cores (disables LIKWIDs pinning).
 
 ## API
 
