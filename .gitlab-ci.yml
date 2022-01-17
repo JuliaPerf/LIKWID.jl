@@ -86,8 +86,8 @@ julia/1.6:
     - bin/julia --color=yes --project=test/coverage -e 'import Pkg; Pkg.instantiate()'
     - bin/julia --color=yes --project=test/coverage test/coverage/coverage.jl
     
-# This job tests the LIKWID.jl interface with Julia 1.7-rc1
-julia/1.7-rc1:
+# This job tests the LIKWID.jl interface with Julia 1.7
+julia/1.7:
   stage: test
   tags:
     - testcluster
@@ -116,8 +116,8 @@ julia/1.7-rc1:
     - module load "$CUDA_MODULE"
     - export JULIA_CUDA_USE_BINARYBUILDER=false
     - export JULIA_NUM_THREADS=24
-    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.0-rc1-linux-x86_64.tar.gz
-    - tar --strip-components=1 -xf julia-1.7.0-rc1-linux-x86_64.tar.gz
+    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
+    - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
 
 # This job tests the LIKWID.jl interface with Julia nightly build
@@ -190,8 +190,8 @@ julia/1.7-examples:
   script:
     - module load "$CUDA_MODULE"
     - export JULIA_CUDA_USE_BINARYBUILDER=false
-    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.0-rc1-linux-x86_64.tar.gz
-    - tar --strip-components=1 -xf julia-1.7.0-rc1-linux-x86_64.tar.gz
+    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
+    - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - export PATH=$PWD/bin:$PATH
     - julia --project=. -e 'import Pkg; Pkg.instantiate()'
     - cd examples/perfctr
@@ -260,8 +260,8 @@ build-and-deploy:
     - likwid-perfctr -i
     - likwid-perfctr -a
     - export JULIA_CUDA_USE_BINARYBUILDER=false
-    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
-    - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
+    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
+    - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - cd docs
     - ../bin/julia --color=yes build_docs.jl
   allow_failure: false

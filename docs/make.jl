@@ -3,6 +3,7 @@ using Documenter
 using CUDA
 using LIKWID
 using Literate
+using DocThemePC2
 
 const src = "https://github.com/JuliaPerf/LIKWID.jl"
 const ci = get(ENV, "CI", "") == "true"
@@ -14,6 +15,9 @@ cd(@__DIR__) do
     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
                         repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
 end
+
+@info "Installing DocThemePC2"
+DocThemePC2.install(@__DIR__)
 
 @info "Generating Documenter.jl site"
 DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive=true)
