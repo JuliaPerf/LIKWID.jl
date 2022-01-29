@@ -8,13 +8,13 @@ using DocThemePC2
 const src = "https://github.com/JuliaPerf/LIKWID.jl"
 const ci = get(ENV, "CI", "") == "true"
 
-@info "Building Literate.jl documentation"
-cd(@__DIR__) do
-    Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
-                        repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-    Literate.markdown("src/examples/perfmon.jl", "src/examples/";
-                        repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-end
+# @info "Building Literate.jl documentation"
+# cd(@__DIR__) do
+#     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
+#                         repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+#     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
+#                         repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+# end
 
 @info "Installing DocThemePC2"
 DocThemePC2.install(@__DIR__)

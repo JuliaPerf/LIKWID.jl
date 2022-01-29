@@ -60,6 +60,8 @@ julia/1.6:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
+    JULIA_CUDA_USE_BINARYBUILDER: false
+    JULIA_NUM_THREADS: 12
   rules:
     # - changes:
     #   - "README.md"
@@ -78,8 +80,6 @@ julia/1.6:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
-    - export JULIA_CUDA_USE_BINARYBUILDER=false
-    - export JULIA_NUM_THREADS=24
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test(; coverage = true);'
@@ -96,6 +96,8 @@ julia/1.7:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
+    JULIA_CUDA_USE_BINARYBUILDER: false
+    JULIA_NUM_THREADS: 12
   rules:
     # - changes:
     #   - "README.md"
@@ -114,8 +116,6 @@ julia/1.7:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
-    - export JULIA_CUDA_USE_BINARYBUILDER=false
-    - export JULIA_NUM_THREADS=24
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
@@ -130,6 +130,8 @@ julia/nightly:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
+    JULIA_CUDA_USE_BINARYBUILDER: false
+    JULIA_NUM_THREADS: 12
   needs:
     job: build-likwid
   rules:
@@ -154,8 +156,6 @@ julia/nightly:
     - likwid-topology
     - likwid-perfctr -i
     - likwid-perfctr -a
-    - export JULIA_CUDA_USE_BINARYBUILDER=false
-    - export JULIA_NUM_THREADS=24
     - wget https://julialangnightlies-s3.julialang.org/bin/linux/x64/julia-latest-linux64.tar.gz
     - tar --strip-components=1 -xf julia-latest-linux64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
@@ -171,6 +171,8 @@ julia/1.7-examples:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
+    JULIA_CUDA_USE_BINARYBUILDER: false
+    JULIA_NUM_THREADS: 12
   rules:
     - changes:
       - "examples/**/*.sh"
@@ -189,7 +191,6 @@ julia/1.7-examples:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
-    - export JULIA_CUDA_USE_BINARYBUILDER=false
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - export PATH=$PWD/bin:$PATH
@@ -232,6 +233,8 @@ build-and-deploy:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
+    JULIA_CUDA_USE_BINARYBUILDER: false
+    JULIA_NUM_THREADS: 12
   needs:
     job: build-likwid
   only:
@@ -259,7 +262,6 @@ build-and-deploy:
     - likwid-topology
     - likwid-perfctr -i
     - likwid-perfctr -a
-    - export JULIA_CUDA_USE_BINARYBUILDER=false
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - cd docs
