@@ -11,16 +11,16 @@ const ci = get(ENV, "CI", "") == "true"
 @info "Building Literate.jl documentation"
 cd(@__DIR__) do
     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
-                        repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
-                        repo_root_url="$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
 end
 
 @info "Installing DocThemePC2"
 DocThemePC2.install(@__DIR__)
 
 @info "Generating Documenter.jl site"
-DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive=true)
+DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive = true)
 makedocs(
     sitename = "LIKWID.jl",
     authors = "Carsten Bauer",
@@ -28,11 +28,14 @@ makedocs(
     doctest = ci,
     pages = [
         "LIKWID" => "index.md",
-        "Marker API" => [
-            "CPU" => "marker.md",
-            "GPU" => "marker_gpu.md",
+        "Examples" => [
+            "SAXPY CPU+GPU" => "examples/saxpy.md",
+            "Monitoring performance" => "examples/perfmon.md",
+            "Thread Pinning" => "examples/dynamic_pinning.md",
         ],
         "Library" => [
+            "Marker API (CPU)" => "marker.md",
+            "Marker API (GPU)" => "marker_gpu.md",
             "CPU topology" => "topo.md",
             "Performance monitoring" => "perfmon.md",
             "GPU topology" => "topo_gpu.md",
@@ -47,13 +50,9 @@ makedocs(
         "CLI Tools" => [
             "likwid-pin" => "likwid-pin.md",
         ],
-        "Examples" => [
-            "SAXPY CPU+GPU" => "examples/saxpy.md",
-            "Pinning Julia threads" => "examples/dynamic_pinning.md",
-            "Monitoring performance" => "examples/perfmon.md",
-        ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
+    format = Documenter.HTML(; collapselevel = 1),#, assets = ["assets/favicon.ico"])
 )
 
 if ci

@@ -1,5 +1,9 @@
 # # Monitoring performance
 #
+# This is a demo of how to monitor the performance of a computation (`do_flops` below)
+# running on multiple Julia threads using LIKWID from within Julia (i.e. without using `likwid-perfctr ...`).
+# You can simply start Julia with `julia -t N`.
+#
 # ## Setting up
 #
 # ### Pinning the Julia threads
