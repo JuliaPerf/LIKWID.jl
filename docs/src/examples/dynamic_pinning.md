@@ -8,6 +8,9 @@ In the following, we demonstrate how to use LIKWID.jl to pin
 Julia threads to specific cores.
 
 !!! note
+    Instead of LIKWID's pinning features, we strongly recommend to use [ThreadPinning.jl](https://github.com/carstenbauer.eu/ThreadPinning.jl) to pin Julia threads to cores!
+
+!!! note
     Note that Julia implements task-based multithreading where `N`
     tasks get mapped onto `M` OS threads (M:N hybrid threading).
     We will pin the Julia (p)threads and not the tasks.

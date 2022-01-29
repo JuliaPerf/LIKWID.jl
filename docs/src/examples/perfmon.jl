@@ -4,26 +4,28 @@
 #
 # ### Pinning the Julia threads
 #
-# It's highly recommended to pin the Julia threads to specific cores.
-# We'll use [ThreadPools.jl](https://github.com/tro3/ThreadPools.jl)
-# to operate with only a few of the available Julia threads.
+# It's absolutely necessary to pin the Julia threads to specific cores.
+# Otherwise, the threads might migrate to different cores and our hardware performance
+# counter measurements are meaningless.
 
 ## we'll consider the first `NUM_THREADS` Julia threads
-using ThreadPools
+using Threads: @threads, nthreads
 const NUM_THREADS = 3;
 
-# !!! note
-#     If you want to use all Julia threads, replace the parallel blocks, i.e.
-#     `tmap(1:NUM_THREADS) do threadid`, by `Threads.@threads :static for threadid in 1:NUM_THREADS`.
-
-using Base.Threads: nthreads #src
 @assert NUM_THREADS ≤ nthreads() #src
 
 # Let's pin the first `NUM_THREADS` threads to the first `NUM_THREADS` cores.
 using LIKWID
 cores = 0:NUM_THREADS-1
-tmap(i->LIKWID.pinthread(cores[i]), 1:NUM_THREADS)
-tmap(i->LIKWID.get_processor_id(), 1:NUM_THREADS) # check
+@threads for tid in 1:NUM_THREADS
+    LIKWID.pinthread(cores[tid])
+end
+
+# To check that the pinning was successfull, we call [`LIKWID.get_processor_id`](@ref) on each thread.
+@threads for tid in 1:NUM_THREADS
+    core = LIKWID.get_processor_id()
+    println("Thread $tid, Core $core")
+end
 
 # ### Environment variables
 
@@ -58,7 +60,7 @@ PerfMon.init()
 # region. Typically these are done in separate parallel blocks, relying on
 # the implicit barrier at the end of the parallel block. Usually there is
 # a parallel block for initialization and a parallel block for execution.
-tmap(1:NUM_THREADS) do threadid
+@threads for tid in 1:NUM_THREADS
     Marker.registerregion("Total")
     Marker.registerregion("calc_flops")
 
@@ -87,7 +89,7 @@ function monitor_do_flops(NUM_FLOPS = 100_000_000)
     a = 1.8
     b = 3.2
     c = 1.0
-    tmap(1:NUM_THREADS) do threadid
+    @threads for tid in 1:NUM_THREADS
         ## Notice that only the first group specified, `FLOPS_DP`, will be measured.
         ## See further below for how to measure multiple groups.
         Marker.startregion("calc_flops")
@@ -102,7 +104,7 @@ monitor_do_flops()
 #
 # To query basic information about the region from all threads
 # we use [`Marker.getregion`](@ref).
-tmap(1:NUM_THREADS) do threadid
+@threads for threadid in 1:NUM_THREADS
     nevents, events, time, count = Marker.getregion("calc_flops")
     gid = PerfMon.get_id_of_active_group()
     group_name = PerfMon.get_name_of_group(gid)
@@ -121,21 +123,21 @@ _zeroifnothing(x) = x
 gid = PerfMon.get_id_of_active_group()
 nevents = PerfMon.get_number_of_events(gid)
 nmetrics = PerfMon.get_number_of_metrics(gid)
-events = Matrix(undef, nevents, NUM_THREADS+1)
-metrics = Matrix(undef, nmetrics, NUM_THREADS+1)
+events = Matrix(undef, nevents, NUM_THREADS + 1)
+metrics = Matrix(undef, nmetrics, NUM_THREADS + 1)
 
 for tid in 0:NUM_THREADS-1
     for eid in 0:nevents-1
-        events[eid+1,1] = PerfMon.get_name_of_event(gid, eid)
-        events[eid+1,tid+2] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
+        events[eid+1, 1] = PerfMon.get_name_of_event(gid, eid)
+        events[eid+1, tid+2] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
     end
     for mid in 0:nmetrics-1
-        metrics[mid+1,1] = PerfMon.get_name_of_metric(gid, mid)
-        metrics[mid+1,tid+2] = _zeroifnothing(PerfMon.get_metric(gid, mid, tid))
+        metrics[mid+1, 1] = PerfMon.get_name_of_metric(gid, mid)
+        metrics[mid+1, tid+2] = _zeroifnothing(PerfMon.get_metric(gid, mid, tid))
     end
 end
 
 ## printing
 theader = ["Thread $(i)" for i in 0:NUM_THREADS-1]
-pretty_table(events; header=vcat(["Event"], theader))
-pretty_table(metrics; header=vcat(["Metric"], theader))
+pretty_table(events; header = vcat(["Event"], theader))
+pretty_table(metrics; header = vcat(["Metric"], theader))

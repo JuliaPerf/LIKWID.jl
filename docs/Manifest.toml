@@ -337,11 +337,6 @@ git-tree-sha1 = "043da614cc7e95c703498a491e2c21f58a2b8111"
 uuid = "e6cf234a-135c-5ec9-84dd-332b85af5143"
 version = "1.5.3"
 
-[[deps.RecipesBase]]
-git-tree-sha1 = "6bf3f380ff52ce0832ddd3a2a7b9538ed1bcca7d"
-uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-version = "1.2.1"
-
 [[deps.Reexport]]
 git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
@@ -409,12 +404,6 @@ uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[[deps.ThreadPools]]
-deps = ["Printf", "RecipesBase", "Statistics"]
-git-tree-sha1 = "bd6b4d20ebf046ec9dcc6d9e6643b72b60d1d52c"
-uuid = "b189fb0b-2eb5-4ed4-bc0c-d34c51242431"
-version = "2.1.0"
 
 [[deps.TimerOutputs]]
 deps = ["ExprTools", "Printf"]
