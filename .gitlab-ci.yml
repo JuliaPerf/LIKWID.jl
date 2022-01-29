@@ -60,8 +60,8 @@ julia/1.6:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: false
-    JULIA_NUM_THREADS: 12
+    JULIA_CUDA_USE_BINARYBUILDER: "false"
+    JULIA_NUM_THREADS: "12"
   rules:
     # - changes:
     #   - "README.md"
@@ -96,8 +96,8 @@ julia/1.7:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: false
-    JULIA_NUM_THREADS: 12
+    JULIA_CUDA_USE_BINARYBUILDER: "false"
+    JULIA_NUM_THREADS: "12"
   rules:
     # - changes:
     #   - "README.md"
@@ -130,8 +130,8 @@ julia/nightly:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: false
-    JULIA_NUM_THREADS: 12
+    JULIA_CUDA_USE_BINARYBUILDER: "false"
+    JULIA_NUM_THREADS: "12"
   needs:
     job: build-likwid
   rules:
@@ -171,8 +171,8 @@ julia/1.7-examples:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: false
-    JULIA_NUM_THREADS: 12
+    JULIA_CUDA_USE_BINARYBUILDER: "false"
+    JULIA_NUM_THREADS: "12"
   rules:
     - changes:
       - "examples/**/*.sh"
@@ -233,8 +233,8 @@ build-and-deploy:
     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: false
-    JULIA_NUM_THREADS: 12
+    JULIA_CUDA_USE_BINARYBUILDER: "false"
+    JULIA_NUM_THREADS: "12"
   needs:
     job: build-likwid
   only:
