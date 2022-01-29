@@ -13,8 +13,7 @@
 # First, we load the packages and standard libraries that we'll use.
 using LIKWID
 using Base.Threads: nthreads, @threads
-using Test
-using Random
+using Test, Random
 
 # Note that I have started julia with multiple threads (`julia -t N`), concretely
 NT = nthreads()
@@ -45,10 +44,3 @@ end
 cores_firstNT_shuffeled = shuffle(cores_firstNT)
 LIKWID.pinthreads(cores_firstNT_shuffeled)
 @test LIKWID.get_processor_ids() == cores_firstNT_shuffeled
-
-# Finally, let's choose the cores at random
-topo = LIKWID.get_cpu_topology()
-ncores = topo.numSockets * topo.numCoresPerSocket
-cores_rand = shuffle(0:ncores-1)[1:NT]
-LIKWID.pinthreads(cores_rand)
-@test LIKWID.get_processor_ids() == cores_rand
