@@ -13,7 +13,7 @@
 # counter measurements are meaningless.
 
 ## we'll consider the first `NUM_THREADS` Julia threads
-using Threads: @threads, nthreads
+using Base.Threads: @threads, nthreads
 const NUM_THREADS = 3;
 
 @assert NUM_THREADS ≤ nthreads() #src
