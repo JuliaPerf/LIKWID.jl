@@ -4,7 +4,6 @@
 
 <br>
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaperf.github.io/LIKWID.jl/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaperf.github.io/LIKWID.jl/dev/)
 [![Build Status](https://github.com/JuliaPerf/LIKWID.jl/workflows/CI/badge.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
 [![Build Status](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg?key_text=NHR@FAU&key_width=70)](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/-/pipelines)
@@ -28,7 +27,7 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 
 ## Documentation
 
-Please check out [the documentation](https://juliaperf.github.io/LIKWID.jl/stable/) to learn how to use LIKWID.jl.
+Please check out [the documentation](https://juliaperf.github.io/LIKWID.jl/dev/) to learn how to use LIKWID.jl.
 
 ## Example: Marker API (CPU + GPU)
 
