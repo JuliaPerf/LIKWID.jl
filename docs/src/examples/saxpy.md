@@ -41,7 +41,7 @@ Marker.close()
 GPUMarker.close()
 ```
 
-Possible output:
+Output of `likwid-perfctr -C 0 -g FLOPS_SP -G 0 -W FLOPS_SP -m julia --project=. saxpy.jl`:
 ```
 --------------------------------------------------------------------------------
 CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
