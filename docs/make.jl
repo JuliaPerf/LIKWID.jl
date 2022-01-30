@@ -29,7 +29,7 @@ makedocs(
     pages = [
         "LIKWID" => "index.md",
         "Examples" => [
-            "SAXPY CPU+GPU" => "examples/saxpy.md",
+            "Using the Marker API" => "examples/saxpy.md",
             "Monitoring performance" => "examples/perfmon.md",
             "Thread Pinning" => "examples/dynamic_pinning.md",
         ],
