@@ -1,4 +1,77 @@
-# SAXPY CPU+GPU
+# Using the Marker API
+
+## CPU
+
+Example that demonstrates using the CPU Marker API.
+
+```julia
+# saxpy_cpu.jl
+using LIKWID
+using LinearAlgebra
+
+N = 100_000_000
+a = 3.141f0
+z = zeros(Float32, N)
+x = rand(Float32, N)
+y = rand(Float32, N)
+
+function saxpy_cpu!(z,a,x,y)
+    z .= a .* x .+ y
+end
+
+Marker.init()
+
+saxpy_cpu!(z,a,x,y)
+@region "saxpy_cpu" saxpy_cpu!(z,a,x,y)
+
+Marker.close()
+```
+
+Output of `likwid-perfctr -C 0 -g FLOPS_SP -m julia saxpy_cpu.jl`:
+```
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz
+CPU type:	Intel Skylake SP processor
+CPU clock:	2.39 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region saxpy_cpu, Group 1: FLOPS_SP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.097326 |
+|     call count    |          1 |
++-------------------+------------+
+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |   10850760 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |   69311210 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |          0 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |        111 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |    4805495 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.0973 |
+| Runtime unhalted [s] |     0.0289 |
+|      Clock [MHz]     |     inf    |
+|          CPI         |     6.3877 |
+|     SP [MFLOP/s]     |   395.0039 |
+|   AVX SP [MFLOP/s]   |   395.0028 |
+|  AVX512 SP [MFLOP/s] |          0 |
+|   Packed [MUOPS/s]   |    49.3753 |
+|   Scalar [MUOPS/s]   |     0.0011 |
+|  Vectorization ratio |    99.9977 |
++----------------------+------------+
+```
+
+## CPU+GPU
 
 Example that demonstrates using the CPU and GPU Marker API together in one application.
 
@@ -41,7 +114,7 @@ Marker.close()
 GPUMarker.close()
 ```
 
-Output of `likwid-perfctr -C 0 -g FLOPS_SP -G 0 -W FLOPS_SP -m julia --project=. saxpy.jl`:
+Output of `likwid-perfctr -C 0 -g FLOPS_SP -G 0 -W FLOPS_SP -m julia saxpy.jl`:
 ```
 --------------------------------------------------------------------------------
 CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
