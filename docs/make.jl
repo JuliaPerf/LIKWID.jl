@@ -52,6 +52,7 @@ makedocs(
         ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
+    repo = "https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
     format = Documenter.HTML(; collapselevel = 1),#, assets = ["assets/favicon.ico"])
 )
 
