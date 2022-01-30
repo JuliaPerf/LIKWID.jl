@@ -8,9 +8,9 @@ cores = 0:NUM_THREADS-1
 end</code></pre><p>To check that the pinning was successfull, we call <a href="../../affinity/#LIKWID.get_processor_id"><code>LIKWID.get_processor_id</code></a> on each thread.</p><pre><code class="language-julia hljs">@threads for tid in 1:NUM_THREADS
     core = LIKWID.get_processor_id()
     println(&quot;Thread $tid, Core $core&quot;)
-end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Thread 3, Core 2
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Thread 2, Core 1
 Thread 1, Core 0
-Thread 2, Core 1</code></pre><h3 id="Environment-variables"><a class="docs-heading-anchor" href="#Environment-variables">Environment variables</a><a id="Environment-variables-1"></a><a class="docs-heading-anchor-permalink" href="#Environment-variables" title="Permalink"></a></h3><p>We use the <code>LIKWID.LIKWID_*</code> functions to set environment variables to configure LIKWID for our monitoring.</p><pre><code class="language-julia hljs"># use the following threads
+Thread 3, Core 2</code></pre><h3 id="Environment-variables"><a class="docs-heading-anchor" href="#Environment-variables">Environment variables</a><a id="Environment-variables-1"></a><a class="docs-heading-anchor-permalink" href="#Environment-variables" title="Permalink"></a></h3><p>We use the <code>LIKWID.LIKWID_*</code> functions to set environment variables to configure LIKWID for our monitoring.</p><pre><code class="language-julia hljs"># use the following threads
 cpustr = join(collect(0:NUM_THREADS-1), &quot;,&quot;)
 LIKWID.LIKWID_THREADS(cpustr)
 # the location the marker file will be stored
@@ -55,9 +55,9 @@ monitor_do_flops()</code></pre><h2 id="Analysis"><a class="docs-heading-anchor" 
     group_name = PerfMon.get_name_of_group(gid)
     # print basic info
     println(&quot;Thread $(threadid): group $(group_name), $(nevents) events, runtime $(time) s, and call count $(count)&quot;)
-end;</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Thread 3: group FLOPS_DP, 7 events, runtime 0.12732627948307462 s, and call count 1
-Thread 1: group FLOPS_DP, 7 events, runtime 0.10365653249290475 s, and call count 1
-Thread 2: group FLOPS_DP, 7 events, runtime 0.12736184671896225 s, and call count 1</code></pre><p>The tools from the <code>LIKWID.PerfMon</code> module can be used to get more detailed information, such as the event and metric results.</p><pre><code class="language-julia hljs">using PrettyTables
+end;</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Thread 3: group FLOPS_DP, 7 events, runtime 0.1283850791598681 s, and call count 1
+Thread 1: group FLOPS_DP, 7 events, runtime 0.1275139521440005 s, and call count 1
+Thread 2: group FLOPS_DP, 7 events, runtime 0.1284118771751781 s, and call count 1</code></pre><p>The tools from the <code>LIKWID.PerfMon</code> module can be used to get more detailed information, such as the event and metric results.</p><pre><code class="language-julia hljs">using PrettyTables
 using Printf
 _zeroifnothing(x::Nothing) = 0.0
 _zeroifnothing(x) = x
@@ -86,9 +86,9 @@ pretty_table(events; header = vcat([&quot;Event&quot;], theader))
 pretty_table(metrics; header = vcat([&quot;Metric&quot;], theader))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌──────────────────────────────────────────┬───────────┬───────────┬───────────┐
 │                                    Event │  Thread 0 │  Thread 1 │  Thread 2 │
 ├──────────────────────────────────────────┼───────────┼───────────┼───────────┤
-│                        INSTR_RETIRED_ANY │ 1.30773e9 │ 3.50144e8 │ 3.50143e8 │
-│                    CPU_CLK_UNHALTED_CORE │ 1.41968e9 │ 5.56506e8 │ 5.57241e8 │
-│                     CPU_CLK_UNHALTED_REF │ 1.17426e9 │  6.2093e8 │ 6.12582e8 │
+│                        INSTR_RETIRED_ANY │ 1.19519e9 │ 5.60906e8 │ 3.74632e8 │
+│                    CPU_CLK_UNHALTED_CORE │ 1.65767e9 │ 8.17927e8 │ 7.45824e8 │
+│                     CPU_CLK_UNHALTED_REF │ 1.68338e9 │ 8.85755e8 │ 8.03426e8 │
 │ FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE │       0.0 │       0.0 │       0.0 │
 │      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE │ 1.00001e8 │     1.0e8 │     1.0e8 │
 │ FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE │       0.0 │       0.0 │       0.0 │
@@ -97,14 +97,14 @@ pretty_table(metrics; header = vcat([&quot;Metric&quot;], theader))</code></pre>
 ┌──────────────────────┬──────────┬──────────┬──────────┐
 │               Metric │ Thread 0 │ Thread 1 │ Thread 2 │
 ├──────────────────────┼──────────┼──────────┼──────────┤
-│  Runtime (RDTSC) [s] │  1.16048 │  1.16048 │  1.16048 │
-│ Runtime unhalted [s] │ 0.430222 │ 0.168644 │ 0.168866 │
-│          Clock [MHz] │  3989.59 │  2957.51 │  3001.77 │
-│                  CPI │  1.08561 │  1.58936 │  1.59147 │
-│         DP [MFLOP/s] │  86.1725 │  86.1715 │  86.1715 │
+│  Runtime (RDTSC) [s] │   1.6841 │   1.6841 │   1.6841 │
+│ Runtime unhalted [s] │ 0.502333 │ 0.247861 │ 0.226011 │
+│          Clock [MHz] │  3249.56 │  3047.25 │  3063.35 │
+│                  CPI │  1.38695 │  1.45822 │  1.99082 │
+│         DP [MFLOP/s] │  59.3794 │  59.3789 │  59.3788 │
 │     AVX DP [MFLOP/s] │      0.0 │      0.0 │      0.0 │
 │  AVX512 DP [MFLOP/s] │      0.0 │      0.0 │      0.0 │
 │     Packed [MUOPS/s] │      0.0 │      0.0 │      0.0 │
-│     Scalar [MUOPS/s] │  86.1725 │  86.1715 │  86.1715 │
+│     Scalar [MUOPS/s] │  59.3794 │  59.3789 │  59.3788 │
 │  Vectorization ratio │      0.0 │      0.0 │      0.0 │
-└──────────────────────┴──────────┴──────────┴──────────┘</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../saxpy/">« SAXPY CPU+GPU</a><a class="docs-footer-nextpage" href="../dynamic_pinning/">Thread Pinning »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.11 on <span class="colophon-date" title="Sunday 30 January 2022 16:44">Sunday 30 January 2022</span>. Using Julia version 1.7.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+└──────────────────────┴──────────┴──────────┴──────────┘</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../saxpy/">« SAXPY CPU+GPU</a><a class="docs-footer-nextpage" href="../dynamic_pinning/">Thread Pinning »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.11 on <span class="colophon-date" title="Sunday 30 January 2022 16:54">Sunday 30 January 2022</span>. Using Julia version 1.7.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
