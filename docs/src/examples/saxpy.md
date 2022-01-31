@@ -1,6 +1,8 @@
 # Using the Marker API
 
-## CPU
+Below we showcase how to use LIKWIDs Marker API to monitor hardware performance counters for simple SAXPY operations ("single precision `a` times `x` plus `y`" for vectors `x`,`y` and scalar `a`) executed on [CPU](@ref saxpy_cpu), [CPU+GPU](@ref saxpy_cpugpu), and [multiple (CPU) threads](@ref saxpy_threads). For more detailed information about the API see [Marker API (CPU)](@ref) and [Marker API (GPU)](@ref).
+
+## [CPU](@id saxpy_cpu)
 
 Example that demonstrates using the CPU Marker API.
 
@@ -71,7 +73,7 @@ Region saxpy_cpu, Group 1: FLOPS_SP
 +----------------------+------------+
 ```
 
-## CPU+GPU
+## [CPU+GPU](@id saxpy_cpugpu)
 
 Example that demonstrates using the CPU and GPU Marker API together in one application.
 
@@ -177,7 +179,7 @@ Region saxpy_gpu, Group 1: FLOPS_SP
 +---------------------+------------+
 ```
 
-## Multithreading
+## [Multithreading](@id saxpy_threads)
 
 !!! warning
     It is crucial that you pin the Julia threads reliably to the cores that we are monitoring with LIKWID. Here, we will use `likwid-pin` with an appropriate [`pinmask`](@ref) but, in general, it might be easier to use [`JULIA_EXCLUSIVE=1`](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE) or [`ThreadPinning.jl`](https://github.com/carstenbauer/ThreadPinning.jl).
