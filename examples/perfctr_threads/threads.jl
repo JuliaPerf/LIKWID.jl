@@ -6,7 +6,7 @@ using Base.Threads: nthreads, @threads
 @assert nthreads() > 1 # multithreading
 
 # Julia threads should be pinned!
-@threads for tid in 1:nthreads()
+@threads :static for tid in 1:nthreads()
     core = LIKWID.get_processor_id()
     println("Thread $tid, Core $core")
 end
@@ -22,7 +22,7 @@ function saxpy_cpu!(z, a, x, y)
 end
 
 function saxpy_threads(zs, a, x, y)
-    @threads for tid in 1:nthreads()
+    @threads :static for tid in 1:nthreads()
         @region "saxpy_cpu!" saxpy_cpu!(zs[tid], a, x, y)
     end
 end

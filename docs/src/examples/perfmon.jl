@@ -21,12 +21,12 @@ const NUM_THREADS = 3;
 # Let's pin the first `NUM_THREADS` threads to the first `NUM_THREADS` cores.
 using LIKWID
 cores = 0:NUM_THREADS-1
-@threads for tid in 1:NUM_THREADS
+@threads :static for tid in 1:NUM_THREADS
     LIKWID.pinthread(cores[tid])
 end
 
 # To check that the pinning was successfull, we call [`LIKWID.get_processor_id`](@ref) on each thread.
-@threads for tid in 1:NUM_THREADS
+@threads :static for tid in 1:NUM_THREADS
     core = LIKWID.get_processor_id()
     println("Thread $tid, Core $core")
 end
@@ -64,7 +64,7 @@ PerfMon.init()
 # region. Typically these are done in separate parallel blocks, relying on
 # the implicit barrier at the end of the parallel block. Usually there is
 # a parallel block for initialization and a parallel block for execution.
-@threads for tid in 1:NUM_THREADS
+@threads :static for tid in 1:NUM_THREADS
     Marker.registerregion("Total")
     Marker.registerregion("calc_flops")
 
@@ -93,7 +93,7 @@ function monitor_do_flops(NUM_FLOPS = 100_000_000)
     a = 1.8
     b = 3.2
     c = 1.0
-    @threads for tid in 1:NUM_THREADS
+    @threads :static for tid in 1:NUM_THREADS
         ## Notice that only the first group specified, `FLOPS_DP`, will be measured.
         ## See further below for how to measure multiple groups.
         Marker.startregion("calc_flops")
@@ -108,7 +108,7 @@ monitor_do_flops()
 #
 # To query basic information about the region from all threads
 # we use [`Marker.getregion`](@ref).
-@threads for threadid in 1:NUM_THREADS
+@threads :static for threadid in 1:NUM_THREADS
     nevents, events, time, count = Marker.getregion("calc_flops")
     gid = PerfMon.get_id_of_active_group()
     group_name = PerfMon.get_name_of_group(gid)
