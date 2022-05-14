@@ -41,9 +41,3 @@ function get_configuration()
     end
     return config[]
 end
-
-"""
-Query the access mode used by LIKWID, i.e. either
-`ACCESSMODE_PERF`, `ACCESSMODE_DAEMON`, or `ACCESSMODE_DIRECT`.
-"""
-accessmode() = LIKWID.get_configuration().daemonMode

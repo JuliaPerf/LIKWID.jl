@@ -7,12 +7,12 @@ Taken from https://discourse.julialang.org/t/thread-affinitization-pinning-julia
 function pinmask(N::Integer)
     mask = UInt(0)
     for i in 1:N
-        mask |= 1<<i
+        mask |= 1 << i
     end
     return _uint_to_hexmask(~mask) # Invert the mask to only pin Julia threads
 end
 
-_uint_to_hexmask(mask::UInt) = "0x" * string(mask, pad = sizeof(mask)<<1, base = 16)
+_uint_to_hexmask(mask::UInt) = "0x" * string(mask, pad=sizeof(mask) << 1, base=16)
 
 """
 Set the verbosity level of the LIKWID library. Returns `true` on success.
@@ -62,6 +62,12 @@ function _check_likwid_gpusupport_alternative()
     # else
     return false
 end
+
+"""
+Query the access mode used by LIKWID, i.e. either
+`ACCESSMODE_PERF`, `ACCESSMODE_DAEMON`, or `ACCESSMODE_DIRECT`.
+"""
+accessmode() = LIKWID.get_configuration().daemonMode
 
 "Run a Cmd object, returning the stdout & stderr contents plus the exit code"
 function _execute(cmd::Cmd)
@@ -133,7 +139,7 @@ end
 """
 List the values of `LIKWID_*` environment variables.
 """
-env() = filter(x->startswith(x[1], "LIKWID"), ENV)
+env() = filter(x -> startswith(x[1], "LIKWID"), ENV)
 
 """
 Unset all `LIKWID_*` environment variables (for the current session).
