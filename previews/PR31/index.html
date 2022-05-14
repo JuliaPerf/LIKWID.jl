@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>LIKWID · LIKWID.jl</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><script src="../copy.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href><img src="assets/logo.svg" alt="LIKWID.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href>LIKWID.jl</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>LIKWID</a><ul class="internal"><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#LIKWID.jl-vs-LinuxPerf.jl"><span>LIKWID.jl vs LinuxPerf.jl</span></a></li><li><a class="tocitem" href="#Supported-CPUs"><span>Supported CPUs</span></a></li></ul></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox"/><label class="tocitem" for="menuitem-2"><span class="docs-label">Examples</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="examples/saxpy/">Using the Marker API</a></li><li><a class="tocitem" href="examples/perfmon/">Monitoring performance</a></li><li><a class="tocitem" href="examples/dynamic_pinning/">Thread Pinning</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Library</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="marker/">Marker API (CPU)</a></li><li><a class="tocitem" href="marker_gpu/">Marker API (GPU)</a></li><li><a class="tocitem" href="topo/">CPU topology</a></li><li><a class="tocitem" href="perfmon/">Performance monitoring</a></li><li><a class="tocitem" href="topo_gpu/">GPU topology</a></li><li><a class="tocitem" href="nvmon/">NVIDIA monitoring</a></li><li><a class="tocitem" href="timer/">CPU clock timer</a></li><li><a class="tocitem" href="temperature/">CPU temperature</a></li><li><a class="tocitem" href="power/">Power / Energy</a></li><li><a class="tocitem" href="affinity/">Affinity</a></li><li><a class="tocitem" href="access/">HPM / Access</a></li><li><a class="tocitem" href="misc/">Miscellaneous</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">CLI Tools</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="likwid-pin/">likwid-pin</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>LIKWID</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>LIKWID</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaPerf/LIKWID.jl/blob/master/docs/src/index.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="LIKWID-Like-I-Knew-What-I&#39;m-Doing"><a class="docs-heading-anchor" href="#LIKWID-Like-I-Knew-What-I&#39;m-Doing">LIKWID - Like I Knew What I&#39;m Doing</a><a id="LIKWID-Like-I-Knew-What-I&#39;m-Doing-1"></a><a class="docs-heading-anchor-permalink" href="#LIKWID-Like-I-Knew-What-I&#39;m-Doing" title="Permalink"></a></h1><p><a href="https://github.com/JuliaPerf/LIKWID.jl">LIKWID.jl</a> is a Julia wrapper for the  performance monitoring and benchmarking suite <a href="https://github.com/RRZE-HPC/likwid">LIKWID</a>.</p><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><p>Prerequisites:</p><ul><li>You must have <code>likwid</code> installed (see the <a href="https://github.com/RRZE-HPC/likwid#download-build-and-install">build &amp; install instructions</a>).</li><li><strong>You must be running Linux.</strong> (LIKWID doesn&#39;t support macOS or Windows.)</li></ul><p>LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Julia environment with the command</p><pre><code class="language-julia hljs">] add LIKWID</code></pre><h2 id="LIKWID.jl-vs-LinuxPerf.jl"><a class="docs-heading-anchor" href="#LIKWID.jl-vs-LinuxPerf.jl">LIKWID.jl vs LinuxPerf.jl</a><a id="LIKWID.jl-vs-LinuxPerf.jl-1"></a><a class="docs-heading-anchor-permalink" href="#LIKWID.jl-vs-LinuxPerf.jl" title="Permalink"></a></h2><p>As per default (and recommendation) LIKWID(.jl) uses a custom <a href="https://github.com/RRZE-HPC/likwid/wiki/likwid-accessD">access daemon</a> to monitor hardware performance counters. In contrast, <a href="https://github.com/JuliaPerf/LinuxPerf.jl">LinuxPerf.jl</a> uses Linux&#39;s <a href="https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html"><code>perf_events</code></a>. However, it is possible to make LIKWID use <code>perf_events</code> as an alternative (inferior) backend. See <a href="https://github.com/RRZE-HPC/likwid/wiki/TutorialLikwidPerf">here</a> for more information.</p><h2 id="Supported-CPUs"><a class="docs-heading-anchor" href="#Supported-CPUs">Supported CPUs</a><a id="Supported-CPUs-1"></a><a class="docs-heading-anchor-permalink" href="#Supported-CPUs" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; LIKWID.print_supported_cpus()</code><code class="nohighlight hljs ansi" style="display:block;"></code><code class="nohighlight hljs ansi" style="display:block;">Supported Intel processors:
+	Intel Core 2 65nm processor
+	Intel Core 2 45nm processor
+	Intel Xeon MP processor
+	Intel Atom 45nm processor
+	Intel Atom 32nm processor
+	Intel Atom 22nm processor
+	Intel Core Bloomfield processor
+	Intel Core Lynnfield processor
+	Intel Core Westmere processor
+	Intel Nehalem EX processor
+	Intel Westmere EX processor
+	Intel Core SandyBridge processor
+	Intel Xeon SandyBridge EN/EP processor
+	Intel Core IvyBridge processor
+	Intel Xeon IvyBridge EN/EP/EX processor
+	Intel Core Haswell processor
+	Intel Xeon Haswell EN/EP/EX processor
+	Intel Atom (Silvermont) processor
+	Intel Atom (Airmont) processor
+	Intel Xeon Phi (Knights Corner) Coprocessor
+	Intel Core Broadwell processor
+	Intel Xeon D Broadwell processor
+	Intel Xeon Broadwell EN/EP/EX processor
+	Intel Atom (Goldmont) processor
+	Intel Xeon Phi (Knights Landing) (Co)Processor
+	Intel Skylake processor
+	Intel Skylake SP processor
+	Intel Xeon Phi (Knights Mill) (Co)Processor
+	Intel Kabylake processor
+	Intel Coffeelake processor
+	Intel Cascadelake SP processor
+	Intel Tigerlake processor
+	Intel Icelake processor
+	Intel Icelake SP processor
+
+Supported AMD processors:
+	AMD Opteron single core 130nm processor
+	AMD Opteron Dual Core Rev E 90nm processor
+	AMD Opteron Dual Core Rev F 90nm processor
+	AMD K10 (Barcelona) processor
+	AMD K10 (Shanghai) processor
+	AMD K10 (Istanbul) processor
+	AMD K10 (Magny Cours) processor
+	AMD Interlagos processor
+	AMD Family 16 model - Kabini processor
+	AMD K17 (Zen) architecture
+	AMD K17 (Zen2) architecture
+	AMD K19 (Zen3) architecture
+
+Supported ARMv8 processors:
+	ARM Cortex A53
+	ARM Cortex A57
+	Cavium Thunder X (ARMv8)
+	Cavium Thunder X2 (ARMv8)
+	Fujitsu A64FX
+
+Supported ARMv7 processors:
+	ARM 7l architecture
+
+Supported POWER processors:
+	POWER8 architecture
+	POWER9 architecture</code></pre></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="examples/saxpy/">Using the Marker API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.11 on <span class="colophon-date" title="Saturday 14 May 2022 20:21">Saturday 14 May 2022</span>. Using Julia version 1.7.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
