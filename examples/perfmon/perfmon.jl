@@ -17,10 +17,10 @@ for _ in 1:100
 end
 LIKWID.PerfMon.stop_counters()
 
-mdict = LIKWID.PerfMon.get_metric_results(groupid, cpu)
+mdict = LIKWID.PerfMon.get_metric_results(groupid, 1)
 display(mdict)
 println(); flush(stdout);
-edict = LIKWID.PerfMon.get_event_results(groupid, cpu)
+edict = LIKWID.PerfMon.get_event_results(groupid, 1)
 display(edict)
 
 LIKWID.PerfMon.finalize()

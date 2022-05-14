@@ -208,7 +208,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         glinfo = groups[1].longinfo
         # single group
         gid = LIKWID.PerfMon.add_event_set(gname)
-        @test gid ≥ 0
+        @test gid ≥ 1
         @test LIKWID.PerfMon.get_number_of_groups() == 1
         @test LIKWID.PerfMon.get_name_of_group(gid) == gname
         @test LIKWID.PerfMon.get_shortinfo_of_group(gid) == gsinfo
@@ -217,16 +217,16 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test LIKWID.PerfMon.get_number_of_metrics(gid) ≥ 0
         nevents = LIKWID.PerfMon.get_number_of_events(gid)
         @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, -1))
-        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents))
+        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, 0))
         @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents + 1))
-        @test !isnothing(LIKWID.PerfMon.get_name_of_event(gid, 0))
-        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, -1))
-        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, nevents))
-        @test !isnothing(LIKWID.PerfMon.get_name_of_counter(gid, 0))
+        @test !isnothing(LIKWID.PerfMon.get_name_of_event(gid, 1))
+        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, 0))
+        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, nevents + 1))
+        @test !isnothing(LIKWID.PerfMon.get_name_of_counter(gid, 1))
         nmetrics = LIKWID.PerfMon.get_number_of_metrics(gid)
-        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, -1))
-        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, nmetrics))
-        @test !isnothing(LIKWID.PerfMon.get_name_of_metric(gid, 0))
+        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, 0))
+        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, nmetrics + 1))
+        @test !isnothing(LIKWID.PerfMon.get_name_of_metric(gid, 1))
 
         @test LIKWID.PerfMon.setup_counters(gid)
         @test LIKWID.PerfMon.get_id_of_active_group() == gid
@@ -235,14 +235,14 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test LIKWID.PerfMon.read_counters()
         @test LIKWID.PerfMon.read_counters()
         @test LIKWID.PerfMon.stop_counters()
-        @test typeof(LIKWID.PerfMon.get_result(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.PerfMon.get_last_result(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.PerfMon.get_metric(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.PerfMon.get_last_metric(gid, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_result(gid, 1, 1)) == Float64
+        @test typeof(LIKWID.PerfMon.get_last_result(gid, 1, 1)) == Float64
+        @test typeof(LIKWID.PerfMon.get_metric(gid, 1, 1)) == Float64
+        @test typeof(LIKWID.PerfMon.get_last_metric(gid, 1, 1)) == Float64
         @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
         @test LIKWID.PerfMon.list_metrics(gid) isa Vector{String}
-        @test LIKWID.PerfMon.get_metric_results(gid, 0) isa OrderedDict
-        @test LIKWID.PerfMon.get_event_results(gid, 0) isa OrderedDict
+        @test LIKWID.PerfMon.get_metric_results(gid, 1) isa OrderedDict
+        @test LIKWID.PerfMon.get_event_results(gid, 1) isa OrderedDict
 
         # multiple groups
         gid2 = LIKWID.PerfMon.add_event_set(groups[2].name)
@@ -255,10 +255,10 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test LIKWID.PerfMon.switch_group(gid)
         @test LIKWID.PerfMon.get_id_of_active_group() == gid
         @test LIKWID.PerfMon.stop_counters()
-        @test typeof(LIKWID.PerfMon.get_result(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.PerfMon.get_result(gid2, 0, 0)) == Float64
-        @test typeof(LIKWID.PerfMon.get_metric(gid, 0, 0)) == Float64
-        @test typeof(LIKWID.PerfMon.get_metric(gid2, 0, 0)) == Float64
+        @test typeof(LIKWID.PerfMon.get_result(gid, 1, 1)) == Float64
+        @test typeof(LIKWID.PerfMon.get_result(gid2, 1, 1)) == Float64
+        @test typeof(LIKWID.PerfMon.get_metric(gid, 1, 1)) == Float64
+        @test typeof(LIKWID.PerfMon.get_metric(gid2, 1, 1)) == Float64
         @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
         @test typeof(LIKWID.PerfMon.get_time_of_group(gid2)) == Float64
         @test isnothing(LIKWID.PerfMon.finalize())
@@ -393,7 +393,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             glinfo = groups[1].longinfo
             # single group
             gid = LIKWID.NvMon.add_event_set(gname)
-            @test gid ≥ 0
+            @test gid ≥ 1
             @test LIKWID.NvMon.get_number_of_groups() == 1
             @test LIKWID.NvMon.get_name_of_group(gid) == gname
             @test LIKWID.NvMon.get_shortinfo_of_group(gid) == gsinfo
@@ -402,16 +402,16 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test LIKWID.NvMon.get_number_of_metrics(gid) ≥ 0
             nevents = LIKWID.NvMon.get_number_of_events(gid)
             @test isnothing(LIKWID.NvMon.get_name_of_event(gid, -1))
-            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, nevents))
+            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, 0))
             @test isnothing(LIKWID.NvMon.get_name_of_event(gid, nevents + 1))
-            @test !isnothing(LIKWID.NvMon.get_name_of_event(gid, 0))
-            @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, -1))
-            @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, nevents))
-            @test !isnothing(LIKWID.NvMon.get_name_of_counter(gid, 0))
+            @test !isnothing(LIKWID.NvMon.get_name_of_event(gid, 1))
+            @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, 0))
+            @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, nevents + 1))
+            @test !isnothing(LIKWID.NvMon.get_name_of_counter(gid, 1))
             nmetrics = LIKWID.NvMon.get_number_of_metrics(gid)
-            @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, -1))
-            @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, nmetrics))
-            @test !isnothing(LIKWID.NvMon.get_name_of_metric(gid, 0))
+            @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, 0))
+            @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, nmetrics + 1))
+            @test !isnothing(LIKWID.NvMon.get_name_of_metric(gid, 1))
 
             @test LIKWID.NvMon.setup_counters(gid)
             @test LIKWID.NvMon.get_id_of_active_group() == gid
@@ -420,10 +420,10 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test LIKWID.NvMon.read_counters()
             @test LIKWID.NvMon.read_counters()
             @test LIKWID.NvMon.stop_counters()
-            @test typeof(LIKWID.NvMon.get_result(gid, 0, 0)) == Float64
-            @test typeof(LIKWID.NvMon.get_last_result(gid, 0, 0)) == Float64
-            @test_broken typeof(LIKWID.NvMon.get_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
-            @test_broken typeof(LIKWID.NvMon.get_last_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getLastMetric
+            @test typeof(LIKWID.NvMon.get_result(gid, 1, 1)) == Float64
+            @test typeof(LIKWID.NvMon.get_last_result(gid, 1, 1)) == Float64
+            @test_broken typeof(LIKWID.NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
+            @test_broken typeof(LIKWID.NvMon.get_last_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getLastMetric
             @test typeof(LIKWID.NvMon.get_time_of_group(gid)) == Float64
 
             # multiple groups
@@ -437,10 +437,10 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test LIKWID.NvMon.switch_group(gid)
             @test LIKWID.NvMon.get_id_of_active_group() == gid
             @test LIKWID.NvMon.stop_counters()
-            @test typeof(LIKWID.NvMon.get_result(gid, 0, 0)) == Float64
-            @test typeof(LIKWID.NvMon.get_result(gid2, 0, 0)) == Float64
-            @test_broken typeof(LIKWID.NvMon.get_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
-            @test_broken typeof(LIKWID.NvMon.get_metric(gid2, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
+            @test typeof(LIKWID.NvMon.get_result(gid, 1, 1)) == Float64
+            @test typeof(LIKWID.NvMon.get_result(gid2, 1, 1)) == Float64
+            @test_broken typeof(LIKWID.NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
+            @test_broken typeof(LIKWID.NvMon.get_metric(gid2, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
             @test typeof(LIKWID.NvMon.get_time_of_group(gid)) == Float64
             @test typeof(LIKWID.NvMon.get_time_of_group(gid2)) == Float64
         end

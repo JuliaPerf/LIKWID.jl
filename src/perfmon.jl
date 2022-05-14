@@ -40,10 +40,10 @@ function finalize()
     return nothing
 end
 
-_check_groupid(gid) = 0 ≤ gid < get_number_of_groups()
-_check_eventidx(gid, eidx) = 0 ≤ eidx < get_number_of_events(gid)
-_check_metricidx(gid, eidx) = 0 ≤ eidx < get_number_of_metrics(gid)
-_check_threadidx(tidx) = 0 ≤ tidx < get_number_of_threads()
+_check_groupid(gid) = 1 ≤ gid ≤ get_number_of_groups()
+_check_eventidx(gid, eidx) = 1 ≤ eidx ≤ get_number_of_events(gid)
+_check_metricidx(gid, eidx) = 1 ≤ eidx ≤ get_number_of_metrics(gid)
+_check_threadidx(tidx) = 1 ≤ tidx ≤ get_number_of_threads()
 
 """
 Return the number of threads initialized in the perfmon module.
@@ -56,15 +56,15 @@ Return the number of groups currently registered in the perfmon module.
 get_number_of_groups() = LibLikwid.perfmon_getNumberOfGroups()
 
 """
-Return the amount of events in the group.
+Return the amount of events in the given group with id `groupid` (starts at 1).
 """
-get_number_of_events(groupid::Integer) = LibLikwid.perfmon_getNumberOfEvents(groupid)
+get_number_of_events(groupid::Integer) = LibLikwid.perfmon_getNumberOfEvents(groupid - 1)
 
 """
-Return the amount of metrics in the group.
+Return the amount of metrics in the given group with id `groupid` (starts at 1).
 Always zero for custom event sets.
 """
-get_number_of_metrics(groupid::Integer) = LibLikwid.perfmon_getNumberOfMetrics(groupid)
+get_number_of_metrics(groupid::Integer) = LibLikwid.perfmon_getNumberOfMetrics(groupid - 1)
 
 """
 Return a list of all available perfmon groups.
@@ -125,47 +125,47 @@ end
 """
     add_event_set(estr) -> groupid
 Add a performance group or a custom event set to the perfmon module.
-Returns a `groupid` which is required to later specify the event set.
+Returns a `groupid` (starting at 1) which is required to later specify the event set.
 """
 function add_event_set(estr::AbstractString)
     perfmon_initialized[] || return nothing
     groupid = LibLikwid.perfmon_addEventSet(estr)
-    return Int(groupid)
+    return Int(groupid) + 1
 end
 
 """
-Return the name of the group identified by `groupid`.
+Return the name of the group identified by `groupid` (starts at 1).
 If it is a custom event set, the name is set to `Custom`.
 """
 function get_name_of_group(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    name = unsafe_string(LibLikwid.perfmon_getGroupName(groupid))
+    name = unsafe_string(LibLikwid.perfmon_getGroupName(groupid - 1))
     return name
 end
 
 """
-Return the short information about a performance group.
+Return the short information about a performance group with id `groupid` (starts at 1).
 """
 function get_shortinfo_of_group(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    sinfo = unsafe_string(LibLikwid.perfmon_getGroupInfoShort(groupid))
+    sinfo = unsafe_string(LibLikwid.perfmon_getGroupInfoShort(groupid - 1))
     return sinfo
 end
 
 """
-Return the (long) description of a performance group.
+Return the (long) description of a performance group with id `groupid` (starts at 1).
 """
 function get_longinfo_of_group(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    linfo = unsafe_string(LibLikwid.perfmon_getGroupInfoLong(groupid))
+    linfo = unsafe_string(LibLikwid.perfmon_getGroupInfoLong(groupid - 1))
     return linfo
 end
 
 """
-Return the name of the event identified by `groupid` and `eventidx`.
+Return the name of the event identified by `groupid` and `eventidx` (both starting at 1).
 """
 function get_name_of_event(groupid::Integer, eventidx::Integer)
     if !perfmon_initialized[] ||
@@ -173,12 +173,12 @@ function get_name_of_event(groupid::Integer, eventidx::Integer)
        !_check_eventidx(groupid, eventidx)
         return nothing
     end
-    name = unsafe_string(LibLikwid.perfmon_getEventName(groupid, eventidx))
+    name = unsafe_string(LibLikwid.perfmon_getEventName(groupid - 1, eventidx - 1))
     return name
 end
 
 """
-Return the name of the counter register identified by `groupid` and `eventidx`.
+Return the name of the counter register identified by `groupid` and `eventidx` (both starting at 1).
 """
 function get_name_of_counter(groupid::Integer, eventidx::Integer)
     if !perfmon_initialized[] ||
@@ -186,12 +186,12 @@ function get_name_of_counter(groupid::Integer, eventidx::Integer)
        !_check_eventidx(groupid, eventidx)
         return nothing
     end
-    name = unsafe_string(LibLikwid.perfmon_getCounterName(groupid, eventidx))
+    name = unsafe_string(LibLikwid.perfmon_getCounterName(groupid - 1, eventidx - 1))
     return name
 end
 
 """
-Return the name of a derived metric identified by `groupid` and `metricidx`.
+Return the name of a derived metric identified by `groupid` and `metricidx` (both starting at 1).
 """
 function get_name_of_metric(groupid::Integer, metricidx::Integer)
     if !perfmon_initialized[] ||
@@ -199,17 +199,17 @@ function get_name_of_metric(groupid::Integer, metricidx::Integer)
        !_check_metricidx(groupid, metricidx)
         return nothing
     end
-    name = unsafe_string(LibLikwid.perfmon_getMetricName(groupid, metricidx))
+    name = unsafe_string(LibLikwid.perfmon_getMetricName(groupid - 1, metricidx - 1))
     return name
 end
 
 """
-Program the counter registers to measure all events in group `groupid`. Returns `true` on success.
+Program the counter registers to measure all events in group `groupid` (starts at 1). Returns `true` on success.
 """
 function setup_counters(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return false
-    ret = LibLikwid.perfmon_setupCounters(groupid)
+    ret = LibLikwid.perfmon_setupCounters(groupid - 1)
     return ret == 0
 end
 
@@ -247,95 +247,96 @@ Return the `groupid` of the currently activate group.
 """
 function get_id_of_active_group()
     perfmon_initialized[] || return nothing
-    return LibLikwid.perfmon_getIdOfActiveGroup()
+    return LibLikwid.perfmon_getIdOfActiveGroup() + 1
 end
 
 """
-Switch currently active group to `groupid`. Returns `true` on success.
+Switch currently active group to `groupid` (starts with 1). Returns `true` on success.
 """
 function switch_group(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     groupid == get_id_of_active_group() && return true
-    ret = LibLikwid.perfmon_switchActiveGroup(groupid)
+    ret = LibLikwid.perfmon_switchActiveGroup(groupid - 1)
     return ret == 0
 end
 
 """
-Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and thread `threadidx`.
+Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
 """
 function get_last_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
     perfmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
     _check_threadidx(threadidx) || return nothing
-    res = LibLikwid.perfmon_getLastResult(groupid, eventidx, threadidx)
+    res = LibLikwid.perfmon_getLastResult(groupid - 1, eventidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx`.
+Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
 """
 function get_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
     perfmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
     _check_threadidx(threadidx) || return nothing
-    res = LibLikwid.perfmon_getResult(groupid, eventidx, threadidx)
+    res = LibLikwid.perfmon_getResult(groupid - 1, eventidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx`.
+Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx` (all starting at 1).
 """
 function get_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
     perfmon_initialized[] || return nothing
     _check_metricidx(groupid, metricidx) || return nothing
     _check_threadidx(threadidx) || return nothing
-    res = LibLikwid.perfmon_getMetric(groupid, metricidx, threadidx)
+    res = LibLikwid.perfmon_getMetric(groupid - 1, metricidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx`.
+Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx` (all starting at 1).
 """
 function get_last_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
     perfmon_initialized[] || return nothing
     _check_metricidx(groupid, metricidx) || return nothing
     _check_threadidx(threadidx) || return nothing
-    res = LibLikwid.perfmon_getLastMetric(groupid, metricidx, threadidx)
+    res = LibLikwid.perfmon_getLastMetric(groupid - 1, metricidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the measurement time for group identified by `groupid`.
+Return the measurement time for group identified by `groupid` (starts at 1).
 """
 function get_time_of_group(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    time = LibLikwid.perfmon_getTimeOfGroup(groupid)
+    time = LibLikwid.perfmon_getTimeOfGroup(groupid - 1)
     return time
 end
 
 """
-List all the metrics of a given group.
+List all the metrics of a given group (`groupid` starts at 1).
 """
 function list_metrics(groupid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     nmetrics = get_number_of_metrics(groupid)
-    return get_name_of_metric.(Ref(groupid), 0:nmetrics-1)
+    return get_name_of_metric.(Ref(groupid), 1:nmetrics)
 end
 
 """
+  get_metric_results(groupid::Integer, threadid::Integer)
 Get the name and results of all metrics of a given group for a given cpu thread.
+Here, `groupid` and `threadid` both start at 1 and enumerate the initialized perfmon groups and cpu threads (i.e. the ones passed to [`LIKWID.PerfMon.init`](@ref)), respectively.
 """
 function get_metric_results(groupid::Integer, threadid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     _check_threadidx(threadid) || return nothing
     nmetrics = get_number_of_metrics(groupid)
-    d = OrderedDict{String, Float64}()
-    for m in 1:nmetrics
-        metricid = m-1
+    d = OrderedDict{String,Float64}()
+    for metricid in 1:nmetrics
         metric = get_name_of_metric(groupid, metricid)
         d[metric] = get_last_metric(groupid, metricid, threadid)
     end
@@ -344,15 +345,15 @@ end
 
 """
 Get the name and results of all events of a given group for a given cpu thread.
+Here, `groupid` and `threadid` both start at 1 and enumerate the initialized perfmon groups and cpu threads (i.e. the ones passed to [`LIKWID.PerfMon.init`](@ref)), respectively.
 """
 function get_event_results(groupid::Integer, threadid::Integer)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     _check_threadidx(threadid) || return nothing
     nevents = get_number_of_events(groupid)
-    d = OrderedDict{String, Float64}()
-    for i in 1:nevents
-        eventid = i-1
+    d = OrderedDict{String,Float64}()
+    for eventid in 1:nevents
         event = get_name_of_event(groupid, eventid)
         d[event] = get_last_result(groupid, eventid, threadid)
     end

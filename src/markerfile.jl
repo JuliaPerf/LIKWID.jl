@@ -18,48 +18,48 @@ Return the number of regions in an application run.
 numregions() = Int(LibLikwid.perfmon_getNumberOfRegions())
 
 """
-Return the region tag for the region identified by `ridx`.
+Return the region tag for the region identified by `ridx` (starts at 1).
 """
-regiontag(ridx) = unsafe_string(LibLikwid.perfmon_getTagOfRegion(ridx))
+regiontag(ridx) = unsafe_string(LibLikwid.perfmon_getTagOfRegion(ridx - 1))
 
 """
-Return the group id for the region identified by `ridx`.
+Return the group id for the region identified by `ridx` (starts at 1).
 """
-regiongroup(ridx) = Int(LibLikwid.perfmon_getGroupOfRegion(ridx))
+regiongroup(ridx) = Int(LibLikwid.perfmon_getGroupOfRegion(ridx - 1)) + 1
 
 """
-Return the number of events of the region identified by `ridx`.
+Return the number of events of the region identified by `ridx` (starts at 1).
 """
-regionevents(ridx) = Int(LibLikwid.perfmon_getEventsOfRegion(ridx))
+regionevents(ridx) = Int(LibLikwid.perfmon_getEventsOfRegion(ridx - 1))
 
 """
-Return the number of metrics of the region identified by `ridx`.
+Return the number of metrics of the region identified by `ridx` (starts at 1).
 """
-regionmetrics(ridx) = Int(LibLikwid.perfmon_getMetricsOfRegion(ridx))
+regionmetrics(ridx) = Int(LibLikwid.perfmon_getMetricsOfRegion(ridx - 1))
 
 """
-Return the number of threads of the region identified by `ridx`.
+Return the number of threads of the region identified by `ridx` (starts at 1).
 """
-regionthreads(ridx) = Int(LibLikwid.perfmon_getThreadsOfRegion(ridx))
+regionthreads(ridx) = Int(LibLikwid.perfmon_getThreadsOfRegion(ridx - 1))
 
 """
-Return the accumulated measurement time for the region identified by `rid` and the thread index `tidx`.
+Return the accumulated measurement time for the region identified by `rid` and the thread index `tidx` (both starting at 1).
 """
-regiontime(ridx, tidx) = LibLikwid.perfmon_getTimeOfRegion(ridx, tidx)
+regiontime(ridx, tidx) = LibLikwid.perfmon_getTimeOfRegion(ridx - 1, tidx - 1)
 
 """
-Return the call count for the region identified by `rid` and the thread index `tidx`.
+Return the call count for the region identified by `rid` and the thread index `tidx` (both starting at 1).
 """
-regioncount(ridx, tidx) = LibLikwid.perfmon_getCountOfRegion(ridx, tidx)
+regioncount(ridx, tidx) = LibLikwid.perfmon_getCountOfRegion(ridx - 1, tidx - 1)
 
 """
-Return the call count for the region identified by `ridx`, the event index `eidx` and the thread index `tidx`.
+Return the call count for the region identified by `ridx`, the event index `eidx` and the thread index `tidx` (all starting at 1).
 """
-regionresult(ridx, eidx, tidx) = LibLikwid.perfmon_getResultOfRegionThread(ridx, eidx, tidx)
+regionresult(ridx, eidx, tidx) = LibLikwid.perfmon_getResultOfRegionThread(ridx - 1, eidx - 1, tidx - 1)
 
 """
-Return the call count for the region identified by `ridx`, the metric index `midx` and the thread index `tidx`.
+Return the call count for the region identified by `ridx`, the metric index `midx` and the thread index `tidx` (all starting at 1).
 """
-regionmetric(ridx, midx, tidx) = LibLikwid.perfmon_getMetricOfRegionThread(ridx, midx, tidx)
+regionmetric(ridx, midx, tidx) = LibLikwid.perfmon_getMetricOfRegionThread(ridx - 1, midx - 1, tidx - 1)
 
 end # module

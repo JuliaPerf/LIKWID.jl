@@ -3,7 +3,7 @@ module NvMon
 using ..LIKWID:
     LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology
 
-function init(gpus::AbstractVector{Int32}=Int32[i-1 for i in 1:(get_gpu_topology().numDevices)])
+function init(gpus::AbstractVector{Int32}=Int32[i - 1 for i in 1:(get_gpu_topology().numDevices)])
     nvmon_initialized[] && finalize()
 
     if !gputopo_initialized[]
@@ -27,10 +27,10 @@ function finalize()
     return nothing
 end
 
-_check_groupid(gid) = 0 ≤ gid < get_number_of_groups()
-_check_eventidx(gid, eidx) = 0 ≤ eidx < get_number_of_events(gid)
-_check_metricidx(gid, eidx) = 0 ≤ eidx < get_number_of_metrics(gid)
-_check_gpuid(gpuid) = 0 ≤ gpuid < get_number_of_gpus()
+_check_groupid(gid) = 1 ≤ gid ≤ get_number_of_groups()
+_check_eventidx(gid, eidx) = 1 ≤ eidx ≤ get_number_of_events(gid)
+_check_metricidx(gid, eidx) = 1 ≤ eidx ≤ get_number_of_metrics(gid)
+_check_gpuid(gpuid) = 1 ≤ gpuid ≤ get_number_of_gpus()
 
 """
 Return the number of GPUs initialized in the nvmon module.
@@ -43,18 +43,18 @@ Return the number of groups currently registered in the nvmon module.
 get_number_of_groups() = LibLikwid.nvmon_getNumberOfGroups()
 
 """
-Return the number of events in the group.
+Return the number of events in the group with id `groupid` (starts at 1).
 """
-get_number_of_events(groupid::Integer) = LibLikwid.nvmon_getNumberOfEvents(groupid)
+get_number_of_events(groupid::Integer) = LibLikwid.nvmon_getNumberOfEvents(groupid - 1)
 
 """
-Return the number of metrics in the group.
+Return the number of metrics in the group with id `groupid` (starts at 1).
 Always zero for custom event sets.
 """
-get_number_of_metrics(groupid::Integer) = LibLikwid.nvmon_getNumberOfMetrics(groupid)
+get_number_of_metrics(groupid::Integer) = LibLikwid.nvmon_getNumberOfMetrics(groupid - 1)
 
 """
-Return a list of all available nvmon groups for the GPU identified by `gpuid`.
+Return a list of all available nvmon groups for the GPU identified by `gpuid` (starts at 1).
 
 # Examples
 ```jldoctest
@@ -66,7 +66,7 @@ julia> LIKWID.NvMon.get_groups()
  FLOPS_DP => Double-precision floating point
 ```
 """
-function get_groups(gpuid::Integer=0)
+function get_groups(gpuid::Integer=1)
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
     end
@@ -101,47 +101,47 @@ end
 """
     add_event_set(estr) -> groupid
 Add a performance group or a custom event set to the nvmon module.
-Returns a `groupid` which is required to later specify the event set.
+Returns a `groupid` (starting at 1) which is required to later specify the event set.
 """
 function add_event_set(estr::AbstractString)
     nvmon_initialized[] || return nothing
     groupid = LibLikwid.nvmon_addEventSet(estr)
-    return Int(groupid)
+    return Int(groupid) + 1
 end
 
 """
-Return the name of the group identified by `groupid`.
+Return the name of the group identified by `groupid` (starts at 1).
 If it is a custom event set, the name is set to `Custom`.
 """
 function get_name_of_group(groupid::Integer)
     nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    name = unsafe_string(LibLikwid.nvmon_getGroupName(groupid))
+    name = unsafe_string(LibLikwid.nvmon_getGroupName(groupid - 1))
     return name
 end
 
 """
-Return the short information about a performance group.
+Return the short information about a performance group with id `groupid` (starts at 1).
 """
 function get_shortinfo_of_group(groupid::Integer)
     nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    sinfo = unsafe_string(LibLikwid.nvmon_getGroupInfoShort(groupid))
+    sinfo = unsafe_string(LibLikwid.nvmon_getGroupInfoShort(groupid - 1))
     return sinfo
 end
 
 """
-Return the (long) description of a performance group.
+Return the (long) description of a performance group with id `groupid` (starts at 1).
 """
 function get_longinfo_of_group(groupid::Integer)
     nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    linfo = unsafe_string(LibLikwid.nvmon_getGroupInfoLong(groupid))
+    linfo = unsafe_string(LibLikwid.nvmon_getGroupInfoLong(groupid - 1))
     return linfo
 end
 
 """
-Return the name of the event identified by `groupid` and `eventidx`.
+Return the name of the event identified by `groupid` and `eventidx` (both start at 1).
 """
 function get_name_of_event(groupid::Integer, eventidx::Integer)
     if !nvmon_initialized[] ||
@@ -149,12 +149,12 @@ function get_name_of_event(groupid::Integer, eventidx::Integer)
        !_check_eventidx(groupid, eventidx)
         return nothing
     end
-    name = unsafe_string(LibLikwid.nvmon_getEventName(groupid, eventidx))
+    name = unsafe_string(LibLikwid.nvmon_getEventName(groupid - 1, eventidx - 1))
     return name
 end
 
 """
-Return the name of the counter register identified by `groupid` and `eventidx`.
+Return the name of the counter register identified by `groupid` and `eventidx` (both start at 1).
 """
 function get_name_of_counter(groupid::Integer, eventidx::Integer)
     if !nvmon_initialized[] ||
@@ -162,12 +162,12 @@ function get_name_of_counter(groupid::Integer, eventidx::Integer)
        !_check_eventidx(groupid, eventidx)
         return nothing
     end
-    name = unsafe_string(LibLikwid.nvmon_getCounterName(groupid, eventidx))
+    name = unsafe_string(LibLikwid.nvmon_getCounterName(groupid - 1, eventidx - 1))
     return name
 end
 
 """
-Return the name of a derived metric identified by `groupid` and `metricidx`.
+Return the name of a derived metric identified by `groupid` and `metricidx` (both start at 1).
 """
 function get_name_of_metric(groupid::Integer, metricidx::Integer)
     if !nvmon_initialized[] ||
@@ -175,17 +175,17 @@ function get_name_of_metric(groupid::Integer, metricidx::Integer)
        !_check_metricidx(groupid, metricidx)
         return nothing
     end
-    name = unsafe_string(LibLikwid.nvmon_getMetricName(groupid, metricidx))
+    name = unsafe_string(LibLikwid.nvmon_getMetricName(groupid - 1, metricidx - 1))
     return name
 end
 
 """
-Program the counter registers to measure all events in group `groupid`. Returns `true` on success.
+Program the counter registers to measure all events in group `groupid` (starts at 1). Returns `true` on success.
 """
 function setup_counters(groupid::Integer)
     nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return false
-    ret = LibLikwid.nvmon_setupCounters(groupid)
+    ret = LibLikwid.nvmon_setupCounters(groupid - 1)
     return ret == 0
 end
 
@@ -223,71 +223,71 @@ Return the `groupid` of the currently activate group.
 """
 function get_id_of_active_group()
     nvmon_initialized[] || return nothing
-    return LibLikwid.nvmon_getIdOfActiveGroup()
+    return LibLikwid.nvmon_getIdOfActiveGroup() + 1
 end
 
 """
-Switch currently active group to `groupid`. Returns `true` on success.
+Switch currently active group to `groupid` (starts at 1). Returns `true` on success.
 """
 function switch_group(groupid::Integer)
     nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     groupid == get_id_of_active_group() && return true
-    ret = LibLikwid.nvmon_switchActiveGroup(groupid)
+    ret = LibLikwid.nvmon_switchActiveGroup(groupid - 1)
     return ret == 0
 end
 
 """
-Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and thread `threadidx`.
+Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
 """
 function get_last_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
     nvmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
     _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getLastResult(groupid, eventidx, threadidx)
+    res = LibLikwid.nvmon_getLastResult(groupid - 1, eventidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx`.
+Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
 """
 function get_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
     nvmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
     _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getResult(groupid, eventidx, threadidx)
+    res = LibLikwid.nvmon_getResult(groupid - 1, eventidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx`.
+Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx` (all starting at 1).
 """
 function get_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
     nvmon_initialized[] || return nothing
     _check_metricidx(groupid, metricidx) || return nothing
     _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getMetric(groupid, metricidx, threadidx)
+    res = LibLikwid.nvmon_getMetric(groupid - 1, metricidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx`.
+Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx` (all starting at 1).
 """
 function get_last_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
     nvmon_initialized[] || return nothing
     _check_metricidx(groupid, metricidx) || return nothing
     _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getLastMetric(groupid, metricidx, threadidx)
+    res = LibLikwid.nvmon_getLastMetric(groupid - 1, metricidx - 1, threadidx - 1)
     return res
 end
 
 """
-Return the measurement time for group identified by `groupid`.
+Return the measurement time for group identified by `groupid` (starts at 1).
 """
 function get_time_of_group(groupid::Integer)
     nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
-    time = LibLikwid.nvmon_getTimeOfGroup(groupid)
+    time = LibLikwid.nvmon_getTimeOfGroup(groupid - 1)
     return time
 end
 

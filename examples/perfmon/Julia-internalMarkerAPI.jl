@@ -174,10 +174,10 @@ function main()
         # only allow one thread to print to prevent repeated output.
         if threadid == 1
             # uncomment the for loop if you'd like to inspect all threads.
-            tid = 0
+            tid = 1
             for tid in 1:NUM_THREADS
                 println("detailed event results:")
-                for eid in 0:(nevents - 1)
+                for eid in 1:nevents
                     # get event name
                     event_name = PerfMon.get_name_of_event(gid, eid)
                     # print results
@@ -256,7 +256,7 @@ function main()
     #
     nregions = MarkerFile.numregions()
     println("Marker API measured ", nregions, " regions")
-    for rid in 0:(nregions - 1)
+    for rid in 1:nregions
         gid = MarkerFile.regiongroup(rid)
         @printf(
             "Region %s with %d events and %d metrics\n",
@@ -283,9 +283,9 @@ function main()
     )
 
     # Uncomment the for loop if you'd like to inspect all threads
-    tid = 0
-    for tid in 0:(NUM_THREADS - 1)
-        for rid in 0:(nregions - 1)
+    tid = 1
+    for tid in 1:NUM_THREADS
+        for rid in 1:nregions
             # Returns the user-supplied region name
             region_name = MarkerFile.regiontag(rid)
 
@@ -296,7 +296,7 @@ function main()
             group_name = PerfMon.get_name_of_group(gid)
 
             # Get info for each event
-            for eid in 0:(PerfMon.get_number_of_events(gid) - 1)
+            for eid in 1:PerfMon.get_number_of_events(gid)
                 # Get the event name, like "INSTR_RETIRED_ANY"
                 event_name = PerfMon.get_name_of_event(gid, eid)
                 # Get the associated value
@@ -314,7 +314,7 @@ function main()
             end
 
             # Get info for each metric
-            for mid in 0:(PerfMon.get_number_of_metrics(gid) - 1)
+            for mid in 1:PerfMon.get_number_of_metrics(gid)
                 # Get the metric name, like "L2 bandwidth [MBytes/s]"
                 metric_name = PerfMon.get_name_of_metric(gid, mid)
                 # Get the associated value
