@@ -7,6 +7,7 @@ list = Int[]
 cpus = [0,1]
 @test LIKWID.PerfMon.init(cpus)
 group = LIKWID.PerfMon.add_event_set("INSTR_RETIRED_ANY:FIXC0")
+# group = LIKWID.PerfMon.add_event_set("FLOPS_SP")
 @test group == 0
 @test LIKWID.PerfMon.setup_counters(group)
 @test LIKWID.PerfMon.start_counters()

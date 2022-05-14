@@ -1,7 +1,7 @@
 using Test
 using LIKWID
 
-const MARKERFILE = "markerfile.txt"
+const MARKERFILE = joinpath(@__DIR__, "markerfile.txt")
 
 Marker.init()
 @test LIKWID.MarkerFile.read(MARKERFILE)

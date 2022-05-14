@@ -48,6 +48,8 @@ end
 const TEST_THREADS = Threads.nthreads() > 1
 TEST_THREADS || @warn("Threads.nthreads == 1 -> NOT running multithreading tests!")
 
+const TEST_DAEMON = LIKWID.accessmode() == LIKWID.LibLikwid.ACCESSMODE_DAEMON
+
 const likwidperfctr = `likwid-perfctr`
 const likwidpin = `likwid-pin`
 const julia = Base.julia_cmd()
@@ -115,61 +117,65 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test !iszero(t.stop)
         @test typeof(LIKWID.Timer.get_clock(t)) == Float64
         @test isinteger(LIKWID.Timer.get_clock_cycles(t))
-        
+
         # convenience functions / macros
-        @test typeof(LIKWID.Timer.@timeit 1+3) == NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
-        @test typeof(LIKWID.Timer.timeit(()->1+3)) == NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
+        @test typeof(LIKWID.Timer.@timeit 1 + 3) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
+        @test typeof(LIKWID.Timer.timeit(() -> 1 + 3)) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
         @test typeof(
             LIKWID.Timer.timeit() do
-                1+3
+                1 + 3
             end
-        ) == NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
+        ) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
 
         @test isnothing(LIKWID.Timer.finalize())
     end
 
-    @testset "Thermal" begin
-        @test LIKWID.init_thermal(0)
-        @test isinteger(ustrip(LIKWID.get_temperature(0)))
-        @test unit(LIKWID.get_temperature(0)) == u"°C"
+    if TEST_DAEMON
+        @testset "Thermal" begin
+            @test LIKWID.init_thermal(0)
+            @test isinteger(ustrip(LIKWID.get_temperature(0)))
+            @test unit(LIKWID.get_temperature(0)) == u"°C"
+        end
     end
 
-    @testset "Power / Energy" begin
-        @test LIKWID.Power.init(0)
-        @test isnothing(LIKWID.Power.finalize())
-        @test LIKWID.Power.init()
-        pinfo = LIKWID.Power.get_power_info()
-        @test typeof(pinfo) == LIKWID.PowerInfo
-        @test typeof(pinfo.turbo) == LIKWID.TurboBoost
-        @test pinfo.turbo.numSteps == length(pinfo.turbo.steps)
-        @test length(pinfo.domains) == 5
-        pd = pinfo.domains[1]
-        @test typeof(pd) == LIKWID.PowerDomain
-        @test isinteger(pd.id)
-        @test 0 ≤ pd.id ≤ 4
-        @test 0 ≤ Int(pd.type) ≤ 4
-        @test typeof(pd.supportInfo) == Bool
-        @test typeof(pd.supportStatus) == Bool
-        @test typeof(pd.supportPerf) == Bool
-        @test typeof(pd.supportPolicy) == Bool
-        @test typeof(pd.supportLimit) == Bool
+    if TEST_DAEMON
+        @testset "Power / Energy" begin
+            @test LIKWID.Power.init(0)
+            @test isnothing(LIKWID.Power.finalize())
+            @test LIKWID.Power.init()
+            pinfo = LIKWID.Power.get_power_info()
+            @test typeof(pinfo) == LIKWID.PowerInfo
+            @test typeof(pinfo.turbo) == LIKWID.TurboBoost
+            @test pinfo.turbo.numSteps == length(pinfo.turbo.steps)
+            @test length(pinfo.domains) == 5
+            pd = pinfo.domains[1]
+            @test typeof(pd) == LIKWID.PowerDomain
+            @test isinteger(pd.id)
+            @test 0 ≤ pd.id ≤ 4
+            @test 0 ≤ Int(pd.type) ≤ 4
+            @test typeof(pd.supportInfo) == Bool
+            @test typeof(pd.supportStatus) == Bool
+            @test typeof(pd.supportPerf) == Bool
+            @test typeof(pd.supportPolicy) == Bool
+            @test typeof(pd.supportLimit) == Bool
 
-        p_start = LIKWID.Power.start_power(0, 0)
-        @test typeof(p_start) == Int64
-        sleep(0.5)
-        p_stop = LIKWID.Power.stop_power(0, 0)
-        @test typeof(p_stop) == Int64
-        res = LIKWID.Power.get_power(p_start, p_stop, 0)
-        @test unit(res) == u"μJ"
-        
-        # convenience functions / macros
-        res = LIKWID.Power.measure(; cpuid=0, domainid=0) do
+            p_start = LIKWID.Power.start_power(0, 0)
+            @test typeof(p_start) == Int64
             sleep(0.5)
-        end
-        @test unit(res) == u"μJ"
-        @test typeof(ustrip(res)) == Float64 
+            p_stop = LIKWID.Power.stop_power(0, 0)
+            @test typeof(p_stop) == Int64
+            res = LIKWID.Power.get_power(p_start, p_stop, 0)
+            @test unit(res) == u"μJ"
 
-        @test isnothing(LIKWID.Power.finalize())
+            # convenience functions / macros
+            res = LIKWID.Power.measure(; cpuid=0, domainid=0) do
+                sleep(0.5)
+            end
+            @test unit(res) == u"μJ"
+            @test typeof(ustrip(res)) == Float64
+
+            @test isnothing(LIKWID.Power.finalize())
+        end
     end
 
     @testset "Configuration" begin
@@ -212,7 +218,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         nevents = LIKWID.PerfMon.get_number_of_events(gid)
         @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, -1))
         @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents))
-        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents+1))
+        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents + 1))
         @test !isnothing(LIKWID.PerfMon.get_name_of_event(gid, 0))
         @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, -1))
         @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, nevents))
@@ -237,7 +243,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test LIKWID.PerfMon.list_metrics(gid) isa Vector{String}
         @test LIKWID.PerfMon.get_metric_results(gid, 0) isa OrderedDict
         @test LIKWID.PerfMon.get_event_results(gid, 0) isa OrderedDict
-        
+
         # multiple groups
         gid2 = LIKWID.PerfMon.add_event_set(groups[2].name)
         @test LIKWID.PerfMon.start_counters()
@@ -262,7 +268,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test LIKWID.setverbosity(0)
         @test LIKWID.pinmask(8) == "0xfffffffffffffe01"
         d = LIKWID.env()
-        @test typeof(d) == Dict{String, String}
+        @test typeof(d) == Dict{String,String}
         for k in keys(d)
             @test startswith(k, "LIKWID")
         end
@@ -318,7 +324,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         end
         # without marker api
         @testset "$f" for f in ["test_marker_noapi.jl"]
-           @test exec(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
+            @test exec(`$julia --project=$(pkgdir) $(joinpath(testdir, f))`)
         end
     end
 
@@ -338,13 +344,13 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         ncores = topo.numCoresPerSocket * topo.numSockets
         N = Threads.nthreads()
 
-        @testset "likwid-pin" begin    
+        @testset "likwid-pin" begin
             # N==8: 0xfffffffffffffe01
             maskstr = LIKWID.pinmask(N)
-            cores_firstN = string("0-", N-1)
+            cores_firstN = string("0-", N - 1)
             cores_firstN_shuffled = join(shuffle(0:N-1), ",")
             cores_rand = join(shuffle(0:ncores-1)[1:N], ",")
-            
+
             @testset "$f" for f in ["test_pin.jl"]
                 withenv("OPENBLAS_NUM_THREADS" => 1) do
                     @test exec(`$likwidpin -s $(maskstr) -C $(cores_firstN) -m $julia --project=$(pkgdir) -t$(N) $(joinpath(testdir, f)) $(cores_firstN)`)
@@ -369,11 +375,11 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(gpu) == LIKWID.GpuDevice
             @test typeof(gpu.name) == String
             @test typeof(gpu.mem) == Int
-            @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
-            @test typeof(gpu.maxGridSize) == NTuple{3, Int}
+            @test typeof(gpu.maxThreadsDim) == NTuple{3,Int}
+            @test typeof(gpu.maxGridSize) == NTuple{3,Int}
             @test isnothing(LIKWID.finalize_topology_gpu())
         end
-        
+
         # According to @TomTheBear, this shouldn't be used yet
         @testset "GPU PerfMon / NvMon" begin
             @test LIKWID.NvMon.init([0])
@@ -397,7 +403,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             nevents = LIKWID.NvMon.get_number_of_events(gid)
             @test isnothing(LIKWID.NvMon.get_name_of_event(gid, -1))
             @test isnothing(LIKWID.NvMon.get_name_of_event(gid, nevents))
-            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, nevents+1))
+            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, nevents + 1))
             @test !isnothing(LIKWID.NvMon.get_name_of_event(gid, 0))
             @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, -1))
             @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, nevents))
@@ -406,7 +412,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, -1))
             @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, nmetrics))
             @test !isnothing(LIKWID.NvMon.get_name_of_metric(gid, 0))
-        
+
             @test LIKWID.NvMon.setup_counters(gid)
             @test LIKWID.NvMon.get_id_of_active_group() == gid
             @test_broken !LIKWID.NvMon.read_counters() # error 7
@@ -419,7 +425,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test_broken typeof(LIKWID.NvMon.get_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getMetric
             @test_broken typeof(LIKWID.NvMon.get_last_metric(gid, 0, 0)) == Float64 # undefined symbol nvmon_getLastMetric
             @test typeof(LIKWID.NvMon.get_time_of_group(gid)) == Float64
-            
+
             # multiple groups
             gid2 = LIKWID.NvMon.add_event_set(groups[2].name)
             @test LIKWID.NvMon.start_counters()
