@@ -496,9 +496,8 @@ end
     perfmon(f, group_or_groups[; cpuids, autopin=true])
 Monitor performance groups while executing the given function `f` on one or multiple Julia threads.
 Note that
-* `PerfMon.init` and `PerfMon.finalize()` are called automatically, and
-* the measurement of multiple performance groups is sequential and `f` is executed multiple times.
-
+* `PerfMon.init` and `PerfMon.finalize` are called automatically
+* the measurement of multiple performance groups is sequential and requires multiple executions of `f`!
 
 **Keyword arguments:**
 * `cpuids` (default: currently used CPU threads): specify the CPU threads (~ cores) to be monitored

@@ -270,7 +270,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         # high-level API
         x = rand(1000)
         y = rand(1000)
-        metrics, events = perfmon("FLOPS_DP") do
+        metrics, events = perfmon(perfgrp) do
             x .+ y
         end
         if Threads.nthreads() > 1
@@ -280,15 +280,21 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test metrics isa OrderedDict{String,Float64}
             @test events isa OrderedDict{String,Float64}
         end
-        metrics, events = perfmon(("FLOPS_DP", "FLOPS_SP")) do
+        metrics, events = perfmon((perfgrp, perfgrp)) do # TODO: don't use same here
             x .+ y
         end
         @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
         @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
 
         # @perfmon macro
-        metrics, events = @perfmon "FLOPS_DP" begin
-            x .+ y
+        if is_github_runner
+            metrics, events = @perfmon "MEM" begin
+                x .+ y
+            end
+        else
+            metrics, events = @perfmon "FLOPS_SP" begin
+                x .+ y
+            end
         end
         if Threads.nthreads() > 1
             @test metrics isa Vector{OrderedDict{String,Float64}}
