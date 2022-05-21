@@ -8,6 +8,8 @@ using Random
 
 # check if we are a GitHub runner
 const is_github_runner = haskey(ENV, "GITHUB_ACTIONS")
+const isCI = is_github_runner || haskey(ENV, "CI")
+const DEBUGINFO = isCI || get(ENV, "DEBUGINFO", false) # can turn on debug info with DEBUGINFO=true
 
 # check if CUDA is available and functional
 if CUDA.functional()
@@ -16,17 +18,19 @@ if CUDA.functional()
 else
     @info("No CUDA/GPU found.")
     const hascuda = false
-    # debug information
-    @show Libdl.find_library("libcuda")
-    @show filter(contains("cuda"), lowercase.(Libdl.dllist()))
-    try
-        @info("CUDA.versioninfo():")
-        CUDA.versioninfo()
-        @info("Successful!")
-    catch ex
-        @warn("Unsuccessful!")
-        println(ex)
-        println()
+    if isCI
+        # debug information
+        @show Libdl.find_library("libcuda")
+        @show filter(contains("cuda"), lowercase.(Libdl.dllist()))
+        try
+            @info("CUDA.versioninfo():")
+            CUDA.versioninfo()
+            @info("Successful!")
+        catch ex
+            @warn("Unsuccessful!")
+            println(ex)
+            println()
+        end
     end
 end
 
@@ -262,6 +266,38 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test typeof(PerfMon.get_time_of_group(gid)) == Float64
         @test typeof(PerfMon.get_time_of_group(gid2)) == Float64
         @test isnothing(PerfMon.finalize())
+
+        # high-level API
+        x = rand(1000)
+        y = rand(1000)
+        metrics, events = perfmon("FLOPS_DP") do
+            x .+ y
+        end
+        if Threads.nthreads() > 1
+            @test metrics isa Vector{OrderedDict{String,Float64}}
+            @test events isa Vector{OrderedDict{String,Float64}}
+        else
+            @test metrics isa OrderedDict{String,Float64}
+            @test events isa OrderedDict{String,Float64}
+        end
+        metrics, events = perfmon(("FLOPS_DP", "FLOPS_SP")) do
+            x .+ y
+        end
+        @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+        @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+
+        # @perfmon macro
+        metrics, events = @perfmon "FLOPS_DP" begin
+            x .+ y
+        end
+        if Threads.nthreads() > 1
+            @test metrics isa Vector{OrderedDict{String,Float64}}
+            @test events isa Vector{OrderedDict{String,Float64}}
+        else
+            @test metrics isa OrderedDict{String,Float64}
+            @test events isa OrderedDict{String,Float64}
+        end
+
     end
 
     @testset "Misc" begin

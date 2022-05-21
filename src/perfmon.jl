@@ -9,9 +9,14 @@ using ..LIKWID:
     init_topology,
     init_numa,
     GroupInfoCompact,
-    OrderedDict
+    OrderedDict,
+    perfmon_initialized,
+    get_processor_ids,
+    get_processor_id,
+    pinthreads,
+    pinthread
 
-function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthreads()])
+function init(cpus::AbstractVector{Int32}=get_processor_ids())
     perfmon_initialized[] && finalize()
 
     if !topo_initialized[]
@@ -30,6 +35,8 @@ function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthre
     end
     return false
 end
+
+isinitialized() = perfmon_initialized[]
 
 init(cpus::AbstractVector{<:Integer}) = init(convert(Vector{Int32}, cpus))
 init(cpu::Integer) = init(Int32[cpu])
@@ -483,6 +490,128 @@ function get_event_results()
         results[groupname] = group_results
     end
     return results
+end
+
+"""
+    perfmon(f, group_or_groups[; cpuids, autopin=true])
+Monitor performance groups while executing the given function `f` on one or multiple Julia threads.
+Note that
+* `PerfMon.init` and `PerfMon.finalize()` are called automatically, and
+* the measurement of multiple performance groups is sequential and `f` is executed multiple times.
+
+
+**Keyword arguments:**
+* `cpuids` (default: currently used CPU threads): specify the CPU threads (~ cores) to be monitored
+* `autopin` (default: `true`): automatically pin Julia threads to the CPU threads (~ cores) they are currently running on (to avoid migration and wrong results).
+
+# Example
+```julia
+julia> using LIKWID
+
+julia> x = rand(1000); y = rand(1000);
+
+julia> metrics, events = perfmon("FLOPS_DP") do
+           x .+ y;
+       end;
+
+julia> metrics                                                                      
+OrderedDict{String, Float64} with 5 entries:
+  "Runtime (RDTSC) [s]"  => 8.56091e-6
+  "Runtime unhalted [s]" => 3.22377e-5
+  "Clock [MHz]"          => 3506.47
+  "CPI"                  => 4.78484
+  "DP [MFLOP/s]"         => 116.81
+                                          
+julia> events                                                                       
+OrderedDict{String, Float64} with 6 entries:
+  "ACTUAL_CPU_CLOCK"          => 78974.0
+  "MAX_CPU_CLOCK"             => 55174.0
+  "RETIRED_INSTRUCTIONS"      => 5977.0
+  "CPU_CLOCKS_UNHALTED"       => 28599.0
+  "RETIRED_SSE_AVX_FLOPS_ALL" => 1000.0
+  "MERGE"                     => 0.0
+
+julia> metrics, events = perfmon(("FLOPS_DP", "MEM1")) do
+           x .+ y;
+       end;
+```
+"""
+function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true)
+    cpuids = cpuids isa Integer ? [cpuids] : cpuids
+    autopin && _perfmon_autopin(cpuids)
+    PerfMon.init(cpuids)
+    groups = group_or_groups isa AbstractString ? (group_or_groups,) : group_or_groups
+    for group in groups
+        gid = PerfMon.add_event_set(group)
+        PerfMon.setup_counters(gid)
+        PerfMon.start_counters()
+        f()
+        PerfMon.stop_counters()
+    end
+    metrics_results = PerfMon.get_metric_results()
+    event_results = PerfMon.get_event_results()
+    PerfMon.finalize()
+    if group_or_groups isa AbstractString
+        # since we only have one group simplify the result structue
+        metrics_results = metrics_results[group_or_groups]
+        event_results = event_results[group_or_groups]
+        if length(cpuids) == 1 # only one cputhread monitored
+            metrics_results = first(metrics_results)
+            event_results = first(event_results)
+        end
+    end
+    metrics_results, event_results
+end
+
+function _perfmon_autopin(cpuids)
+    if length(cpuids) != Threads.nthreads()
+        @warn("Number of CPU ID(s) ($(length(cpuids))) doesn't match number of Julia threads ($(Threads.nthreads())). Won't autopin the Julia threads.")
+    elseif length(cpuids) == 1
+        pinthread(cpuids[1])
+    elseif length(cpuids) == Threads.nthreads()
+        pinthreads(cpuids)
+    end
+    return nothing
+end
+
+"""
+    @perfmon groupname codeblock
+
+See also: [`perfmon`](@ref)
+
+# Example
+```
+julia> using LIKWID
+
+julia> x = rand(1000); y = rand(1000);
+
+julia> metrics, events = @perfmon "FLOPS_DP" x .+ y;
+
+julia> metrics                                                                      
+OrderedDict{String, Float64} with 5 entries:
+  "Runtime (RDTSC) [s]"  => 8.56091e-6
+  "Runtime unhalted [s]" => 3.22377e-5
+  "Clock [MHz]"          => 3506.47
+  "CPI"                  => 4.78484
+  "DP [MFLOP/s]"         => 116.81
+                                          
+julia> events                                                                       
+OrderedDict{String, Float64} with 6 entries:
+  "ACTUAL_CPU_CLOCK"          => 78974.0
+  "MAX_CPU_CLOCK"             => 55174.0
+  "RETIRED_INSTRUCTIONS"      => 5977.0
+  "CPU_CLOCKS_UNHALTED"       => 28599.0
+  "RETIRED_SSE_AVX_FLOPS_ALL" => 1000.0
+  "MERGE"                     => 0.0
+```
+"""
+macro perfmon(groupname::AbstractString, expr)
+    q = quote
+        PerfMon.perfmon($groupname) do
+            $(expr)
+        end
+    end
+    return esc(q)
 end
 
 end # module

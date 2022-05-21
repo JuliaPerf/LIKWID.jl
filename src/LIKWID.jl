@@ -51,7 +51,8 @@ include("power.jl")
 include("access.jl")
 include("perfmon.jl")
 import .PerfMon
-export PerfMon
+import .PerfMon: perfmon, @perfmon
+export PerfMon, perfmon, @perfmon
 include("misc.jl")
 include("marker.jl")
 import .Marker
