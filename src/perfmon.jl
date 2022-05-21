@@ -8,8 +8,8 @@ using ..LIKWID:
     timer_initialized,
     init_topology,
     init_numa,
-    GroupInfoCompact
-using OrderedCollections
+    GroupInfoCompact,
+    OrderedDict
 
 function init(cpus::AbstractVector{Int32}=[Int32(i - 1) for i in 1:Threads.nthreads()])
     perfmon_initialized[] && finalize()
@@ -71,7 +71,7 @@ Return a list of all available perfmon groups.
 
 # Examples
 ```jldoctest
-julia> LIKWID.PerfMon.get_groups()
+julia> PerfMon.get_groups()
 30-element Vector{LIKWID.GroupInfoCompact}:
  MEM_SP => Overview of arithmetic and main memory performance
  CYCLE_ACTIVITY => Cycle Activities
@@ -142,6 +142,29 @@ function get_name_of_group(groupid::Integer)
     _check_groupid(groupid) || return nothing
     name = unsafe_string(LibLikwid.perfmon_getGroupName(groupid - 1))
     return name
+end
+
+"Get the id of the group with the given name."
+function get_id_of_group(groupname::AbstractString)
+    r = findfirst(i -> get_name_of_group(i) == groupname, 1:get_number_of_groups())
+    isnothing(r) && error("Group with name \"$groupname\" couldn't be found.")
+    return r
+end
+
+"Get the id of the metric with the given name."
+function get_id_of_metric(group, metricname::AbstractString)
+    gid = group isa Integer ? group : get_id_of_group(group)
+    r = findfirst(i -> get_name_of_metric(gid, i) == metricname, 1:get_number_of_metrics(gid))
+    isnothing(r) && error("Metric with name \"$(get_name_of_group(gid))\" couldn't be found. Available metrics are: $(list_metrics(gid))")
+    return r
+end
+
+"Get the id of the event with the given name."
+function get_id_of_event(group, eventname::AbstractString)
+    gid = group isa Integer ? group : get_id_of_group(group)
+    r = findfirst(i -> get_name_of_event(gid, i) == eventname, 1:get_number_of_events(gid))
+    isnothing(r) && error("Event with name \"$(get_name_of_group(gid))\" couldn't be found. Available events are: $(list_events(gid))")
+    return r
 end
 
 """
@@ -271,6 +294,7 @@ function get_last_result(groupid::Integer, eventidx::Integer, threadidx::Integer
     res = LibLikwid.perfmon_getLastResult(groupid - 1, eventidx - 1, threadidx - 1)
     return res
 end
+get_last_event(groupid, eventidx, threadidx) = get_last_result(groupid, eventidx, threadidx)
 
 """
 Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
@@ -318,7 +342,8 @@ end
 """
 List all the metrics of a given group (`groupid` starts at 1).
 """
-function list_metrics(groupid::Integer)
+function list_metrics(group)
+    groupid = group isa Integer ? group : get_id_of_group(group)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     nmetrics = get_number_of_metrics(groupid)
@@ -326,11 +351,50 @@ function list_metrics(groupid::Integer)
 end
 
 """
-  get_metric_results(groupid::Integer, threadid::Integer)
-Get the name and results of all metrics of a given group for a given cpu thread.
-Here, `groupid` and `threadid` both start at 1 and enumerate the initialized perfmon groups and cpu threads (i.e. the ones passed to [`LIKWID.PerfMon.init`](@ref)), respectively.
+List all the events of a given group (`groupid` starts at 1).
 """
-function get_metric_results(groupid::Integer, threadid::Integer)
+function list_events(group)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    nevents = get_number_of_events(groupid)
+    return get_name_of_event.(Ref(groupid), 1:nevents)
+end
+
+"""
+  `get_metric_results([groupid_or_groupname, metricid_or_metricname, threadid::Integer])`
+
+Retrieve the results of monitored metrics.
+
+Optionally, a group, metric, and threadid can be provided to select a subset of metrics or a single metric.
+If given as integers, note that `groupid`, `metricid`, and `threadid` all start at 1 and the latter enumerates the monitored cpu threads.
+
+If no arguments are provided, a nested data structure is returned in which different
+levels correspond to performance groups, cpu threads, and metrics (in this order).
+
+**Examples**
+```julia
+julia> PerfMon.get_metric_results("FLOPS_DP")
+4-element Vector{OrderedDict{String, Float64}}:
+ OrderedDict("Runtime (RDTSC) [s]" => 1.1381168037989857, "Runtime unhalted [s]" => 0.0016642799007831007, "Clock [MHz]" => 2911.9285695819794, "CPI" => NaN, "DP [MFLOP/s]" => 0.0)
+ OrderedDict("Runtime (RDTSC) [s]" => 1.1381168037989857, "Runtime unhalted [s]" => 1.4755564705029072, "Clock [MHz]" => 3523.1114993407705, "CPI" => 0.3950777002592585, "DP [MFLOP/s]" => 17608.069202657578)
+ OrderedDict("Runtime (RDTSC) [s]" => 1.1381168037989857, "Runtime unhalted [s]" => 7.80437228993214e-5, "Clock [MHz]" => 2638.6244625814124, "CPI" => NaN, "DP [MFLOP/s]" => 0.0)
+ OrderedDict("Runtime (RDTSC) [s]" => 1.1381168037989857, "Runtime unhalted [s]" => 7.050705084934875e-5, "Clock [MHz]" => 2807.7525945849698, "CPI" => NaN, "DP [MFLOP/s]" => 0.0)
+
+julia> PerfMon.get_metric_results("FLOPS_DP", 2) # results of second monitored cpu thread
+OrderedDict{String, Float64} with 5 entries:
+  "Runtime (RDTSC) [s]"  => 1.13812
+  "Runtime unhalted [s]" => 1.47556
+  "Clock [MHz]"          => 3523.11
+  "CPI"                  => 0.395078
+  "DP [MFLOP/s]"         => 17608.1
+
+julia> PerfMon.get_metric_results("FLOPS_DP", "DP [MFLOP/s]", 2)
+17608.069202657578
+```
+"""
+function get_metric_results(group, threadid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     _check_threadidx(threadid) || return nothing
@@ -342,12 +406,53 @@ function get_metric_results(groupid::Integer, threadid::Integer)
     end
     return d
 end
+get_metric_results(groupid::Integer) = get_metric_results.(groupid, 1:get_number_of_threads())
+get_metric_results(groupname::AbstractString) = get_metric_results(get_id_of_group(groupname))
+
+function get_metric_results(group, metric, threadid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    metricid = metric isa Integer ? metric : get_id_of_metric(groupid, metric)
+    return get_last_metric(groupid, metricid, threadid)
+end
+get_metric_results(group, metric) = get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_threads())
 
 """
-Get the name and results of all events of a given group for a given cpu thread.
-Here, `groupid` and `threadid` both start at 1 and enumerate the initialized perfmon groups and cpu threads (i.e. the ones passed to [`LIKWID.PerfMon.init`](@ref)), respectively.
+  `get_metric_results()`
+
+Get the metric results for all performance groups and all monitored
+([`PerfMon.init`](@ref)) cpu threads.
+
+Returns a an `OrderedDict` whose keys correspond to the performance groups
+and the values hold the results for all monitored cpu threads.
+
+**Examples**
+```julia
+julia> results = PerfMon.get_metric_results()
+OrderedDict{String, Vector{OrderedDict{String, Float64}}} with 1 entry:
+  "FLOPS_DP" => [OrderedDict("Runtime (RDTSC) [s]"=>1.13812, "Runtime unhalted [s]"=>0.00166428, "Clock [MHz]"=>291…
+
+julia> PerfMon.get_metric_results()["FLOPS_DP"][2]["DP [MFLOP/s]"]
+17608.069202657578
+```
 """
-function get_event_results(groupid::Integer, threadid::Integer)
+function get_metric_results()
+    ngrps = get_number_of_groups()
+    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    for group in 1:ngrps
+        groupname = get_name_of_group(group)
+        group_results = get_metric_results(group)
+        results[groupname] = group_results
+    end
+    return results
+end
+
+"""
+  `get_event_results([groupid_or_groupname, eventid_or_eventname, threadid::Integer])`
+
+Retrieve the results of monitored events. Same as [`get_metric_results`](@ref) but for raw events.
+"""
+function get_event_results(group, threadid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
     perfmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     _check_threadidx(threadid) || return nothing
@@ -355,9 +460,29 @@ function get_event_results(groupid::Integer, threadid::Integer)
     d = OrderedDict{String,Float64}()
     for eventid in 1:nevents
         event = get_name_of_event(groupid, eventid)
-        d[event] = get_last_result(groupid, eventid, threadid)
+        d[event] = get_last_event(groupid, eventid, threadid)
     end
     return d
+end
+get_event_results(groupid::Integer) = get_event_results.(groupid, 1:get_number_of_threads())
+get_event_results(groupname::AbstractString) = get_event_results(get_id_of_group(groupname))
+
+function get_event_results(group, event, threadid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    eventid = event isa Integer ? event : get_id_of_event(groupid, event)
+    return get_last_event(groupid, eventid, threadid)
+end
+get_event_results(group, event) = get_event_results.(Ref(group), Ref(event), 1:get_number_of_threads())
+
+function get_event_results()
+    ngrps = get_number_of_groups()
+    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    for group in 1:ngrps
+        groupname = get_name_of_group(group)
+        group_results = get_event_results(group)
+        results[groupname] = group_results
+    end
+    return results
 end
 
 end # module

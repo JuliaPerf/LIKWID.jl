@@ -197,71 +197,71 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
     end
 
     @testset "PerfMon" begin
-        @test LIKWID.PerfMon.init(0)
-        @test LIKWID.PerfMon.init([0])
-        @test LIKWID.PerfMon.get_number_of_threads() == 1
-        @test LIKWID.PerfMon.get_number_of_groups() == 0
-        groups = LIKWID.PerfMon.get_groups()
+        @test PerfMon.init(0)
+        @test PerfMon.init([0])
+        @test PerfMon.get_number_of_threads() == 1
+        @test PerfMon.get_number_of_groups() == 0
+        groups = PerfMon.get_groups()
         @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
         gname = groups[1].name
         gsinfo = groups[1].shortinfo
         glinfo = groups[1].longinfo
         # single group
-        gid = LIKWID.PerfMon.add_event_set(gname)
+        gid = PerfMon.add_event_set(gname)
         @test gid ≥ 1
-        @test LIKWID.PerfMon.get_number_of_groups() == 1
-        @test LIKWID.PerfMon.get_name_of_group(gid) == gname
-        @test LIKWID.PerfMon.get_shortinfo_of_group(gid) == gsinfo
-        @test strip(LIKWID.PerfMon.get_longinfo_of_group(gid)) == strip(glinfo)
-        @test LIKWID.PerfMon.get_number_of_events(gid) ≥ 0
-        @test LIKWID.PerfMon.get_number_of_metrics(gid) ≥ 0
-        nevents = LIKWID.PerfMon.get_number_of_events(gid)
-        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, -1))
-        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, 0))
-        @test isnothing(LIKWID.PerfMon.get_name_of_event(gid, nevents + 1))
-        @test !isnothing(LIKWID.PerfMon.get_name_of_event(gid, 1))
-        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, 0))
-        @test isnothing(LIKWID.PerfMon.get_name_of_counter(gid, nevents + 1))
-        @test !isnothing(LIKWID.PerfMon.get_name_of_counter(gid, 1))
-        nmetrics = LIKWID.PerfMon.get_number_of_metrics(gid)
-        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, 0))
-        @test isnothing(LIKWID.PerfMon.get_name_of_metric(gid, nmetrics + 1))
-        @test !isnothing(LIKWID.PerfMon.get_name_of_metric(gid, 1))
+        @test PerfMon.get_number_of_groups() == 1
+        @test PerfMon.get_name_of_group(gid) == gname
+        @test PerfMon.get_shortinfo_of_group(gid) == gsinfo
+        @test strip(PerfMon.get_longinfo_of_group(gid)) == strip(glinfo)
+        @test PerfMon.get_number_of_events(gid) ≥ 0
+        @test PerfMon.get_number_of_metrics(gid) ≥ 0
+        nevents = PerfMon.get_number_of_events(gid)
+        @test isnothing(PerfMon.get_name_of_event(gid, -1))
+        @test isnothing(PerfMon.get_name_of_event(gid, 0))
+        @test isnothing(PerfMon.get_name_of_event(gid, nevents + 1))
+        @test !isnothing(PerfMon.get_name_of_event(gid, 1))
+        @test isnothing(PerfMon.get_name_of_counter(gid, 0))
+        @test isnothing(PerfMon.get_name_of_counter(gid, nevents + 1))
+        @test !isnothing(PerfMon.get_name_of_counter(gid, 1))
+        nmetrics = PerfMon.get_number_of_metrics(gid)
+        @test isnothing(PerfMon.get_name_of_metric(gid, 0))
+        @test isnothing(PerfMon.get_name_of_metric(gid, nmetrics + 1))
+        @test !isnothing(PerfMon.get_name_of_metric(gid, 1))
 
-        @test LIKWID.PerfMon.setup_counters(gid)
-        @test LIKWID.PerfMon.get_id_of_active_group() == gid
-        @test !LIKWID.PerfMon.read_counters()
-        @test LIKWID.PerfMon.start_counters()
-        @test LIKWID.PerfMon.read_counters()
-        @test LIKWID.PerfMon.read_counters()
-        @test LIKWID.PerfMon.stop_counters()
-        @test typeof(LIKWID.PerfMon.get_result(gid, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_last_result(gid, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_metric(gid, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_last_metric(gid, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
-        @test LIKWID.PerfMon.list_metrics(gid) isa Vector{String}
-        @test LIKWID.PerfMon.get_metric_results(gid, 1) isa OrderedDict
-        @test LIKWID.PerfMon.get_event_results(gid, 1) isa OrderedDict
+        @test PerfMon.setup_counters(gid)
+        @test PerfMon.get_id_of_active_group() == gid
+        @test !PerfMon.read_counters()
+        @test PerfMon.start_counters()
+        @test PerfMon.read_counters()
+        @test PerfMon.read_counters()
+        @test PerfMon.stop_counters()
+        @test typeof(PerfMon.get_result(gid, 1, 1)) == Float64
+        @test typeof(PerfMon.get_last_result(gid, 1, 1)) == Float64
+        @test typeof(PerfMon.get_metric(gid, 1, 1)) == Float64
+        @test typeof(PerfMon.get_last_metric(gid, 1, 1)) == Float64
+        @test typeof(PerfMon.get_time_of_group(gid)) == Float64
+        @test PerfMon.list_metrics(gid) isa Vector{String}
+        @test PerfMon.get_metric_results(gid, 1) isa OrderedDict
+        @test PerfMon.get_event_results(gid, 1) isa OrderedDict
 
         # multiple groups
-        gid2 = LIKWID.PerfMon.add_event_set(groups[2].name)
-        @test LIKWID.PerfMon.start_counters()
-        @test LIKWID.PerfMon.get_id_of_active_group() == gid
-        @test LIKWID.PerfMon.read_counters()
-        @test LIKWID.PerfMon.switch_group(gid2)
-        @test LIKWID.PerfMon.read_counters()
-        @test LIKWID.PerfMon.get_id_of_active_group() == gid2
-        @test LIKWID.PerfMon.switch_group(gid)
-        @test LIKWID.PerfMon.get_id_of_active_group() == gid
-        @test LIKWID.PerfMon.stop_counters()
-        @test typeof(LIKWID.PerfMon.get_result(gid, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_result(gid2, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_metric(gid, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_metric(gid2, 1, 1)) == Float64
-        @test typeof(LIKWID.PerfMon.get_time_of_group(gid)) == Float64
-        @test typeof(LIKWID.PerfMon.get_time_of_group(gid2)) == Float64
-        @test isnothing(LIKWID.PerfMon.finalize())
+        gid2 = PerfMon.add_event_set(groups[2].name)
+        @test PerfMon.start_counters()
+        @test PerfMon.get_id_of_active_group() == gid
+        @test PerfMon.read_counters()
+        @test PerfMon.switch_group(gid2)
+        @test PerfMon.read_counters()
+        @test PerfMon.get_id_of_active_group() == gid2
+        @test PerfMon.switch_group(gid)
+        @test PerfMon.get_id_of_active_group() == gid
+        @test PerfMon.stop_counters()
+        @test typeof(PerfMon.get_result(gid, 1, 1)) == Float64
+        @test typeof(PerfMon.get_result(gid2, 1, 1)) == Float64
+        @test typeof(PerfMon.get_metric(gid, 1, 1)) == Float64
+        @test typeof(PerfMon.get_metric(gid2, 1, 1)) == Float64
+        @test typeof(PerfMon.get_time_of_group(gid)) == Float64
+        @test typeof(PerfMon.get_time_of_group(gid2)) == Float64
+        @test isnothing(PerfMon.finalize())
     end
 
     @testset "Misc" begin

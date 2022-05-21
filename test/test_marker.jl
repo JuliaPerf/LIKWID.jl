@@ -8,7 +8,7 @@ using LinearAlgebra
 # init
 @test isnothing(Marker.init())
 
-LIKWID.PerfMon.init() # required for getregion below
+PerfMon.init() # required for getregion below
 
 N = 100_000_000
 a = 3.141f0

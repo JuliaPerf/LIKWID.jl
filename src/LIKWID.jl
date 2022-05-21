@@ -2,6 +2,8 @@ module LIKWID
 import Base.Threads
 using Libdl
 using Unitful
+using OrderedCollections
+export OrderedDict
 
 # liblikwid
 const liblikwid = "liblikwid"
@@ -48,6 +50,8 @@ include("thermal.jl")
 include("power.jl")
 include("access.jl")
 include("perfmon.jl")
+import .PerfMon
+export PerfMon
 include("misc.jl")
 include("marker.jl")
 import .Marker
