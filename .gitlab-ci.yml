@@ -4,28 +4,29 @@ stages:
   - test-devel
   - documentation
 
-# This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa'
+# This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa' @ FAU
 # The build result is stored as artifact for the test jobs
 build-likwid:
   stage: build
   tags:
     - testcluster
-  only:
-    - main
-    - pushes
-    - tags
-    - external_pull_requests
-#   rules:
-#     - changes:
-#       - "README.md"
-#       when: never
-#     - when: always
+  rules:
+    - if: '$CI_COMMIT_TAG' # trigger on tags
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH' # trigger on commits
+    - when: never # don't run otherwise
   variables:
     SLURM_NODELIST: medusa
     LIKWID_MODULE: likwid/5.2-dev
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-  script: 
+  script:
+      - echo $CI_PIPELINE_SOURCE
       - module load "$LIKWID_MODULE" "$CUDA_MODULE"
       - export LIKWID_PREFIX=$(realpath $(dirname $(which likwid-topology))/..)
       - module unload "$LIKWID_MODULE"
