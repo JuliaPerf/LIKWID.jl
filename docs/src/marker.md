@@ -190,7 +190,7 @@ CYCLE_ACTIVITY	Cycle Activities
           L3PF	L3 cache bandwidth in MBytes/s
           L2L3	L3 cache bandwidth in MBytes/s
 ```
-These groups can be passed to the command line option `-g`. Note that you can also query the available performance groups programmatically using [`LIKWID.PerfMon.get_groups()`](@ref).
+These groups can be passed to the command line option `-g`. Note that you can also query the available performance groups programmatically using [`LIKWID.PerfMon.supported_groups()`](@ref).
 
 Another important option is `-C <list>`:
 > Processor ids to pin threads and measure, e.g. 1,2-4,8. For information about the `<list>` syntax, see `likwid-pin`.

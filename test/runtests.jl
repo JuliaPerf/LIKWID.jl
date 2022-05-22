@@ -35,15 +35,17 @@ else
 end
 
 # check if LIKWID has been compiled with NVIDIA GPU support
-@info("LIKWID NVIDIA GPU support:", LIKWID.gpusupport())
+# const haslikwidgpu = LIKWID.gpusupport()
+const haslikwidgpu = false
+@info("LIKWID NVIDIA GPU support:", haslikwidgpu)
 
 # decide whether to run GPU tests
-const TEST_GPU = LIKWID.gpusupport() && hascuda
+const TEST_GPU = haslikwidgpu && hascuda
 if TEST_GPU
     @info("Running all tests (CPU + GPU).")
 else
     @info("Running CPU tests only.")
-    if LIKWID.gpusupport() && !hascuda
+    if haslikwidgpu && !hascuda
         @warn("LIKWID seems to have been compiled with NVIDIA GPU support but CUDA.jl isn't functional. Did you intend to test GPU functionality?")
     end
 end
@@ -205,11 +207,13 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test PerfMon.init([0])
         @test PerfMon.get_number_of_threads() == 1
         @test PerfMon.get_number_of_groups() == 0
-        groups = PerfMon.get_groups()
+        groups = PerfMon.supported_groups()
         @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
         gname = groups[1].name
         gsinfo = groups[1].shortinfo
         glinfo = groups[1].longinfo
+        @test PerfMon.isgroupsupported(gname)
+        @test !PerfMon.isgroupsupported("loremipsum")
         # single group
         gid = PerfMon.add_event_set(gname)
         @test gid ≥ 1
@@ -421,79 +425,81 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(gpu.maxGridSize) == NTuple{3,Int}
             @test isnothing(LIKWID.finalize_topology_gpu())
         end
-
+    
         # According to @TomTheBear, this shouldn't be used yet
         @testset "GPU PerfMon / NvMon" begin
-            @test LIKWID.NvMon.init([0])
-            @test LIKWID.NvMon.init()
-            @test LIKWID.NvMon.get_number_of_gpus() ≥ 1
-            @test LIKWID.NvMon.get_number_of_groups() == 0
-            groups = LIKWID.NvMon.get_groups(0)
+            @test NvMon.init([0])
+            @test NvMon.init()
+            @test NvMon.get_number_of_gpus() ≥ 1
+            @test NvMon.get_number_of_groups() == 0
+            groups = NvMon.supported_groups(0)
             @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
             gname = groups[1].name
             gsinfo = groups[1].shortinfo
             glinfo = groups[1].longinfo
+            @test NvMon.isgroupsupported(gname, 0)
+            @test !NvMon.isgroupsupported("loremipsum", 0)
             # single group
-            gid = LIKWID.NvMon.add_event_set(gname)
+            gid = NvMon.add_event_set(gname)
             @test gid ≥ 1
-            @test LIKWID.NvMon.get_number_of_groups() == 1
-            @test LIKWID.NvMon.get_name_of_group(gid) == gname
-            @test LIKWID.NvMon.get_shortinfo_of_group(gid) == gsinfo
-            @test strip(LIKWID.NvMon.get_longinfo_of_group(gid)) == strip(glinfo)
-            @test LIKWID.NvMon.get_number_of_events(gid) ≥ 0
-            @test LIKWID.NvMon.get_number_of_metrics(gid) ≥ 0
-            nevents = LIKWID.NvMon.get_number_of_events(gid)
-            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, -1))
-            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, 0))
-            @test isnothing(LIKWID.NvMon.get_name_of_event(gid, nevents + 1))
-            @test !isnothing(LIKWID.NvMon.get_name_of_event(gid, 1))
-            @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, 0))
-            @test isnothing(LIKWID.NvMon.get_name_of_counter(gid, nevents + 1))
-            @test !isnothing(LIKWID.NvMon.get_name_of_counter(gid, 1))
-            nmetrics = LIKWID.NvMon.get_number_of_metrics(gid)
-            @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, 0))
-            @test isnothing(LIKWID.NvMon.get_name_of_metric(gid, nmetrics + 1))
-            @test !isnothing(LIKWID.NvMon.get_name_of_metric(gid, 1))
-
-            @test LIKWID.NvMon.setup_counters(gid)
-            @test LIKWID.NvMon.get_id_of_active_group() == gid
-            @test_broken !LIKWID.NvMon.read_counters() # error 7
-            @test_broken LIKWID.NvMon.start_counters() # error 1
-            @test LIKWID.NvMon.read_counters()
-            @test LIKWID.NvMon.read_counters()
-            @test LIKWID.NvMon.stop_counters()
-            @test typeof(LIKWID.NvMon.get_result(gid, 1, 1)) == Float64
-            @test typeof(LIKWID.NvMon.get_last_result(gid, 1, 1)) == Float64
-            @test_broken typeof(LIKWID.NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
-            @test_broken typeof(LIKWID.NvMon.get_last_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getLastMetric
-            @test typeof(LIKWID.NvMon.get_time_of_group(gid)) == Float64
-
+            @test NvMon.get_number_of_groups() == 1
+            @test NvMon.get_name_of_group(gid) == gname
+            @test NvMon.get_shortinfo_of_group(gid) == gsinfo
+            @test strip(NvMon.get_longinfo_of_group(gid)) == strip(glinfo)
+            @test NvMon.get_number_of_events(gid) ≥ 0
+            @test NvMon.get_number_of_metrics(gid) ≥ 0
+            nevents = NvMon.get_number_of_events(gid)
+            @test isnothing(NvMon.get_name_of_event(gid, -1))
+            @test isnothing(NvMon.get_name_of_event(gid, 0))
+            @test isnothing(NvMon.get_name_of_event(gid, nevents + 1))
+            @test !isnothing(NvMon.get_name_of_event(gid, 1))
+            @test isnothing(NvMon.get_name_of_counter(gid, 0))
+            @test isnothing(NvMon.get_name_of_counter(gid, nevents + 1))
+            @test !isnothing(NvMon.get_name_of_counter(gid, 1))
+            nmetrics = NvMon.get_number_of_metrics(gid)
+            @test isnothing(NvMon.get_name_of_metric(gid, 0))
+            @test isnothing(NvMon.get_name_of_metric(gid, nmetrics + 1))
+            @test !isnothing(NvMon.get_name_of_metric(gid, 1))
+    
+            @test NvMon.setup_counters(gid)
+            @test NvMon.get_id_of_active_group() == gid
+            @test_broken !NvMon.read_counters() # error 7
+            @test_broken NvMon.start_counters() # error 1
+            @test NvMon.read_counters()
+            @test NvMon.read_counters()
+            @test NvMon.stop_counters()
+            @test typeof(NvMon.get_result(gid, 1, 1)) == Float64
+            @test typeof(NvMon.get_last_result(gid, 1, 1)) == Float64
+            @test_broken typeof(NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
+            @test_broken typeof(NvMon.get_last_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getLastMetric
+            @test typeof(NvMon.get_time_of_group(gid)) == Float64
+    
             # multiple groups
-            gid2 = LIKWID.NvMon.add_event_set(groups[2].name)
-            @test LIKWID.NvMon.start_counters()
-            @test LIKWID.NvMon.get_id_of_active_group() == gid
-            @test LIKWID.NvMon.read_counters()
-            @test LIKWID.NvMon.switch_group(gid2)
-            @test LIKWID.NvMon.read_counters()
-            @test LIKWID.NvMon.get_id_of_active_group() == gid2
-            @test LIKWID.NvMon.switch_group(gid)
-            @test LIKWID.NvMon.get_id_of_active_group() == gid
-            @test LIKWID.NvMon.stop_counters()
-            @test typeof(LIKWID.NvMon.get_result(gid, 1, 1)) == Float64
-            @test typeof(LIKWID.NvMon.get_result(gid2, 1, 1)) == Float64
-            @test_broken typeof(LIKWID.NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
-            @test_broken typeof(LIKWID.NvMon.get_metric(gid2, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
-            @test typeof(LIKWID.NvMon.get_time_of_group(gid)) == Float64
-            @test typeof(LIKWID.NvMon.get_time_of_group(gid2)) == Float64
+            gid2 = NvMon.add_event_set(groups[2].name)
+            @test NvMon.start_counters()
+            @test NvMon.get_id_of_active_group() == gid
+            @test NvMon.read_counters()
+            @test NvMon.switch_group(gid2)
+            @test NvMon.read_counters()
+            @test NvMon.get_id_of_active_group() == gid2
+            @test NvMon.switch_group(gid)
+            @test NvMon.get_id_of_active_group() == gid
+            @test NvMon.stop_counters()
+            @test typeof(NvMon.get_result(gid, 1, 1)) == Float64
+            @test typeof(NvMon.get_result(gid2, 1, 1)) == Float64
+            @test_broken typeof(NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
+            @test_broken typeof(NvMon.get_metric(gid2, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
+            @test typeof(NvMon.get_time_of_group(gid)) == Float64
+            @test typeof(NvMon.get_time_of_group(gid2)) == Float64
         end
-
+    
         @testset "Marker API (GPU)" begin
             # print perf groups
             # LIKWID._execute_test(`likwid-perfctr -a`; print_only_on_fail=false)
             # read gpu perf group
-            LIKWID.NvMon.init([0])
-            perfgrp_gpu = LIKWID.NvMon.get_groups()[1].name
-            LIKWID.NvMon.finalize()
+            NvMon.init([0])
+            perfgrp_gpu = NvMon.supported_groups()[1].name
+            NvMon.finalize()
             # # dev LIKWID.jl + add CUDA
             # withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do
             #     rm(joinpath(testdir, "Manifest.toml"), force=true)

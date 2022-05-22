@@ -58,7 +58,7 @@ Return a list of all available nvmon groups for the GPU identified by `gpuid` (s
 
 # Examples
 ```jldoctest
-julia> LIKWID.NvMon.get_groups()
+julia> NvMon.supported_groups()
 4-element Vector{LIKWID.GroupInfoCompact}:
  DATA => Load to store ratio
  FLOPS_SP => Single-precision floating point
@@ -66,7 +66,7 @@ julia> LIKWID.NvMon.get_groups()
  FLOPS_DP => Double-precision floating point
 ```
 """
-function get_groups(gpuid::Integer=1)
+function supported_groups(gpuid::Integer=1)
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
     end
@@ -97,6 +97,9 @@ function get_groups(gpuid::Integer=1)
     LibLikwid.nvmon_returnGroups(ret, groups_ref[], shorts_ref[], longs_ref[])
     return res
 end
+
+"Checks if the given performance group is available on the given GPU (defaults to the first)."
+isgroupsupported(group, gpuid::Integer=1) = !isnothing(findfirst(g -> g.name == group, supported_groups(gpuid)))
 
 """
     add_event_set(estr) -> groupid

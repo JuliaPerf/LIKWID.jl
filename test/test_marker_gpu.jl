@@ -41,7 +41,7 @@ end
 
 # TODO: fix!
 # # getregion
-# LIKWID.NvMon.init([0])
+# NvMon.init([0])
 # x = GPUMarker.getregion("mul")
 # @test typeof(x) == Tuple{Int32, Vector{Float64}, Float64, Int32}
 

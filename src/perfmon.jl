@@ -78,7 +78,7 @@ Return a list of all available perfmon groups.
 
 # Examples
 ```jldoctest
-julia> PerfMon.get_groups()
+julia> PerfMon.supported_groups()
 30-element Vector{LIKWID.GroupInfoCompact}:
  MEM_SP => Overview of arithmetic and main memory performance
  CYCLE_ACTIVITY => Cycle Activities
@@ -102,7 +102,7 @@ julia> PerfMon.get_groups()
  L2L3 => L3 cache bandwidth in MBytes/s
 ```
 """
-function get_groups()
+function supported_groups()
     if !topo_initialized[]
         init_topology() || error("Couldn't init topology.")
     end
@@ -128,6 +128,9 @@ function get_groups()
     LibLikwid.perfmon_returnGroups(ret, groups_ref[], shorts_ref[], longs_ref[])
     return res
 end
+
+"Checks if the given performance group is available on the current system."
+isgroupsupported(group) = !isnothing(findfirst(g->g.name == group, supported_groups()))
 
 """
     add_event_set(estr) -> groupid
