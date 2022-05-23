@@ -3,6 +3,8 @@ module NvMon
 using ..LIKWID:
     LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology
 
+isinitialized() = nvmon_initialized[]
+
 function init(gpus::AbstractVector{Int32}=Int32[i - 1 for i in 1:(get_gpu_topology().numDevices)])
     nvmon_initialized[] && finalize()
 
@@ -30,6 +32,7 @@ end
 _check_groupid(gid) = 1 ≤ gid ≤ get_number_of_groups()
 _check_eventidx(gid, eidx) = 1 ≤ eidx ≤ get_number_of_events(gid)
 _check_metricidx(gid, eidx) = 1 ≤ eidx ≤ get_number_of_metrics(gid)
+_check_gpu(gpu) = 0 ≤ gpu < get_gpu_topology().numDevices
 _check_gpuid(gpuid) = 1 ≤ gpuid ≤ get_number_of_gpus()
 
 """
@@ -54,7 +57,7 @@ Always zero for custom event sets.
 get_number_of_metrics(groupid::Integer) = LibLikwid.nvmon_getNumberOfMetrics(groupid - 1)
 
 """
-Return a list of all available nvmon groups for the GPU identified by `gpuid` (starts at 1).
+Return a list of all available nvmon groups for the GPU identified by `gpu` (starts at 0).
 
 # Examples
 ```jldoctest
@@ -66,21 +69,21 @@ julia> NvMon.supported_groups()
  FLOPS_DP => Double-precision floating point
 ```
 """
-function supported_groups(gpuid::Integer=1)
+function supported_groups(gpu::Integer=0)
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
     end
-    if !nvmon_initialized[]
-        init(Int32[gpuid]) || error("Couldn't init nvmon.")
-    end
-    _check_gpuid(gpuid) || return nothing
+    # if !nvmon_initialized[]
+    #     init(Int32[gpuid]) || error("Couldn't init nvmon.")
+    # end
+    _check_gpu(gpu) || return nothing
 
     # refs to char**
     groups_ref = Ref{Ptr{Ptr{Cchar}}}()
     shorts_ref = Ref{Ptr{Ptr{Cchar}}}()
     longs_ref = Ref{Ptr{Ptr{Cchar}}}()
 
-    ret = LibLikwid.nvmon_getGroups(gpuid, groups_ref, shorts_ref, longs_ref)
+    ret = LibLikwid.nvmon_getGroups(gpu, groups_ref, shorts_ref, longs_ref)
     ret <= 0 && return nothing
 
     groups_vec = unsafe_wrap(Array, groups_ref[], ret)
@@ -99,7 +102,7 @@ function supported_groups(gpuid::Integer=1)
 end
 
 "Checks if the given performance group is available on the given GPU (defaults to the first)."
-isgroupsupported(group, gpuid::Integer=1) = !isnothing(findfirst(g -> g.name == group, supported_groups(gpuid)))
+isgroupsupported(group, gpu::Integer=0) = !isnothing(findfirst(g -> g.name == group, supported_groups(gpu)))
 
 """
     add_event_set(estr) -> groupid
@@ -241,46 +244,46 @@ function switch_group(groupid::Integer)
 end
 
 """
-Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
+Return the raw counter register result of the last measurement cycle identified by group `groupid` and the indices for event `eventidx` and gpu `gpuid` (all starting at 1).
 """
-function get_last_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
+function get_last_result(groupid::Integer, eventidx::Integer, gpuid::Integer)
     nvmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
-    _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getLastResult(groupid - 1, eventidx - 1, threadidx - 1)
+    _check_gpuid(gpuid) || return nothing
+    res = LibLikwid.nvmon_getLastResult(groupid - 1, eventidx - 1, gpuid - 1)
     return res
 end
 
 """
-Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and thread `threadidx` (all starting at 1).
+Return the raw counter register result of all measurements identified by group `groupid` and the indices for event `eventidx` and gpu `gpuid` (all starting at 1).
 """
-function get_result(groupid::Integer, eventidx::Integer, threadidx::Integer)
+function get_result(groupid::Integer, eventidx::Integer, gpuid::Integer)
     nvmon_initialized[] || return nothing
     _check_eventidx(groupid, eventidx) || return nothing
-    _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getResult(groupid - 1, eventidx - 1, threadidx - 1)
+    _check_gpuid(gpuid) || return nothing
+    res = LibLikwid.nvmon_getResult(groupid - 1, eventidx - 1, gpuid - 1)
     return res
 end
 
 """
-Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx` (all starting at 1).
+Return the derived metric result of all measurements identified by group `groupid` and the indices for metric `metricidx` and gpu `gpuid` (all starting at 1).
 """
-function get_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
+function get_metric(groupid::Integer, metricidx::Integer, gpuid::Integer)
     nvmon_initialized[] || return nothing
     _check_metricidx(groupid, metricidx) || return nothing
-    _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getMetric(groupid - 1, metricidx - 1, threadidx - 1)
+    _check_gpuid(gpuid) || return nothing
+    res = LibLikwid.nvmon_getMetric(groupid - 1, metricidx - 1, gpuid - 1)
     return res
 end
 
 """
-Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and thread `threadidx` (all starting at 1).
+Return the derived metric result of the last measurement cycle identified by group `groupid` and the indices for metric `metricidx` and gpu `gpuid` (all starting at 1).
 """
-function get_last_metric(groupid::Integer, metricidx::Integer, threadidx::Integer)
+function get_last_metric(groupid::Integer, metricidx::Integer, gpuid::Integer)
     nvmon_initialized[] || return nothing
     _check_metricidx(groupid, metricidx) || return nothing
-    _check_gpuid(threadidx) || return nothing
-    res = LibLikwid.nvmon_getLastMetric(groupid - 1, metricidx - 1, threadidx - 1)
+    _check_gpuid(gpuid) || return nothing
+    res = LibLikwid.nvmon_getLastMetric(groupid - 1, metricidx - 1, gpuid - 1)
     return res
 end
 
