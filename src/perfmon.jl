@@ -130,7 +130,7 @@ function supported_groups()
 end
 
 "Checks if the given performance group is available on the current system."
-isgroupsupported(group) = !isnothing(findfirst(g->g.name == group, supported_groups()))
+isgroupsupported(group) = !isnothing(findfirst(g -> g.name == group, supported_groups()))
 
 """
     add_event_set(estr) -> groupid
@@ -577,7 +577,7 @@ function _perfmon_autopin(cpuids)
 end
 
 """
-    @perfmon groupname codeblock
+    @perfmon group_or_groups codeblock
 
 See also: [`perfmon`](@ref)
 
@@ -607,9 +607,9 @@ OrderedDict{String, Float64} with 6 entries:
   "MERGE"                     => 0.0
 ```
 """
-macro perfmon(groupname::AbstractString, expr)
+macro perfmon(group_or_groups, expr)
     q = quote
-        PerfMon.perfmon($groupname) do
+        PerfMon.perfmon($group_or_groups) do
             $(expr)
         end
     end
