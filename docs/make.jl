@@ -12,6 +12,8 @@ const ci = get(ENV, "CI", "") == "true"
 cd(@__DIR__) do
     Literate.markdown("src/tutorials/first.jl", "src/tutorials/";
         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+    Literate.markdown("src/tutorials/saxpy.jl", "src/tutorials/";
+        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
