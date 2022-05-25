@@ -1,0 +1,1 @@
+likwid-pin -s 0xffffffffffffffe1 -c 0,3,5,7 julia -t4 likwid-pin.jl  > likwid-pin.out 2>&1

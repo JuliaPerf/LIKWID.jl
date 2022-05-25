@@ -156,4 +156,36 @@ macro region(regiontag, expr)
     return esc(q)
 end
 
+"""
+Convenience macro for flanking code with [`Marker.startregion`](@ref) and [`Marker.stopregion`](@ref) on all threads separately.
+
+# Examples
+```julia
+julia> using LIKWID
+
+julia> Marker.init()
+
+julia> @parallelregion begin
+           Threads.@thread :static for i in 1:Threads.nthreads()
+               # thread-local computation
+           end
+       end
+
+julia> Marker.close()
+
+```
+"""
+macro parallelregion(regiontag, expr)
+    q = quote
+        Threads.@threads :static for i in 1:Threads.nthreads()
+            LIKWID.Marker.startregion($regiontag)
+        end
+        $(expr)
+        Threads.@threads :static for i in 1:Threads.nthreads()
+            LIKWID.Marker.stopregion($regiontag)
+        end
+    end
+    return esc(q)
+end
+
 end # module

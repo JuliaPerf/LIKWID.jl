@@ -56,8 +56,8 @@ export PerfMon, perfmon, @perfmon
 include("misc.jl")
 include("marker.jl")
 import .Marker
-import .Marker: region, @region
-export Marker, region, @region
+import .Marker: region, @region, @parallelregion
+export Marker, region, @region, @parallelregion
 include("markerfile.jl")
 include("topology_gpu.jl")
 include("nvmon.jl")

@@ -1,0 +1,1 @@
+OPENBLAS_NUM_THREADS=3 OMP_NUM_THREADS=3 OMP_PLACES=threads OMP_PROC_BIND=true julia --project=../../.. perfmon_openblas.jl > perfmon_openblas.out
