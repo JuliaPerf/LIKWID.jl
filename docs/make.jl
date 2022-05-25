@@ -10,6 +10,8 @@ const ci = get(ENV, "CI", "") == "true"
 
 @info "Building Literate.jl documentation"
 cd(@__DIR__) do
+    Literate.markdown("src/tutorials/first.jl", "src/tutorials/";
+        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
@@ -22,12 +24,15 @@ DocThemePC2.install(@__DIR__)
 @info "Generating Documenter.jl site"
 DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive = true)
 makedocs(
-    sitename = "LIKWID.jl",
-    authors = "Carsten Bauer",
-    modules = [LIKWID],
-    doctest = ci,
-    pages = [
+    sitename="LIKWID.jl",
+    authors="Carsten Bauer",
+    modules=[LIKWID],
+    doctest=ci,
+    pages=[
         "LIKWID" => "index.md",
+        "Tutorials" => [
+            "The very first time" => "tutorials/first.md",
+        ],
         "Examples" => [
             "Using the Marker API" => "examples/saxpy.md",
             "Monitoring performance" => "examples/perfmon.md",
@@ -52,8 +57,8 @@ makedocs(
         ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
-    repo = "https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
-    format = Documenter.HTML(; collapselevel = 1),#, assets = ["assets/favicon.ico"])
+    repo="https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
+    format=Documenter.HTML(; collapselevel=1),#, assets = ["assets/favicon.ico"])
 )
 
 if ci

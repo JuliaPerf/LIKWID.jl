@@ -63,7 +63,7 @@ OrderedCollections.OrderedDict{String, Float64} with 7 entries:
 
 ```@index
 Pages   = ["perfmon.md"]
-Order   = [:function, :type]
+Order   = [:function, :macro, :type]
 ```
 
 ### Functions

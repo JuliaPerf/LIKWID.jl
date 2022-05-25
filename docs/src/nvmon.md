@@ -6,7 +6,7 @@
 
 ```@index
 Pages   = ["nvmon.md"]
-Order   = [:function, :type]
+Order   = [:function, :macro, :type]
 ```
 
 ### Functions

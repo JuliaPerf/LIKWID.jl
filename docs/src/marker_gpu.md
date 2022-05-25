@@ -107,7 +107,7 @@ For more information, check out the [official documentation](https://github.com/
 
 ```@index
 Pages   = ["marker_gpu.md"]
-Order   = [:function, :type]
+Order   = [:function, :macro, :type]
 ```
 
 ### Functions

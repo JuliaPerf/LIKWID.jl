@@ -1,0 +1,1 @@
+julia --project=../.. -E 'push!(LOAD_PATH, "../../.."); using Literate; Literate.markdown("saxpy.jl", "."; execute=true)'
