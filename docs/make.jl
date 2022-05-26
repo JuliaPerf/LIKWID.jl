@@ -10,10 +10,10 @@ const ci = get(ENV, "CI", "") == "true"
 
 @info "Building Literate.jl documentation"
 cd(@__DIR__) do
-    Literate.markdown("src/tutorials/first.jl", "src/tutorials/";
-        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-    Literate.markdown("src/tutorials/saxpy.jl", "src/tutorials/";
-        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+    # Literate.markdown("src/tutorials/first.jl", "src/tutorials/";
+    #     repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+    # Literate.markdown("src/tutorials/saxpy.jl", "src/tutorials/";
+    #     repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
@@ -33,7 +33,9 @@ makedocs(
     pages=[
         "LIKWID" => "index.md",
         "Tutorials" => [
-            "The very first time" => "tutorials/first.md",
+            "The Very First Time" => "tutorials/first.md",
+            "SAXPY on CPU(s)" => "tutorials/saxpy.md",
+            # "SAXPY on CPU and GPU" => "tutorials/saxpy_cpugpu.md",
         ],
         "Examples" => [
             "Using the Marker API" => "examples/saxpy.md",
