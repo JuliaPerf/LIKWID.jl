@@ -1,13 +1,13 @@
 # Miscellaneous
 
-## API
+## Index
 
 ```@index
 Pages   = ["misc.md"]
 Order   = [:function, :type]
 ```
 
-### Functions
+### API
 
 ```@docs
 LIKWID.setverbosity

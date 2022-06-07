@@ -62,7 +62,8 @@ include("markerfile.jl")
 include("topology_gpu.jl")
 include("nvmon.jl")
 import .NvMon
-export NvMon
+import .NvMon: nvmon, @nvmon
+export NvMon, nvmon, @nvmon
 include("marker_gpu.jl")
 import .GPUMarker
 import .GPUMarker: gpuregion, @gpuregion

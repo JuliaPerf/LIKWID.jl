@@ -1,10 +1,6 @@
-```@setup likwid
-using LIKWID
-```
-
 # HPM / Access
 
-## API
+## Index
 
 ```@index
 Pages   = ["access.md"]

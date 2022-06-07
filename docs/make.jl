@@ -8,17 +8,17 @@ using DocThemePC2
 const src = "https://github.com/JuliaPerf/LIKWID.jl"
 const ci = get(ENV, "CI", "") == "true"
 
-@info "Building Literate.jl documentation"
-cd(@__DIR__) do
-    # Literate.markdown("src/tutorials/first.jl", "src/tutorials/";
-    #     repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-    # Literate.markdown("src/tutorials/saxpy.jl", "src/tutorials/";
-    #     repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-    Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
-        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-    Literate.markdown("src/examples/perfmon.jl", "src/examples/";
-        repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
-end
+# @info "Building Literate.jl documentation"
+# cd(@__DIR__) do
+#     # Literate.markdown("src/tutorials/first.jl", "src/tutorials/";
+#     #     repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+#     # Literate.markdown("src/tutorials/saxpy.jl", "src/tutorials/";
+#     #     repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+#     Literate.markdown("src/examples/dynamic_pinning.jl", "src/examples/";
+#         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+#     Literate.markdown("src/examples/perfmon.jl", "src/examples/";
+#         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
+# end
 
 @info "Installing DocThemePC2"
 DocThemePC2.install(@__DIR__)
@@ -32,33 +32,35 @@ makedocs(
     doctest=ci,
     pages=[
         "LIKWID" => "index.md",
-        "Tutorials" => [
-            "The Very First Time" => "tutorials/first.md",
-            "SAXPY on CPU(s)" => "tutorials/saxpy.md",
-            # "SAXPY on CPU and GPU" => "tutorials/saxpy_cpugpu.md",
+        # "Tutorials" => [
+        #     "The Very First Time" => "tutorials/first.md",
+        #     "Counting FLOPS: SAXPY" => "tutorials/saxpy_cpu.md",
+        #     # "Counting GPU FLOPS: SAXPY" => "tutorials/saxpy_gpu.md",
+        # ],
+        # "Examples" => [
+        #     "Using the Marker API" => "examples/saxpy.md",
+        #     "Monitoring performance" => "examples/perfmon.md",
+        # ],
+        # "How-To Guides" => [
+        #     "Pinning Threads" => "howtos/pinning.md",
+        # ],
+        "References" => [
+            "Marker API (CPU)" => "references/marker.md",
+            "Marker API (GPU)" => "references/marker_gpu.md",
+            "CPU topology" => "references/topo.md",
+            "Performance monitoring" => "references/perfmon.md",
+            "GPU topology" => "references/topo_gpu.md",
+            "NVIDIA monitoring" => "references/nvmon.md",
+            "CPU clock timer" => "references/timer.md",
+            "CPU temperature" => "references/temperature.md",
+            "Power / Energy" => "references/power.md",
+            "Affinity" => "references/affinity.md",
+            "HPM / Access" => "references/access.md",
+            "Miscellaneous" => "references/misc.md",
         ],
-        "Examples" => [
-            "Using the Marker API" => "examples/saxpy.md",
-            "Monitoring performance" => "examples/perfmon.md",
-            "Thread Pinning" => "examples/dynamic_pinning.md",
-        ],
-        "Library" => [
-            "Marker API (CPU)" => "marker.md",
-            "Marker API (GPU)" => "marker_gpu.md",
-            "CPU topology" => "topo.md",
-            "Performance monitoring" => "perfmon.md",
-            "GPU topology" => "topo_gpu.md",
-            "NVIDIA monitoring" => "nvmon.md",
-            "CPU clock timer" => "timer.md",
-            "CPU temperature" => "temperature.md",
-            "Power / Energy" => "power.md",
-            "Affinity" => "affinity.md",
-            "HPM / Access" => "access.md",
-            "Miscellaneous" => "misc.md",
-        ],
-        "CLI Tools" => [
-            "likwid-pin" => "likwid-pin.md",
-        ],
+        # "CLI Tools" => [
+        #     "likwid-pin" => "likwid-pin.md",
+        # ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
     repo="https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",

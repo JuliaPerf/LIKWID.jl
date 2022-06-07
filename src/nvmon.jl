@@ -297,4 +297,169 @@ function get_time_of_group(groupid::Integer)
     return time
 end
 
+"""
+  `get_metric_results([groupid_or_groupname, metricid_or_metricname, gpuid::Integer])`
+
+Retrieve the results of monitored metrics.
+
+Optionally, a group, metric, and gpuid can be provided to select a subset of metrics or a single metric.
+If given as integers, note that `groupid`, `metricid`, and `gpuid` all start at 1 and the latter enumerates the monitored gpus.
+
+If no arguments are provided, a nested data structure is returned in which different
+levels correspond to performance groups, gpus, and metrics (in this order).
+```
+"""
+function get_metric_results(group, gpuid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    _check_groupid(gpuid) || return nothing
+    nmetrics = get_number_of_metrics(groupid)
+    d = OrderedDict{String,Float64}()
+    for metricid in 1:nmetrics
+        metric = get_name_of_metric(groupid, metricid)
+        d[metric] = get_last_metric(groupid, metricid, gpuid)
+    end
+    return d
+end
+get_metric_results(groupid::Integer) = get_metric_results.(groupid, 1:get_number_of_threads())
+get_metric_results(groupname::AbstractString) = get_metric_results(get_id_of_group(groupname))
+
+function get_metric_results(group, metric, gpuid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    metricid = metric isa Integer ? metric : get_id_of_metric(groupid, metric)
+    return get_last_metric(groupid, metricid, gpuid)
+end
+get_metric_results(group, metric) = get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_threads())
+
+"""
+  `get_metric_results()`
+
+Get the metric results for all performance groups and all monitored
+([`NvMon.init`](@ref)) gpus.
+
+Returns a an `OrderedDict` whose keys correspond to the performance groups
+and the values hold the results for all monitored gpus.
+```
+"""
+function get_metric_results()
+    ngrps = get_number_of_groups()
+    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    for group in 1:ngrps
+        groupname = get_name_of_group(group)
+        group_results = get_metric_results(group)
+        results[groupname] = group_results
+    end
+    return results
+end
+
+"""
+  `get_event_results([groupid_or_groupname, eventid_or_eventname, gpuid::Integer])`
+
+Retrieve the results of monitored events. Same as [`get_metric_results`](@ref) but for raw events.
+"""
+function get_event_results(group, gpuid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    perfmon_initialized[] || return nothing
+    _check_groupid(groupid) || return nothing
+    _check_gpuid(gpuid) || return nothing
+    nevents = get_number_of_events(groupid)
+    d = OrderedDict{String,Float64}()
+    for eventid in 1:nevents
+        event = get_name_of_event(groupid, eventid)
+        d[event] = get_last_event(groupid, eventid, gpuid)
+    end
+    return d
+end
+get_event_results(groupid::Integer) = get_event_results.(groupid, 1:get_number_of_threads())
+get_event_results(groupname::AbstractString) = get_event_results(get_id_of_group(groupname))
+
+function get_event_results(group, event, gpuid::Integer)
+    groupid = group isa Integer ? group : get_id_of_group(group)
+    eventid = event isa Integer ? event : get_id_of_event(groupid, event)
+    return get_last_event(groupid, eventid, gpuid)
+end
+get_event_results(group, event) = get_event_results.(Ref(group), Ref(event), 1:get_number_of_threads())
+
+function get_event_results()
+    ngrps = get_number_of_groups()
+    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    for group in 1:ngrps
+        groupname = get_name_of_group(group)
+        group_results = get_event_results(group)
+        results[groupname] = group_results
+    end
+    return results
+end
+
+"""
+    nvmon(f, group_or_groups[; gpuids])
+Monitor performance groups while executing the given function `f` on one or multiple GPUs.
+Note that
+* `NvMon.init` and `NvMon.finalize` are called automatically
+* the measurement of multiple performance groups is sequential and requires multiple executions of `f`!
+
+**Keyword arguments:**
+* `gpuids` (default: first GPU): specify the GPUs to be monitored
+
+# Example
+```julia
+julia> using LIKWID
+
+julia> x = CUDA.rand(1000); y = CUDA.rand(1000);
+
+julia> metrics, events = nvmon("FLOPS_DP") do
+           CUDA.@sync x .+ y;
+       end;
+```
+"""
+function nvmon(f, group_or_groups; gpuids=0)
+    gpuids = gpuids isa Integer ? [gpuids] : gpuids
+    NvMon.init(gpuids)
+    groups = group_or_groups isa AbstractString ? (group_or_groups,) : group_or_groups
+    for group in groups
+        gid = NvMon.add_event_set(group)
+        NvMon.setup_counters(gid)
+        NvMon.start_counters()
+        f()
+        NvMon.stop_counters()
+    end
+    metrics_results = NvMon.get_metric_results()
+    event_results = NvMon.get_event_results()
+    NvMon.finalize()
+    if group_or_groups isa AbstractString
+        # since we only have one group simplify the result structue
+        metrics_results = metrics_results[group_or_groups]
+        event_results = event_results[group_or_groups]
+        if length(gpuids) == 1 # only one cputhread monitored
+            metrics_results = first(metrics_results)
+            event_results = first(event_results)
+        end
+    end
+    metrics_results, event_results
+end
+
+"""
+    @nvmon group_or_groups codeblock
+
+See also: [`nvmon`](@ref)
+
+# Example
+```
+julia> using LIKWID
+
+julia> x = CUDA.rand(1000); y = CUDA.rand(1000);
+
+julia> metrics, events = @nvmon "FLOPS_DP" x .+ y;
+```
+"""
+macro nvmon(group_or_groups, expr)
+    q = quote
+        NvMon.nvmon($group_or_groups) do
+            $(expr)
+        end
+    end
+    return esc(q)
+end
+
 end # module

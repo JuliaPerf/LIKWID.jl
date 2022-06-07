@@ -1,7 +1,3 @@
-```@setup likwid
-using LIKWID
-```
-
 # CPU Temperature
 
 ## API

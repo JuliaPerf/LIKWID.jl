@@ -1,4 +1,4 @@
-# # Hardware Performance Monitoring: The Very First Time
+# # Counting FLOPs
 #
 # [TODO: Intro]
 #
@@ -24,5 +24,8 @@ metrics
 #
 events
 
-# In particular, the event "RETIRED_SSE_AVX_FLOPS_ALL" is the relevant one here and gives us the number of performed FLOPs. Note that it matches our expectation above
+# In particular, the event "RETIRED\_SSE\_AVX\_FLOPS\_ALL" is the relevant one here and gives us the number of performed FLOPs. Note that it matches our expectation above
 events["RETIRED_SSE_AVX_FLOPS_ALL"] == N
+
+# Feel free to play around and try monitoring other performance groups. To see which ones are supported on your system you can use [`PerfMon.supported_groups()`](@ref)
+PerfMon.supported_groups()

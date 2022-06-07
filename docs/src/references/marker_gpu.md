@@ -1,16 +1,16 @@
-# NVIDIA Monitoring (NvMon)
+# Marker API (GPU)
 
 **Note:** This is a maturing feature. Only NVIDIA GPUs are supported.
 
-## API
+## Index
 
 ```@index
-Pages   = ["nvmon.md"]
+Pages   = ["marker_gpu.md"]
 Order   = [:function, :macro, :type]
 ```
 
-### Functions
+### API
 
 ```@autodocs
-Modules = [LIKWID.NvMon]
+Modules = [LIKWID.GPUMarker]
 ```
