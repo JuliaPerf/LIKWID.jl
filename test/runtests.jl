@@ -206,10 +206,12 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test PerfMon.get_number_of_threads() == 1
         @test PerfMon.get_number_of_groups() == 0
         groups = PerfMon.supported_groups()
-        @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
-        gname = groups[1].name
-        gsinfo = groups[1].shortinfo
-        glinfo = groups[1].longinfo
+        @test typeof(groups) == Dict{String,LIKWID.GroupInfoCompact}
+        @show first(groups)
+        grpinfo = first(groups)[2]
+        gname = grpinfo.name
+        gsinfo = grpinfo.shortinfo
+        glinfo = grpinfo.longinfo
         @test PerfMon.isgroupsupported(gname)
         @test !PerfMon.isgroupsupported("loremipsum")
         # single group
@@ -251,7 +253,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test PerfMon.get_event_results(gid, 1) isa OrderedDict
 
         # multiple groups
-        gid2 = PerfMon.add_event_set(groups[2].name)
+        name_of_second_group = first(groups, 2)[2][1]
+        gid2 = PerfMon.add_event_set(name_of_second_group)
         @test PerfMon.start_counters()
         @test PerfMon.get_id_of_active_group() == gid
         @test PerfMon.read_counters()
@@ -275,8 +278,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         metrics, events = perfmon(perfgrp) do
             x .+ y
         end
-        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
-        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+        @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
         metrics, events = perfmon((perfgrp, perfgrp)) do # TODO: don't use same here
             x .+ y
         end
@@ -293,8 +296,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
                 x .+ y
             end
         end
-        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
-        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+        @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
     end
 
     @testset "Misc" begin
@@ -420,10 +423,11 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test NvMon.get_number_of_gpus() ≥ 1
             @test NvMon.get_number_of_groups() == 0
             groups = NvMon.supported_groups(0)
-            @test typeof(groups) == Vector{LIKWID.GroupInfoCompact}
-            gname = groups[1].name
-            gsinfo = groups[1].shortinfo
-            glinfo = groups[1].longinfo
+            @test typeof(groups) == Dict{String,LIKWID.GroupInfoCompact}
+            grpinfo = first(groups)[2]
+            gname = grpinfo.name
+            gsinfo = grpinfo.shortinfo
+            glinfo = grpinfo.longinfo
             @test NvMon.isgroupsupported(gname, 0)
             @test !NvMon.isgroupsupported("loremipsum", 0)
             # single group
@@ -485,7 +489,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             # LIKWID._execute_test(`likwid-perfctr -a`; print_only_on_fail=false)
             # read gpu perf group
             NvMon.init([0])
-            perfgrp_gpu = NvMon.supported_groups()[1].name
+            perfgrp_gpu = first(NvMon.supported_groups())[1]
             NvMon.finalize()
             # # dev LIKWID.jl + add CUDA
             # withenv("JULIA_CUDA_USE_BINARYBUILDER" => false) do

@@ -74,32 +74,30 @@ Always zero for custom event sets.
 get_number_of_metrics(groupid::Integer) = LibLikwid.perfmon_getNumberOfMetrics(groupid - 1)
 
 """
-Return a list of all available perfmon groups.
+Return a dictionary of all available perfmon groups.
 
 # Examples
 ```jldoctest
 julia> PerfMon.supported_groups()
-30-element Vector{LIKWID.GroupInfoCompact}:
- MEM_SP => Overview of arithmetic and main memory performance
- CYCLE_ACTIVITY => Cycle Activities
- ENERGY => Power and Energy consumption
- UOPS_RETIRE => UOPs retirement
- PMM => Intel Optane DC bandwidth in MBytes/s
- TLB_INSTR => L1 Instruction TLB miss rate/ratio
- DATA => Load to store ratio
- UOPS_ISSUE => UOPs issueing
- L2CACHE => L2 cache miss rate/ratio
- L2 => L2 cache bandwidth in MBytes/s
- ⋮
- TMA => Top down cycle allocation
- CLOCK => Power and Energy consumption
- FLOPS_DP => Double Precision MFLOP/s
- CYCLE_STALLS => Cycle Activities (Stalls)
- L3 => L3 cache bandwidth in MBytes/s
- UPI => UPI traffic
- L3NEW => L3 cache bandwidth in MBytes/s
- L3PF => L3 cache bandwidth in MBytes/s
- L2L3 => L3 cache bandwidth in MBytes/s
+Dict{String, LIKWID.GroupInfoCompact} with 18 entries:
+  "L2CACHE"  => L2CACHE => L2 cache miss rate/ratio (experimental)
+  "MEM2"     => MEM2 => Main memory bandwidth in MBytes/s (channels 4-7)
+  "NUMA"     => NUMA => L2 cache bandwidth in MBytes/s (experimental)
+  "BRANCH"   => BRANCH => Branch prediction miss rate/ratio
+  "FLOPS_SP" => FLOPS_SP => Single Precision MFLOP/s
+  "DIVIDE"   => DIVIDE => Divide unit information
+  "CPI"      => CPI => Cycles per instruction
+  "L2"       => L2 => L2 cache bandwidth in MBytes/s (experimental)
+  "L3"       => L3 => L3 cache bandwidth in MBytes/s
+  "L3CACHE"  => L3CACHE => L3 cache miss rate/ratio (experimental)
+  "CACHE"    => CACHE => Data cache miss rate/ratio
+  "ICACHE"   => ICACHE => Instruction cache miss rate/ratio
+  "TLB"      => TLB => TLB miss rate/ratio
+  "CLOCK"    => CLOCK => Cycles per instruction
+  "FLOPS_DP" => FLOPS_DP => Double Precision MFLOP/s
+  "ENERGY"   => ENERGY => Power and Energy consumption
+  "MEM1"     => MEM1 => Main memory bandwidth in MBytes/s (channels 0-3)
+  "DATA"     => DATA => Load to store ratio
 ```
 """
 function supported_groups()
@@ -117,10 +115,11 @@ function supported_groups()
     groups_vec = unsafe_wrap(Array, groups_ref[], ret)
     shorts_vec = unsafe_wrap(Array, shorts_ref[], ret)
     longs_vec = unsafe_wrap(Array, longs_ref[], ret)
-    res = Vector{GroupInfoCompact}(undef, ret)
+    res = Dict{String,GroupInfoCompact}()
     for i in 1:ret
-        res[i] = GroupInfoCompact(
-            unsafe_string(groups_vec[i]),
+        name = unsafe_string(groups_vec[i])
+        res[name] = GroupInfoCompact(
+            name,
             unsafe_string(shorts_vec[i]),
             unsafe_string(longs_vec[i]),
         )

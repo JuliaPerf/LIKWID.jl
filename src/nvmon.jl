@@ -57,16 +57,16 @@ Always zero for custom event sets.
 get_number_of_metrics(groupid::Integer) = LibLikwid.nvmon_getNumberOfMetrics(groupid - 1)
 
 """
-Return a list of all available nvmon groups for the GPU identified by `gpu` (starts at 0).
+Return a dictionary of all available nvmon groups for the GPU identified by `gpu` (starts at 0).
 
 # Examples
 ```jldoctest
 julia> NvMon.supported_groups()
-4-element Vector{LIKWID.GroupInfoCompact}:
- DATA => Load to store ratio
- FLOPS_SP => Single-precision floating point
- FLOPS_HP => Half-precision floating point
- FLOPS_DP => Double-precision floating point
+Dict{String, LIKWID.GroupInfoCompact} with 4 entries:
+  "DATA"     => DATA => Load to store ratio
+  "FLOPS_SP" => FLOPS_SP => Single-precision floating point
+  "FLOPS_HP" => FLOPS_HP => Half-precision floating point
+  "FLOPS_DP" => FLOPS_DP => Double-precision floating point
 ```
 """
 function supported_groups(gpu::Integer=0)
@@ -89,10 +89,11 @@ function supported_groups(gpu::Integer=0)
     groups_vec = unsafe_wrap(Array, groups_ref[], ret)
     shorts_vec = unsafe_wrap(Array, shorts_ref[], ret)
     longs_vec = unsafe_wrap(Array, longs_ref[], ret)
-    res = Vector{GroupInfoCompact}(undef, ret)
+    res = Dict{String,GroupInfoCompact}()
     for i in 1:ret
-        res[i] = GroupInfoCompact(
-            unsafe_string(groups_vec[i]),
+        name = unsafe_string(groups_vec[i])
+        res[name] = GroupInfoCompact(
+            name,
             unsafe_string(shorts_vec[i]),
             unsafe_string(longs_vec[i]),
         )
