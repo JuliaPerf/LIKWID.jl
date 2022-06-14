@@ -12,8 +12,10 @@ Order   = [:function, :type]
 ```@docs
 LIKWID.setverbosity
 LIKWID.gpusupport
+LIKWID.pinmask
 LIKWID.accessmode
 LIKWID.env
+LIKWID.clearenv
 LIKWID.LIKWID_FORCE
 LIKWID.LIKWID_NO_ACCESS
 LIKWID.LIKWID_PIN

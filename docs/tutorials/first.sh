@@ -1,1 +1,0 @@
-julia --project=../.. -E 'push!(LOAD_PATH, "../../.."); using Literate; Literate.markdown("first.jl", "."; execute=true)'

@@ -32,17 +32,18 @@ makedocs(
     doctest=ci,
     pages=[
         "LIKWID" => "index.md",
-        # "Tutorials" => [
-        #     "The Very First Time" => "tutorials/first.md",
-        #     "Counting FLOPS: SAXPY" => "tutorials/saxpy_cpu.md",
-        #     # "Counting GPU FLOPS: SAXPY" => "tutorials/saxpy_gpu.md",
-        # ],
+        "Tutorials" => [
+            "Counting FLOPs" => "tutorials/counting_flops.md",
+        ],
+        "How-To Guides" => [
+            "Performance Monitoring" => "howtos/howto_perfmon.md",
+            "Pinning Julia Threads" => "howtos/howto_pinning.md",
+            "Marker API (CPU)" => "howtos/howto_marker_cpu.md",
+            "Marker API (CPU): Dynamic Usage" => "howtos/howto_marker_cpu_dynamic.md",
+        ],
         # "Examples" => [
         #     "Using the Marker API" => "examples/saxpy.md",
         #     "Monitoring performance" => "examples/perfmon.md",
-        # ],
-        # "How-To Guides" => [
-        #     "Pinning Threads" => "howtos/pinning.md",
         # ],
         "References" => [
             "Marker API (CPU)" => "references/marker.md",
@@ -58,9 +59,6 @@ makedocs(
             "HPM / Access" => "references/access.md",
             "Miscellaneous" => "references/misc.md",
         ],
-        # "CLI Tools" => [
-        #     "likwid-pin" => "likwid-pin.md",
-        # ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
     repo="https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
