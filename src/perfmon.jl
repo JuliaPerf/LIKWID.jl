@@ -496,11 +496,14 @@ function get_event_results()
 end
 
 """
-    perfmon(f, group_or_groups[; cpuids, autopin=true])
+    perfmon(f, group_or_groups[; cpuids, autopin=true]) -> metrics, events
 Monitor performance groups while executing the given function `f` on one or multiple Julia threads.
 Note that
 * `PerfMon.init` and `PerfMon.finalize` are called automatically
 * the measurement of multiple performance groups is sequential and requires multiple executions of `f`!
+
+The returned data structures `metrics` and `events` are nested and different levels correspond to
+performance groups, threads, and measured metrics (in this order).
 
 **Keyword arguments:**
 * `cpuids` (default: currently used CPU threads): specify the CPU threads (~ cores) to be monitored
@@ -516,15 +519,15 @@ julia> metrics, events = perfmon("FLOPS_DP") do
            x .+ y;
        end;
 
-julia> metrics                                                                      
+julia> first(metrics["FLOPS_DP"]) # all metrics of the first Julia thread
 OrderedDict{String, Float64} with 5 entries:
   "Runtime (RDTSC) [s]"  => 8.56091e-6
   "Runtime unhalted [s]" => 3.22377e-5
   "Clock [MHz]"          => 3506.47
   "CPI"                  => 4.78484
   "DP [MFLOP/s]"         => 116.81
-                                          
-julia> events                                                                       
+
+julia> first(events["FLOPS_DP"]) # all raw events of the first Julia thread
 OrderedDict{String, Float64} with 6 entries:
   "ACTUAL_CPU_CLOCK"          => 78974.0
   "MAX_CPU_CLOCK"             => 55174.0
@@ -553,15 +556,16 @@ function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true)
     metrics_results = PerfMon.get_metric_results()
     event_results = PerfMon.get_event_results()
     PerfMon.finalize()
-    if group_or_groups isa AbstractString
-        # since we only have one group simplify the result structue
-        metrics_results = metrics_results[group_or_groups]
-        event_results = event_results[group_or_groups]
-        if length(cpuids) == 1 # only one cputhread monitored
-            metrics_results = first(metrics_results)
-            event_results = first(event_results)
-        end
-    end
+    # # simplification if only one group and/or one thread
+    # if group_or_groups isa AbstractString
+    #     # since we only have one group simplify the result structue
+    #     metrics_results = metrics_results[group_or_groups]
+    #     event_results = event_results[group_or_groups]
+    #     if length(cpuids) == 1 # only one cputhread monitored
+    #         metrics_results = first(metrics_results)
+    #         event_results = first(event_results)
+    #     end
+    # end
     metrics_results, event_results
 end
 
@@ -589,15 +593,15 @@ julia> x = rand(1000); y = rand(1000);
 
 julia> metrics, events = @perfmon "FLOPS_DP" x .+ y;
 
-julia> metrics                                                                      
+julia> first(metrics["FLOPS_DP"]) # all metrics of the first Julia thread
 OrderedDict{String, Float64} with 5 entries:
   "Runtime (RDTSC) [s]"  => 8.56091e-6
   "Runtime unhalted [s]" => 3.22377e-5
   "Clock [MHz]"          => 3506.47
   "CPI"                  => 4.78484
   "DP [MFLOP/s]"         => 116.81
-                                          
-julia> events                                                                       
+
+julia> first(events["FLOPS_DP"]) # all events of the first Julia thread
 OrderedDict{String, Float64} with 6 entries:
   "ACTUAL_CPU_CLOCK"          => 78974.0
   "MAX_CPU_CLOCK"             => 55174.0

@@ -1,15 +1,15 @@
 Metrics:
 OrderedDict{String, Float64} with 5 entries:
-  "Runtime (RDTSC) [s]" => 0.51499
-  "Runtime unhalted [s]" => 0.740928
-  "Clock [MHz]" => 3524.74
-  "CPI" => 0.559719
-  "DP [MFLOP/s]" => 410.478
+  "Runtime (RDTSC) [s]" => 0.507666
+  "Runtime unhalted [s]" => 0.730346
+  "Clock [MHz]" => 3524.44
+  "CPI" => 0.558201
+  "DP [MFLOP/s]" => 416.4
 Events:
 OrderedDict{String, Float64} with 6 entries:
-  "ACTUAL_CPU_CLOCK" => 1.81529e9
-  "MAX_CPU_CLOCK" => 1.26179e9
-  "RETIRED_INSTRUCTIONS" => 3.2116e9
-  "CPU_CLOCKS_UNHALTED" => 1.7976e9
+  "ACTUAL_CPU_CLOCK" => 1.78931e9
+  "MAX_CPU_CLOCK" => 1.24381e9
+  "RETIRED_INSTRUCTIONS" => 3.17241e9
+  "CPU_CLOCKS_UNHALTED" => 1.77084e9
   "RETIRED_SSE_AVX_FLOPS_ALL" => 2.11392e8
   "MERGE" => 0.0

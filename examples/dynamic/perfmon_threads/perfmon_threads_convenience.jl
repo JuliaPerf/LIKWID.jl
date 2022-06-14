@@ -13,5 +13,5 @@ metrics, events = @perfmon "FLOPS_DP" begin
     end
 end
 
-@show getindex.(events, "RETIRED_SSE_AVX_FLOPS_ALL");
-@show getindex.(metrics, "DP [MFLOP/s]");
+@show getindex.(events["FLOPS_DP"], "RETIRED_SSE_AVX_FLOPS_ALL");
+@show getindex.(metrics["FLOPS_DP"], "DP [MFLOP/s]");

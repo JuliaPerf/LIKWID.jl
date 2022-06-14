@@ -275,13 +275,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         metrics, events = perfmon(perfgrp) do
             x .+ y
         end
-        if Threads.nthreads() > 1
-            @test metrics isa Vector{OrderedDict{String,Float64}}
-            @test events isa Vector{OrderedDict{String,Float64}}
-        else
-            @test metrics isa OrderedDict{String,Float64}
-            @test events isa OrderedDict{String,Float64}
-        end
+        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
         metrics, events = perfmon((perfgrp, perfgrp)) do # TODO: don't use same here
             x .+ y
         end
@@ -298,14 +293,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
                 x .+ y
             end
         end
-        if Threads.nthreads() > 1
-            @test metrics isa Vector{OrderedDict{String,Float64}}
-            @test events isa Vector{OrderedDict{String,Float64}}
-        else
-            @test metrics isa OrderedDict{String,Float64}
-            @test events isa OrderedDict{String,Float64}
-        end
-
+        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
     end
 
     @testset "Misc" begin
@@ -423,7 +412,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(gpu.maxGridSize) == NTuple{3,Int}
             @test isnothing(LIKWID.finalize_topology_gpu())
         end
-    
+
         # According to @TomTheBear, this shouldn't be used yet
         @testset "GPU PerfMon / NvMon" begin
             @test NvMon.init([0])
@@ -458,7 +447,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test isnothing(NvMon.get_name_of_metric(gid, 0))
             @test isnothing(NvMon.get_name_of_metric(gid, nmetrics + 1))
             @test !isnothing(NvMon.get_name_of_metric(gid, 1))
-    
+
             @test NvMon.setup_counters(gid)
             @test NvMon.get_id_of_active_group() == gid
             @test_broken !NvMon.read_counters() # error 7
@@ -471,7 +460,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test_broken typeof(NvMon.get_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getMetric
             @test_broken typeof(NvMon.get_last_metric(gid, 1, 1)) == Float64 # undefined symbol nvmon_getLastMetric
             @test typeof(NvMon.get_time_of_group(gid)) == Float64
-    
+
             # multiple groups
             gid2 = NvMon.add_event_set(groups[2].name)
             @test NvMon.start_counters()
@@ -490,7 +479,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(NvMon.get_time_of_group(gid)) == Float64
             @test typeof(NvMon.get_time_of_group(gid2)) == Float64
         end
-    
+
         @testset "Marker API (GPU)" begin
             # print perf groups
             # LIKWID._execute_test(`likwid-perfctr -a`; print_only_on_fail=false)

@@ -1,1 +1,1 @@
-julia --project=../.. perfmon.jl > perfmon.out
+julia --project=../../.. perfmon.jl > perfmon.out

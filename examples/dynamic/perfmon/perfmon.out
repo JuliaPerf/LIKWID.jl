@@ -1,13 +1,13 @@
 OrderedDict{String, Float64} with 5 entries:
-  "Runtime (RDTSC) [s]" => 0.633329
-  "Runtime unhalted [s]" => 0.911078
-  "Clock [MHz]" => 3524.33
-  "CPI" => 0.519753
-  "DP [MFLOP/s]" => 333.78
+  "Runtime (RDTSC) [s]" => 0.658781
+  "Runtime unhalted [s]" => 0.947719
+  "Clock [MHz]" => 3524.45
+  "CPI" => 0.527009
+  "DP [MFLOP/s]" => 320.885
 OrderedDict{String, Float64} with 6 entries:
-  "ACTUAL_CPU_CLOCK" => 2.23216e9
-  "MAX_CPU_CLOCK" => 1.55173e9
-  "RETIRED_INSTRUCTIONS" => 4.24706e9
-  "CPU_CLOCKS_UNHALTED" => 2.20742e9
+  "ACTUAL_CPU_CLOCK" => 2.32193e9
+  "MAX_CPU_CLOCK" => 1.61409e9
+  "RETIRED_INSTRUCTIONS" => 4.27467e9
+  "CPU_CLOCKS_UNHALTED" => 2.25279e9
   "RETIRED_SSE_AVX_FLOPS_ALL" => 2.11393e8
   "MERGE" => 0.0
