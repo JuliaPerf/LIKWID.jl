@@ -16,36 +16,13 @@ It's absolutely necessary to pin the Julia threads to specific cores.
 Otherwise, the threads might migrate to different cores and our hardware performance
 counter measurements are meaningless.
 
-````julia
-# we'll consider the first `NUM_THREADS` Julia threads
-using Base.Threads: @threads, nthreads
-const NUM_THREADS = 3;
-````
-
-Let's pin the first `NUM_THREADS` threads to the first `NUM_THREADS` cores.
+Let's pin the Julia threads to the first `nthreads()` cores.
 
 ````julia
 using LIKWID
-cores = 0:NUM_THREADS-1
-@threads :static for tid in 1:NUM_THREADS
-    LIKWID.pinthread(cores[tid])
-end
-````
-
-To check that the pinning was successfull, we call [`LIKWID.get_processor_id`](@ref) on each thread.
-
-````julia
-@threads :static for tid in 1:NUM_THREADS
-    core = LIKWID.get_processor_id()
-    println("Thread $tid, Core $core")
-end
-````
-
-````
-Thread 3, Core 2
-Thread 1, Core 0
-Thread 2, Core 1
-
+using Base.Threads: @threads, nthreads
+@assert nthreads() > 1 # hide
+LIKWID.pinthreads(0:nthreads()-1)
 ````
 
 ### Environment variables
@@ -55,7 +32,7 @@ monitoring.
 
 ````julia
 # use the following threads
-cpustr = join(collect(0:NUM_THREADS-1), ",")
+cpustr = join(0:nthreads()-1, ",")
 LIKWID.LIKWID_THREADS(cpustr)
 # the location the marker file will be stored
 LIKWID.LIKWID_FILEPATH(joinpath(@__DIR__, "likwid_marker.out"))
@@ -83,33 +60,6 @@ true
 
 ## Measurement
 
-First we register the marker region. While this is not required
-it is strongly recommended as it reduces overhead of `Marker.startregion`
-and prevents wrong counts in short regions.
-
-Note that there must be a barrier between registering a region and starting that
-region. Typically these are done in separate parallel blocks, relying on
-the implicit barrier at the end of the parallel block. Usually there is
-a parallel block for initialization and a parallel block for execution.
-
-````julia
-@threads :static for tid in 1:NUM_THREADS
-    Marker.registerregion("Total")
-    Marker.registerregion("calc_flops")
-
-    # To demonstrate that registering regions is optional, we do not register
-    # the "copy" region, which we'll use later.
-end;
-````
-
-Let's get to the actual performance monitoring.
-We will measure a single region, get the results
-and reset the region so that these results
-do not affect (potential) later measurements.
-
-But first, we'll need to define the computation
-that we want to analyze.
-
 ````julia
 # simple function designed to do floating point computations
 function do_flops(a, b, c, num_flops)
@@ -132,16 +82,26 @@ function monitor_do_flops(NUM_FLOPS = 100_000_000)
     a = 1.8
     b = 3.2
     c = 1.0
-    @threads :static for tid in 1:NUM_THREADS
+    @threads :static for tid in 1:nthreads()
         # Notice that only the first group specified, `FLOPS_DP`, will be measured.
         # See further below for how to measure multiple groups.
-        Marker.startregion("calc_flops")
-        c = do_flops(c, a, b, NUM_FLOPS)
-        Marker.stopregion("calc_flops")
+        ; Marker.startregion("calc_flops")
+        @region "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
+        ; Marker.stopregion("calc_flops")
     end
     return nothing
 end
 monitor_do_flops()
+````
+
+````
+WARN: Region calc_flops was already started
+WARN: Region calc_flops was already started
+WARN: Region calc_flops was already started
+WARN: Stopping an unknown/not-started region calc_flops
+WARN: Stopping an unknown/not-started region calc_flops
+WARN: Stopping an unknown/not-started region calc_flops
+
 ````
 
 ## Analysis
@@ -150,7 +110,7 @@ To query basic information about the region from all threads
 we use [`Marker.getregion`](@ref).
 
 ````julia
-@threads :static for threadid in 1:NUM_THREADS
+@threads :static for threadid in 1:nthreads()
     nevents, events, time, count = Marker.getregion("calc_flops")
     gid = PerfMon.get_id_of_active_group()
     group_name = PerfMon.get_name_of_group(gid)
@@ -160,9 +120,9 @@ end;
 ````
 
 ````
-Thread 3: group FLOPS_DP, 6 events, runtime 0.09096547436688303 s, and call count 1
-Thread 1: group FLOPS_DP, 6 events, runtime 0.09098695612252992 s, and call count 1
-Thread 2: group FLOPS_DP, 6 events, runtime 0.09097586501200126 s, and call count 1
+Thread 1: group FLOPS_DP, 6 events, runtime 0.09083124763678302 s, and call count 1
+Thread 2: group FLOPS_DP, 6 events, runtime 0.09081997779150272 s, and call count 1
+Thread 3: group FLOPS_DP, 6 events, runtime 0.09083271784730416 s, and call count 1
 
 ````
 
@@ -179,10 +139,10 @@ _zeroifnothing(x) = x
 gid = PerfMon.get_id_of_active_group()
 nevents = PerfMon.get_number_of_events(gid)
 nmetrics = PerfMon.get_number_of_metrics(gid)
-events = Matrix(undef, nevents, NUM_THREADS + 1)
-metrics = Matrix(undef, nmetrics, NUM_THREADS + 1)
+events = Matrix(undef, nevents, nthreads() + 1)
+metrics = Matrix(undef, nmetrics, nthreads() + 1)
 
-for tid in 1:NUM_THREADS
+for tid in 1:nthreads()
     for eid in 1:nevents
         events[eid, 1] = PerfMon.get_name_of_event(gid, eid)
         events[eid, tid+1] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
@@ -194,7 +154,7 @@ for tid in 1:NUM_THREADS
 end
 
 # printing
-theader = ["Thread $(i)" for i in 1:NUM_THREADS]
+theader = ["Thread $(i)" for i in 1:nthreads()]
 pretty_table(events; header = vcat(["Event"], theader))
 pretty_table(metrics; header = vcat(["Metric"], theader))
 ````
@@ -203,21 +163,21 @@ pretty_table(metrics; header = vcat(["Metric"], theader))
 ┌───────────────────────────┬───────────┬───────────┬───────────┐
 │                     Event │  Thread 1 │  Thread 2 │  Thread 3 │
 ├───────────────────────────┼───────────┼───────────┼───────────┤
-│          ACTUAL_CPU_CLOCK │ 1.63008e9 │ 4.91858e8 │ 4.90652e8 │
-│             MAX_CPU_CLOCK │ 1.13324e9 │ 3.43986e8 │ 3.42817e8 │
-│      RETIRED_INSTRUCTIONS │ 1.89421e9 │  3.9588e8 │ 4.88434e8 │
-│       CPU_CLOCKS_UNHALTED │ 1.61627e9 │ 4.86665e8 │ 4.86537e8 │
-│ RETIRED_SSE_AVX_FLOPS_ALL │ 1.00023e8 │ 1.00001e8 │ 1.00002e8 │
+│          ACTUAL_CPU_CLOCK │  1.6629e9 │ 4.49548e8 │  4.4838e8 │
+│             MAX_CPU_CLOCK │ 1.15592e9 │ 3.13751e8 │ 3.12692e8 │
+│      RETIRED_INSTRUCTIONS │ 2.18953e9 │ 3.15543e8 │ 3.15447e8 │
+│       CPU_CLOCKS_UNHALTED │ 1.64928e9 │ 4.47128e8 │ 4.47229e8 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │ 1.00035e8 │     1.0e8 │     1.0e8 │
 │                     MERGE │       0.0 │       0.0 │       0.0 │
 └───────────────────────────┴───────────┴───────────┴───────────┘
 ┌──────────────────────┬──────────┬──────────┬──────────┐
 │               Metric │ Thread 1 │ Thread 2 │ Thread 3 │
 ├──────────────────────┼──────────┼──────────┼──────────┤
-│  Runtime (RDTSC) [s] │  1.38946 │  1.38946 │  1.38946 │
-│ Runtime unhalted [s] │ 0.665392 │ 0.200775 │ 0.200283 │
-│          Clock [MHz] │  3523.85 │  3502.91 │  3506.25 │
-│                  CPI │  0.85327 │  1.22932 │ 0.996116 │
-│         DP [MFLOP/s] │  71.9871 │  71.9713 │  71.9723 │
+│  Runtime (RDTSC) [s] │  1.03519 │  1.03519 │  1.03519 │
+│ Runtime unhalted [s] │ 0.678736 │  0.18349 │ 0.183013 │
+│          Clock [MHz] │  3524.53 │  3510.38 │  3513.12 │
+│                  CPI │ 0.753256 │  1.41701 │  1.41776 │
+│         DP [MFLOP/s] │   96.634 │  96.6004 │  96.6004 │
 └──────────────────────┴──────────┴──────────┴──────────┘
 
 ````

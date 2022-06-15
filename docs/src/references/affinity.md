@@ -1,4 +1,16 @@
+```@setup likwid
+using LIKWID
+```
+
 # Affinity
+
+## Example
+
+Query affinity domain information:
+```@repl likwid
+aff = LIKWID.get_affinity()
+aff.domains
+```
 
 ## Index
 
