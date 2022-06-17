@@ -22,6 +22,9 @@ Return the region tag for the region identified by `ridx` (starts at 1).
 """
 regiontag(ridx) = unsafe_string(LibLikwid.perfmon_getTagOfRegion(ridx - 1))
 
+"Return the tags of all available regions"
+regions() = regiontag.(1:numregions())
+
 """
 Return the group id for the region identified by `ridx` (starts at 1).
 """

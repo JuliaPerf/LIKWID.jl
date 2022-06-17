@@ -1,20 +1,20 @@
 module Marker
 
-using ..LIKWID: LibLikwid, PerfMon, capture_stderr!
+using ..LIKWID: LibLikwid, PerfMon, capture_stderr!, get_processor_ids, LIKWID, MarkerFile
 
 """
-Initialize the Marker API. Must be called previous to all other functions.
+Initialize the Marker API, assuming that julia is running under `likwid-perfctr`. Must be called previous to all other functions.
 """
-function init()
+function init(; N=Threads.nthreads())
     LibLikwid.likwid_markerInit()
-    Threads.@threads :static for i in 1:Threads.nthreads()
+    Threads.@threads :static for i in 1:N
         LibLikwid.likwid_markerThreadInit()
     end
     return nothing
 end
 
 """
-Initialize the Marker API only on the main thread. `LIKWID.Marker.threadinit()` must be called manually.
+Initialize the Marker API only on the main thread (assuming that julia is running under `likwid-perfctr`). `LIKWID.Marker.threadinit()` must be called manually.
 """
 init_nothreads() = LibLikwid.likwid_markerInit()
 
@@ -187,5 +187,69 @@ macro parallelregion(regiontag, expr)
     end
     return esc(q)
 end
+
+function prepare_marker_dynamic(groups; cpuids=get_processor_ids(), markerfile=joinpath(pwd(), "likwid_marker.out"), force=true, verbosity=0)
+    LIKWID.clearenv()
+    # the cpu threads to be considered
+    if cpuids isa String
+        cpustr = cpuids
+    elseif cpuids isa Integer || (cpuids isa AbstractVector && eltype(cpuids) <: Integer)
+        cpustr = join(cpuids, ",")
+    else
+        throw(ArgumentError("cpuids must be an integer, an abstract vector of integers, or a cpu string"))
+    end
+    LIKWID.LIKWID_THREADS(cpustr)
+    # the location the marker file will be stored
+    LIKWID.LIKWID_FILEPATH(markerfile)
+    # Use the access daemon
+    LIKWID.LIKWID_MODE(1) # TODO: use LIKWID.accessmode() here?
+    # Overwrite registers (if they are in use)
+    LIKWID.LIKWID_FORCE(force)
+    # Debug level
+    LIKWID.LIKWID_DEBUG(verbosity)
+    # Events to measure
+    if groups isa AbstractString
+        groupsstr = groups
+    elseif groups isa AbstractVector && eltype(groups) <: AbstractString
+        groupsstr = join(groups, "|")
+    else
+        throw(ArgumentError("groups must be a string or a vector of strings"))
+    end
+    LIKWID.LIKWID_EVENTS(groupsstr)
+    return nothing
+end
+
+"""
+    init_dynamic(group_or_groups; kwargs...)
+Initialize the full Marker API from within the current Julia session (i.e. no `likwird-perfctr` necessary).
+A performance group, e.g. "FLOPS_DP", must be provided as the first argument.
+"""
+function init_dynamic(group_or_groups; cpuids=get_processor_ids(), kwargs...)
+    prepare_marker_dynamic(group_or_groups; cpuids, kwargs...)
+    return init(; N=length(cpuids))
+end
+
+function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, kwargs...)
+    cpuids = cpuids isa Integer ? [cpuids] : cpuids
+    numthreads = min(length(cpuids), Threads.nthreads())
+    autopin && PerfMon._perfmon_autopin(cpuids)
+    Marker.init_dynamic(group_or_groups; cpuids=cpuids, kwargs...)
+    PerfMon.init(cpuids)
+    groups = group_or_groups isa AbstractString ? (group_or_groups,) : group_or_groups
+    for group in groups
+        f()
+        # TODO: switch group
+    end
+    # metrics_results = PerfMon.get_metric_results()
+    # event_results = PerfMon.get_event_results()
+    # metrics_results, event_results
+
+    MarkerFile.read(LIKWID.LIKWID_FILEPATH())
+    nregions = MarkerFile.numregions()
+    MarkerFile.num
+end
+
+_zeroifnothing(x::Nothing) = 0.0
+_zeroifnothing(x) = x
 
 end # module

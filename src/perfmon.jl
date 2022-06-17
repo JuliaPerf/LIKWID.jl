@@ -555,16 +555,6 @@ function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true)
     metrics_results = PerfMon.get_metric_results()
     event_results = PerfMon.get_event_results()
     PerfMon.finalize()
-    # # simplification if only one group and/or one thread
-    # if group_or_groups isa AbstractString
-    #     # since we only have one group simplify the result structue
-    #     metrics_results = metrics_results[group_or_groups]
-    #     event_results = event_results[group_or_groups]
-    #     if length(cpuids) == 1 # only one cputhread monitored
-    #         metrics_results = first(metrics_results)
-    #         event_results = first(event_results)
-    #     end
-    # end
     metrics_results, event_results
 end
 
