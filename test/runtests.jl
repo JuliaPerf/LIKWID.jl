@@ -467,7 +467,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(NvMon.get_time_of_group(gid)) == Float64
 
             # multiple groups
-            gid2 = NvMon.add_event_set(nth(groups, 2).name)
+            gid2 = NvMon.add_event_set(nth(groups, 2)[1])
             @test NvMon.start_counters()
             @test NvMon.get_id_of_active_group() == gid
             @test NvMon.read_counters()
