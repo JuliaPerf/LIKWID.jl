@@ -5,6 +5,10 @@ using ..LIKWID:
 
 isinitialized() = nvmon_initialized[]
 
+"""
+    init(gpuid_or_gpuids)
+Initialize LIKWID's NvMon module for the gpu(s) with the given gpu id(s) (starting at 0!).
+"""
 function init(gpus::AbstractVector{Int32}=Int32[i - 1 for i in 1:(get_gpu_topology().numDevices)])
     nvmon_initialized[] && finalize()
 

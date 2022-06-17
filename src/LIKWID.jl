@@ -59,8 +59,8 @@ import .MarkerFile
 export MarkerFile
 include("marker.jl")
 import .Marker
-import .Marker: region, @region, @parallelregion
-export Marker, region, @region, @parallelregion
+import .Marker: marker, @marker, @parallelmarker
+export Marker, marker, @marker, @parallelmarker
 include("topology_gpu.jl")
 include("nvmon.jl")
 import .NvMon
@@ -68,8 +68,8 @@ import .NvMon: nvmon, @nvmon
 export NvMon, nvmon, @nvmon
 include("marker_gpu.jl")
 import .GPUMarker
-import .GPUMarker: gpuregion, @gpuregion
-export GPUMarker, gpuregion, @gpuregion
+import .GPUMarker: gpumarker, @gpumarker
+export GPUMarker, gpumarker, @gpumarker
 include("frequency.jl")
 
 function init(; gpu=false)

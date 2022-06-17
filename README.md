@@ -63,10 +63,10 @@ Marker.init()
 GPUMarker.init()
 
 saxpy_cpu!(z,a,x,y)
-@region "saxpy_cpu" saxpy_cpu!(z,a,x,y)
+@marker "saxpy_cpu" saxpy_cpu!(z,a,x,y)
 
 saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@gpuregion "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+@gpumarker "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
 
 Marker.close()
 GPUMarker.close()
@@ -74,7 +74,6 @@ GPUMarker.close()
 
 Output of `likwid-perfctr -C 0 -g FLOPS_SP -G 0 -W FLOPS_SP -m julia --project=. saxpy.jl`:
 ```
-INFO: You are running LIKWID in a cpuset with 1 CPUs. Taking given IDs as logical ID in cpuset
 --------------------------------------------------------------------------------
 CPU name:	Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
 CPU type:	Intel Skylake SP processor

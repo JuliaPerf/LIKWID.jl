@@ -1,5 +1,5 @@
 ```@meta
-EditURL = "<unknown>/howto_topology.jl"
+EditURL = "https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos/howto_topology.jl"
 ```
 
 # How  CPU / NUMA Topology

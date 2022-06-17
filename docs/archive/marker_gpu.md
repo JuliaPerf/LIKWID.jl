@@ -62,7 +62,7 @@ Region matmul, Group 1: FLOPS_SP
 
 ### Convenience macro
 
-We provide (and export) the macro [`@gpuregion`](@ref) which can be used to write regions like
+We provide (and export) the macro [`@gpumarker`](@ref) which can be used to write regions like
 
 ```julia
 GPUMarker.startregion("matmul")
@@ -75,7 +75,7 @@ GPUMarker.stopregion("matmul")
 simply as
 
 ```julia
-@gpuregion "matmul" for _ in 1:100
+@gpumarker "matmul" for _ in 1:100
     mul!(Cgpu, Agpu, Bgpu)
 end
 ```

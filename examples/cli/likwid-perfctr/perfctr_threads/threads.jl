@@ -20,7 +20,7 @@ const y = rand(N)
 
 Marker.init()
 
-# @parallelregion "saxpy_threads" begin
+# @parallelmarker "saxpy_threads" begin
 #     Threads.@threads for i in eachindex(x, y)
 #         zs[i] = a * x[i] * y[i]
 #     end

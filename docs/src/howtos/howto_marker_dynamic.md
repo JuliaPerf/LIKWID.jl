@@ -1,5 +1,5 @@
 ```@meta
-EditURL = "<unknown>/howto_marker_cpu_dynamic.jl"
+EditURL = "https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos/howto_marker_dynamic.jl"
 ```
 
 # Marker API (CPU): Dynamic Usage
@@ -85,23 +85,11 @@ function monitor_do_flops(NUM_FLOPS = 100_000_000)
     @threads :static for tid in 1:nthreads()
         # Notice that only the first group specified, `FLOPS_DP`, will be measured.
         # See further below for how to measure multiple groups.
-        ; Marker.startregion("calc_flops")
-        @region "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
-        ; Marker.stopregion("calc_flops")
+        @marker "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
     end
     return nothing
 end
 monitor_do_flops()
-````
-
-````
-WARN: Region calc_flops was already started
-WARN: Region calc_flops was already started
-WARN: Region calc_flops was already started
-WARN: Stopping an unknown/not-started region calc_flops
-WARN: Stopping an unknown/not-started region calc_flops
-WARN: Stopping an unknown/not-started region calc_flops
-
 ````
 
 ## Analysis
@@ -120,9 +108,9 @@ end;
 ````
 
 ````
-Thread 1: group FLOPS_DP, 6 events, runtime 0.09083124763678302 s, and call count 1
-Thread 2: group FLOPS_DP, 6 events, runtime 0.09081997779150272 s, and call count 1
-Thread 3: group FLOPS_DP, 6 events, runtime 0.09083271784730416 s, and call count 1
+Thread 2: group FLOPS_DP, 6 events, runtime 0.09098263908828776 s, and call count 1
+Thread 1: group FLOPS_DP, 6 events, runtime 0.09097956871314737 s, and call count 1
+Thread 3: group FLOPS_DP, 6 events, runtime 0.09096241796171514 s, and call count 1
 
 ````
 
@@ -163,21 +151,21 @@ pretty_table(metrics; header = vcat(["Metric"], theader))
 ┌───────────────────────────┬───────────┬───────────┬───────────┐
 │                     Event │  Thread 1 │  Thread 2 │  Thread 3 │
 ├───────────────────────────┼───────────┼───────────┼───────────┤
-│          ACTUAL_CPU_CLOCK │  1.6629e9 │ 4.49548e8 │  4.4838e8 │
-│             MAX_CPU_CLOCK │ 1.15592e9 │ 3.13751e8 │ 3.12692e8 │
-│      RETIRED_INSTRUCTIONS │ 2.18953e9 │ 3.15543e8 │ 3.15447e8 │
-│       CPU_CLOCKS_UNHALTED │ 1.64928e9 │ 4.47128e8 │ 4.47229e8 │
+│          ACTUAL_CPU_CLOCK │ 1.60143e9 │ 4.47081e8 │   4.447e8 │
+│             MAX_CPU_CLOCK │ 1.11336e9 │ 3.12533e8 │ 3.10503e8 │
+│      RETIRED_INSTRUCTIONS │ 2.16242e9 │ 3.15074e8 │ 3.36214e8 │
+│       CPU_CLOCKS_UNHALTED │ 1.59007e9 │ 4.43661e8 │ 4.43461e8 │
 │ RETIRED_SSE_AVX_FLOPS_ALL │ 1.00035e8 │     1.0e8 │     1.0e8 │
 │                     MERGE │       0.0 │       0.0 │       0.0 │
 └───────────────────────────┴───────────┴───────────┴───────────┘
 ┌──────────────────────┬──────────┬──────────┬──────────┐
 │               Metric │ Thread 1 │ Thread 2 │ Thread 3 │
 ├──────────────────────┼──────────┼──────────┼──────────┤
-│  Runtime (RDTSC) [s] │  1.03519 │  1.03519 │  1.03519 │
-│ Runtime unhalted [s] │ 0.678736 │  0.18349 │ 0.183013 │
-│          Clock [MHz] │  3524.53 │  3510.38 │  3513.12 │
-│                  CPI │ 0.753256 │  1.41701 │  1.41776 │
-│         DP [MFLOP/s] │   96.634 │  96.6004 │  96.6004 │
+│  Runtime (RDTSC) [s] │  1.36475 │  1.36475 │  1.36475 │
+│ Runtime unhalted [s] │ 0.653682 │ 0.182492 │  0.18152 │
+│          Clock [MHz] │  3523.83 │  3504.55 │  3508.67 │
+│                  CPI │ 0.735321 │  1.40812 │  1.31898 │
+│         DP [MFLOP/s] │   73.299 │  73.2737 │   73.274 │
 └──────────────────────┴──────────┴──────────┴──────────┘
 
 ````

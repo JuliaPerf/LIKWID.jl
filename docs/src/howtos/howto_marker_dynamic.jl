@@ -60,9 +60,7 @@ function monitor_do_flops(NUM_FLOPS = 100_000_000)
     @threads :static for tid in 1:nthreads()
         ## Notice that only the first group specified, `FLOPS_DP`, will be measured.
         ## See further below for how to measure multiple groups.
-        # Marker.startregion("calc_flops")
-        @region "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
-        # Marker.stopregion("calc_flops")
+        @marker "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
     end
     return nothing
 end

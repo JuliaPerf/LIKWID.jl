@@ -16,6 +16,10 @@ using ..LIKWID:
     pinthreads,
     pinthread
 
+"""
+    init(cpuid_or_cpuids)
+Initialize LIKWID's PerfMon module for the cpu threads with the given ids (starting at 0!).
+"""
 function init(cpus::AbstractVector{Int32}=get_processor_ids())
     perfmon_initialized[] && finalize()
 

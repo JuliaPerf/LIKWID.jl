@@ -1,5 +1,5 @@
 ```@meta
-EditURL = "<unknown>/counting_flops.jl"
+EditURL = "https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/tutorials/counting_flops.jl"
 ```
 
 # Counting FLOPs
@@ -46,7 +46,7 @@ metrics, events = @perfmon "FLOPS_SP" saxpy!(z, a, x, y)
 ````
 
 ````
-(OrderedCollections.OrderedDict("FLOPS_SP" => [OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 8.20070105282882e-6, "Runtime unhalted [s]" => 0.00033920369136497975, "Clock [MHz]" => 3498.110757920952, "CPI" => 1.5827581478264845, "SP [MFLOP/s]" => 2438.8158855151814), OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 8.20070105282882e-6, "Runtime unhalted [s]" => 4.20893123724612e-5, "Clock [MHz]" => 1819.3191133130201, "CPI" => NaN, "SP [MFLOP/s]" => 0.0), OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 8.20070105282882e-6, "Runtime unhalted [s]" => 4.353596665476168e-5, "Clock [MHz]" => 2828.7767234835533, "CPI" => NaN, "SP [MFLOP/s]" => 0.0), OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 8.20070105282882e-6, "Runtime unhalted [s]" => 3.96278774621136e-5, "Clock [MHz]" => 1909.3568239052859, "CPI" => NaN, "SP [MFLOP/s]" => 0.0)]), OrderedCollections.OrderedDict("FLOPS_SP" => [OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 830978.0, "MAX_CPU_CLOCK" => 581949.0, "RETIRED_INSTRUCTIONS" => 21877.0, "CPU_CLOCKS_UNHALTED" => 34626.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 20000.0, "MERGE" => 0.0), OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 103110.0, "MAX_CPU_CLOCK" => 138842.0, "RETIRED_INSTRUCTIONS" => 0.0, "CPU_CLOCKS_UNHALTED" => 0.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 0.0, "MERGE" => 0.0), OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 106654.0, "MAX_CPU_CLOCK" => 92365.0, "RETIRED_INSTRUCTIONS" => 0.0, "CPU_CLOCKS_UNHALTED" => 0.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 0.0, "MERGE" => 0.0), OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 97080.0, "MAX_CPU_CLOCK" => 124558.0, "RETIRED_INSTRUCTIONS" => 0.0, "CPU_CLOCKS_UNHALTED" => 0.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 0.0, "MERGE" => 0.0)]))
+(OrderedCollections.OrderedDict("FLOPS_SP" => [OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 1.22105482326715e-5, "Runtime unhalted [s]" => 0.0003424896728429579, "Clock [MHz]" => 3507.216389599493, "CPI" => 1.310768808849072, "SP [MFLOP/s]" => 1637.9280945376747), OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 1.22105482326715e-5, "Runtime unhalted [s]" => 4.328552404306522e-5, "Clock [MHz]" => 1810.7446307462021, "CPI" => NaN, "SP [MFLOP/s]" => 0.0), OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 1.22105482326715e-5, "Runtime unhalted [s]" => 4.309408367664596e-5, "Clock [MHz]" => 2848.5876438703935, "CPI" => NaN, "SP [MFLOP/s]" => 0.0), OrderedCollections.OrderedDict("Runtime (RDTSC) [s]" => 1.22105482326715e-5, "Runtime unhalted [s]" => 3.850400495514366e-5, "Clock [MHz]" => 1922.9927781954975, "CPI" => NaN, "SP [MFLOP/s]" => 0.0)]), OrderedCollections.OrderedDict("FLOPS_SP" => [OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 839048.0, "MAX_CPU_CLOCK" => 586089.0, "RETIRED_INSTRUCTIONS" => 21878.0, "CPU_CLOCKS_UNHALTED" => 28677.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 20000.0, "MERGE" => 0.0), OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 106043.0, "MAX_CPU_CLOCK" => 143471.0, "RETIRED_INSTRUCTIONS" => 0.0, "CPU_CLOCKS_UNHALTED" => 0.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 0.0, "MERGE" => 0.0), OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 105574.0, "MAX_CPU_CLOCK" => 90796.0, "RETIRED_INSTRUCTIONS" => 0.0, "CPU_CLOCKS_UNHALTED" => 0.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 0.0, "MERGE" => 0.0), OrderedCollections.OrderedDict("ACTUAL_CPU_CLOCK" => 94329.0, "MAX_CPU_CLOCK" => 120173.0, "RETIRED_INSTRUCTIONS" => 0.0, "CPU_CLOCKS_UNHALTED" => 0.0, "RETIRED_SSE_AVX_FLOPS_ALL" => 0.0, "MERGE" => 0.0)]))
 ````
 
 That was easy. Let's see what we got and take a look at all measured (derived) metrics and (raw) events
@@ -57,11 +57,11 @@ first(metrics["FLOPS_SP"])
 
 ````
 OrderedCollections.OrderedDict{String, Float64} with 5 entries:
-  "Runtime (RDTSC) [s]" => 8.2007e-6
-  "Runtime unhalted [s]" => 0.000339204
-  "Clock [MHz]" => 3498.11
-  "CPI" => 1.58276
-  "SP [MFLOP/s]" => 2438.82
+  "Runtime (RDTSC) [s]" => 1.22105e-5
+  "Runtime unhalted [s]" => 0.00034249
+  "Clock [MHz]" => 3507.22
+  "CPI" => 1.31077
+  "SP [MFLOP/s]" => 1637.93
 ````
 
 ````julia
@@ -70,10 +70,10 @@ first(events["FLOPS_SP"])
 
 ````
 OrderedCollections.OrderedDict{String, Float64} with 6 entries:
-  "ACTUAL_CPU_CLOCK" => 830978.0
-  "MAX_CPU_CLOCK" => 581949.0
-  "RETIRED_INSTRUCTIONS" => 21877.0
-  "CPU_CLOCKS_UNHALTED" => 34626.0
+  "ACTUAL_CPU_CLOCK" => 839048.0
+  "MAX_CPU_CLOCK" => 586089.0
+  "RETIRED_INSTRUCTIONS" => 21878.0
+  "CPU_CLOCKS_UNHALTED" => 28677.0
   "RETIRED_SSE_AVX_FLOPS_ALL" => 20000.0
   "MERGE" => 0.0
 ````

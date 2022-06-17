@@ -27,10 +27,10 @@ Marker.init()
 GPUMarker.init()
 
 saxpy_cpu!(z,a,x,y)
-@region "saxpy_cpu" saxpy_cpu!(z,a,x,y)
+@marker "saxpy_cpu" saxpy_cpu!(z,a,x,y)
 
 saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@gpuregion "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+@gpumarker "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
 
 Marker.close()
 GPUMarker.close()

@@ -1,5 +1,5 @@
 ```@meta
-EditURL = "<unknown>/howto_pinning.jl"
+EditURL = "https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos/howto_pinning.jl"
 ```
 
 # How to pin Julia threads
@@ -47,7 +47,7 @@ println("Cores: ", coreids)
 ````
 
 ````
-Cores: [99, 109, 100, 111, 101, 104, 110, 102, 96, 108]
+Cores: [37, 40, 38, 41, 39, 42, 32, 33, 47, 34]
 
 ````
 
@@ -58,7 +58,7 @@ println("Cores: ", LIKWID.get_processor_ids())
 ````
 
 ````
-Cores: [99, 109, 100, 111, 101, 104, 110, 102, 96, 108]
+Cores: [37, 40, 38, 41, 39, 42, 32, 33, 47, 34]
 
 ````
 

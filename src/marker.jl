@@ -99,7 +99,7 @@ Checks whether the Marker API is active, i.e. julia has been started under `likw
 isactive() = !isnothing(get(ENV, "LIKWID_MODE", nothing))
 
 """
-    region(f, regiontag::AbstractString)
+    marker(f, regiontag::AbstractString)
 Adds a LIKWID marker region around the execution of the given function `f` using [`Marker.startregion`](@ref),
 [`Marker.stopregion`](@ref) under the hood.
 Note that `LIKWID.Marker.init()` and `LIKWID.Marker.close()` must be called before and after, respectively.
@@ -110,19 +110,19 @@ julia> using LIKWID
 
 julia> Marker.init()
 
-julia> region("sleeping...") do
+julia> marker("sleeping...") do
            sleep(1)
        end
 true
 
-julia> region(()->rand(100), "create rand vec")
+julia> marker(()->rand(100), "create rand vec")
 true
 
 julia> Marker.close()
 
 ```
 """
-function region(f, regiontag::AbstractString)
+function marker(f, regiontag::AbstractString)
     Marker.startregion(regiontag)
     f()
     return Marker.stopregion(regiontag)
@@ -137,17 +137,17 @@ julia> using LIKWID
 
 julia> Marker.init()
 
-julia> @region "sleeping..." sleep(1)
+julia> @marker "sleeping..." sleep(1)
 true
 
-julia> @region "create rand vec" rand(100)
+julia> @marker "create rand vec" rand(100)
 true
 
 julia> Marker.close()
 
 ```
 """
-macro region(regiontag, expr)
+macro marker(regiontag, expr)
     q = quote
         LIKWID.Marker.startregion($regiontag)
         $(expr)
@@ -165,7 +165,7 @@ julia> using LIKWID
 
 julia> Marker.init()
 
-julia> @parallelregion begin
+julia> @parallelmarker begin
            Threads.@thread :static for i in 1:Threads.nthreads()
                # thread-local computation
            end
@@ -175,7 +175,7 @@ julia> Marker.close()
 
 ```
 """
-macro parallelregion(regiontag, expr)
+macro parallelmarker(regiontag, expr)
     q = quote
         Threads.@threads :static for i in 1:Threads.nthreads()
             LIKWID.Marker.startregion($regiontag)

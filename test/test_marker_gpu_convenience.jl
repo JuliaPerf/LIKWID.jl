@@ -21,16 +21,14 @@ saxpy_gpu!(z,a,x,y) = CUDA.@sync z .= a .* x .+ y
 
 # regular workflow
 saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@test @gpuregion "saxpy_gpu!" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@test @gpuregion "saxpy_gpu!" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+@test @gpumarker "saxpy_gpu!" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+@test @gpumarker "saxpy_gpu!" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
 
 A = CUDA.rand(100,100)
 B = CUDA.rand(100,100)
-@test @gpuregion "mul" for _ in 1:10
+@test @gpumarker "mul" for _ in 1:10
     A * B
 end
 
 # close
 @test isnothing(GPUMarker.close())
-
-

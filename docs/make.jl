@@ -38,8 +38,8 @@ makedocs(
         "How-To Guides" => [
             "Performance Monitoring" => "howtos/howto_perfmon.md",
             "Pinning Julia Threads" => "howtos/howto_pinning.md",
-            "Marker API (CPU)" => "howtos/howto_marker_cpu.md",
-            "Marker API (CPU): Dynamic Usage" => "howtos/howto_marker_cpu_dynamic.md",
+            "Marker API" => "howtos/howto_marker.md",
+            "Marker API: Dynamic Usage" => "howtos/howto_marker_dynamic.md",
             "System Topology" => "howtos/howto_topology.md",
         ],
         # "Examples" => [
