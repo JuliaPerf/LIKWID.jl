@@ -81,6 +81,9 @@ julia/1.6:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
+    - likwid-topology
+    - likwid-perfctr -i
+    - likwid-perfctr -a
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test(; coverage = true);'
@@ -117,6 +120,9 @@ julia/1.7:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
+    - likwid-topology
+    - likwid-perfctr -i
+    - likwid-perfctr -a
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'

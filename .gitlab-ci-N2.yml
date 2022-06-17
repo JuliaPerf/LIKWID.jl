@@ -25,4 +25,7 @@ julia/1.7-N2:
     - ml reset
     - ml tools/likwid/5.2.1-GCC-11.2.0
     - ml lang/JuliaHPC/1.7.2-fosscuda-2022a-linux-x86_64
+    - likwid-topology
+    - likwid-perfctr -i
+    - likwid-perfctr -a
     - julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
