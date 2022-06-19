@@ -15,7 +15,7 @@ using ..LIKWID:
     get_processor_id,
     pinthreads,
     pinthread,
-    print_results
+    _print_perfmon_results
 
 """
     init(cpuid_or_cpuids)
@@ -512,6 +512,8 @@ performance groups, threads, and measured metrics (in this order).
 **Keyword arguments:**
 * `cpuids` (default: currently used CPU threads): specify the CPU threads (~ cores) to be monitored
 * `autopin` (default: `true`): automatically pin Julia threads to the CPU threads (~ cores) they are currently running on (to avoid migration and wrong results).
+* `print` (default: `true`): toggle printing of result tables
+* `finalize` (default: `true`): call `PerfMon.finalize` in the end
 
 # Example
 ```julia
@@ -522,6 +524,28 @@ julia> x = rand(1000); y = rand(1000);
 julia> metrics, events = perfmon("FLOPS_DP") do
            x .+ y;
        end;
+
+Group: FLOPS_DP
+┌───────────────────────────┬───────────┐
+│                     Event │  Thread 1 │
+├───────────────────────────┼───────────┤
+│          ACTUAL_CPU_CLOCK │ 2.07325e8 │
+│             MAX_CPU_CLOCK │ 1.44131e8 │
+│      RETIRED_INSTRUCTIONS │ 2.93765e8 │
+│       CPU_CLOCKS_UNHALTED │ 2.05366e8 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │    4969.0 │
+│                     MERGE │       0.0 │
+└───────────────────────────┴───────────┘
+┌──────────────────────┬───────────┐
+│               Metric │  Thread 1 │
+├──────────────────────┼───────────┤
+│  Runtime (RDTSC) [s] │ 0.0588037 │
+│ Runtime unhalted [s] │ 0.0846231 │
+│          Clock [MHz] │   3524.17 │
+│                  CPI │  0.699081 │
+│         DP [MFLOP/s] │ 0.0845015 │
+└──────────────────────┴───────────┘
+
 
 julia> first(metrics["FLOPS_DP"]) # all metrics of the first Julia thread
 OrderedDict{String, Float64} with 5 entries:
@@ -563,7 +587,7 @@ function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, f
         gid_lastgroup = PerfMon.get_id_of_active_group()
         groupids = reverse(gid_lastgroup .- (0:length(groups)-1))
         for gid in groupids
-            print_results(gid)
+            _print_perfmon_results(gid)
         end
     end
     finalize && PerfMon.finalize()

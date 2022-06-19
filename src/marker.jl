@@ -1,6 +1,6 @@
 module Marker
 
-using ..LIKWID: LibLikwid, PerfMon, capture_stderr!, get_processor_ids, LIKWID, MarkerFile
+using ..LIKWID: LibLikwid, PerfMon, capture_stderr!, get_processor_ids, LIKWID, MarkerFile, _print_markerfile
 
 """
 Initialize the Marker API, assuming that julia is running under `likwid-perfctr`. Must be called previous to all other functions.
@@ -188,7 +188,7 @@ macro parallelmarker(regiontag, expr)
     return esc(q)
 end
 
-function prepare_marker_dynamic(groups; cpuids=get_processor_ids(), markerfile=joinpath(pwd(), "likwid_marker.out"), force=true, verbosity=0)
+function prepare_marker_dynamic(groups; cpuids=get_processor_ids(), markerfile=joinpath(pwd(), "likwid.markerfile"), force=true, verbosity=0)
     LIKWID.clearenv()
     # the cpu threads to be considered
     if cpuids isa String
@@ -229,24 +229,79 @@ function init_dynamic(group_or_groups; cpuids=get_processor_ids(), kwargs...)
     return init(; N=length(cpuids))
 end
 
-function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, kwargs...)
+"""
+    perfmon_marker(f, group_or_groups[; kwargs...])
+Monitor performance groups in marked areas (see [`@marker`](@ref)) while executing the
+given function `f` on one or multiple Julia threads. Note that
+* `Marker.init_dynamic`, `Marker.init`, `Marker.close`, and `PerfMon.finalize` are called automatically
+* the measurement of multiple performance groups is sequential and requires multiple executions of `f`!
+
+**Keyword arguments:**
+* `cpuids` (default: currently used CPU threads): specify the CPU threads (~ cores) to be monitored
+* `autopin` (default: `true`): automatically pin Julia threads to the CPU threads (~ cores) they are currently running on (to avoid migration and wrong results).
+* `keep` (default: `false`): keep the temporarily created marker file
+
+# Example
+```julia
+julia> using LIKWID
+
+julia> @perfmon_marker "FLOPS_DP" begin
+               @marker "exponential" exp(3.141)
+       end
+
+Region: exponential, Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │ 115146.0 │
+│             MAX_CPU_CLOCK │  78547.0 │
+│      RETIRED_INSTRUCTIONS │   4208.0 │
+│       CPU_CLOCKS_UNHALTED │   7112.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     10.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 3.02056e-8 │
+│ Runtime unhalted [s] │ 4.70008e-5 │
+│          Clock [MHz] │     3591.4 │
+│                  CPI │    1.69011 │
+│         DP [MFLOP/s] │    331.064 │
+└──────────────────────┴────────────┘
+
+"""
+function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, keep=false, kwargs...)
     cpuids = cpuids isa Integer ? [cpuids] : cpuids
-    numthreads = min(length(cpuids), Threads.nthreads())
     autopin && PerfMon._perfmon_autopin(cpuids)
     Marker.init_dynamic(group_or_groups; cpuids=cpuids, kwargs...)
     PerfMon.init(cpuids)
+    markerfile = LIKWID.LIKWID_FILEPATH()
+    isfile(markerfile) && rm(markerfile)
     groups = group_or_groups isa AbstractString ? (group_or_groups,) : group_or_groups
     for group in groups
         f()
-        # TODO: switch group
+        Marker.nextgroup()
     end
-    # metrics_results = PerfMon.get_metric_results()
-    # event_results = PerfMon.get_event_results()
-    # metrics_results, event_results
+    Marker.close()
+    _print_markerfile(markerfile)
+    PerfMon.finalize()
+    !keep && rm(markerfile)
+    return nothing
+end
 
-    MarkerFile.read(LIKWID.LIKWID_FILEPATH())
-    nregions = MarkerFile.numregions()
-    MarkerFile.num
+"""
+    @perfmon_marker group_or_groups codeblock
+
+See also: [`perfmon_marker`](@ref)
+"""
+macro perfmon_marker(group_or_groups, expr)
+    q = quote
+        Marker.perfmon_marker($group_or_groups) do
+            $(expr)
+        end
+    end
+    return esc(q)
 end
 
 _zeroifnothing(x::Nothing) = 0.0

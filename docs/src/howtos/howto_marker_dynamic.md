@@ -24,16 +24,9 @@ using Base.Threads: @threads, nthreads
 LIKWID.pinthreads(0:nthreads()-1)
 ````
 
-Next, one needs to initialize the Marker module in dynamic mode and specify
-the performance group of interest.
-
-````julia
-Marker.init_dynamic("FLOPS_DP")
-````
-
 ## Measurement
 
-Let's consider the following simple function designed to do trivial floating point computations.
+We consider the following simple function designed to do trivial floating point computations.
 
 ````julia
 function do_flops(a, b, c, num_flops)
@@ -48,75 +41,119 @@ end
 do_flops (generic function with 1 method)
 ````
 
-Let's run the computation and monitor the performance via the marker API, concretely [`@marker`](@ref).
-For good measure, we put everything in a function.
+Let's run a computation and monitor the performance via the marker API, concretely [`@perfmon_marker`](@ref) and [`@marker`](@ref).
 
 ````julia
-function monitor_do_flops(NUM_FLOPS=100_000_000)
+@perfmon_marker "FLOPS_DP" begin
+    NUM_FLOPS = 100_000_000
     a = 1.8
     b = 3.2
     c = 1.0
     @threads :static for tid in 1:nthreads()
         @marker "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
+        sin(b) # not monitored
+        @marker "exponential" exp(a)
     end
-    return nothing
 end
-
-monitor_do_flops()
-````
-
-## Analysis
-
-To query basic information about the region from all threads
-we use [`Marker.getregion`](@ref).
-
-````julia
-PerfMon.init()
-@threads :static for threadid in 1:nthreads()
-    nevents, events, time, count = Marker.getregion("calc_flops")
-    gid = PerfMon.get_id_of_active_group()
-    group_name = PerfMon.get_name_of_group(gid)
-    # print basic info
-    println("Thread $(threadid): group $(group_name), $(nevents) events, runtime $(time) s, and call count $(count)")
-end;
-````
-
-````
-Thread 1: group FLOPS_DP, 6 events, runtime 0.09114440672457015 s, and call count 1
-Thread 2: group FLOPS_DP, 6 events, runtime 0.09110641678869748 s, and call count 1
-Thread 3: group FLOPS_DP, 6 events, runtime 0.09111558692803792 s, and call count 1
-
-````
-
-The tools from the `LIKWID.PerfMon` module can be used to get more detailed information,
-such as the event and metric results. You can either do this manually, or use the function [`LIKWID.print_results`](@ref).
-
-````julia
-LIKWID.print_results()
 ````
 
 ````
 
-Group: FLOPS_DP
+Region: calc_flops, Group: FLOPS_DP
 ┌───────────────────────────┬───────────┬───────────┬───────────┐
 │                     Event │  Thread 1 │  Thread 2 │  Thread 3 │
 ├───────────────────────────┼───────────┼───────────┼───────────┤
-│          ACTUAL_CPU_CLOCK │ 7.88109e8 │ 4.33469e8 │ 4.33703e8 │
-│             MAX_CPU_CLOCK │ 5.48078e8 │ 3.02606e8 │ 3.02134e8 │
-│      RETIRED_INSTRUCTIONS │ 9.71598e8 │    3.35e8 │ 3.14027e8 │
-│       CPU_CLOCKS_UNHALTED │ 7.82487e8 │ 4.30675e8 │  4.3277e8 │
-│ RETIRED_SSE_AVX_FLOPS_ALL │ 1.00019e8 │     1.0e8 │     1.0e8 │
+│          ACTUAL_CPU_CLOCK │ 3.21635e8 │ 3.21602e8 │ 3.21575e8 │
+│             MAX_CPU_CLOCK │ 2.23556e8 │ 2.23551e8 │ 2.23515e8 │
+│      RETIRED_INSTRUCTIONS │ 3.02249e8 │ 3.23256e8 │ 3.02244e8 │
+│       CPU_CLOCKS_UNHALTED │ 3.21056e8 │ 3.19609e8 │ 3.20995e8 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     1.0e8 │     1.0e8 │     1.0e8 │
 │                     MERGE │       0.0 │       0.0 │       0.0 │
 └───────────────────────────┴───────────┴───────────┴───────────┘
-┌──────────────────────┬──────────┬──────────┬──────────┐
-│               Metric │ Thread 1 │ Thread 2 │ Thread 3 │
-├──────────────────────┼──────────┼──────────┼──────────┤
-│  Runtime (RDTSC) [s] │ 0.581184 │ 0.581184 │ 0.581184 │
-│ Runtime unhalted [s] │ 0.321675 │ 0.176925 │  0.17702 │
-│          Clock [MHz] │  3523.01 │  3509.54 │  3516.92 │
-│                  CPI │  0.80536 │   1.2856 │  1.37813 │
-│         DP [MFLOP/s] │  172.094 │  172.063 │  172.063 │
-└──────────────────────┴──────────┴──────────┴──────────┘
+┌──────────────────────┬───────────┬───────────┬───────────┐
+│               Metric │  Thread 1 │  Thread 2 │  Thread 3 │
+├──────────────────────┼───────────┼───────────┼───────────┤
+│  Runtime (RDTSC) [s] │ 0.0912224 │ 0.0912163 │ 0.0912013 │
+│ Runtime unhalted [s] │   0.13129 │  0.131277 │  0.131265 │
+│          Clock [MHz] │   3524.59 │   3524.32 │   3524.58 │
+│                  CPI │   1.06222 │  0.988716 │   1.06204 │
+│         DP [MFLOP/s] │   1096.22 │    1096.3 │   1096.48 │
+└──────────────────────┴───────────┴───────────┴───────────┘
+
+Region: exponential, Group: FLOPS_DP
+┌───────────────────────────┬──────────┬──────────┬──────────┐
+│                     Event │ Thread 1 │ Thread 2 │ Thread 3 │
+├───────────────────────────┼──────────┼──────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │  86015.0 │  87389.0 │  84186.0 │
+│             MAX_CPU_CLOCK │  59364.0 │  60197.0 │  58261.0 │
+│      RETIRED_INSTRUCTIONS │   4262.0 │   3980.0 │   4014.0 │
+│       CPU_CLOCKS_UNHALTED │   5320.0 │   4610.0 │   4571.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     27.0 │     27.0 │     27.0 │
+│                     MERGE │      0.0 │      0.0 │      0.0 │
+└───────────────────────────┴──────────┴──────────┴──────────┘
+┌──────────────────────┬────────────┬────────────┬────────────┐
+│               Metric │   Thread 1 │   Thread 2 │   Thread 3 │
+├──────────────────────┼────────────┼────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 6.00047e-8 │ 6.00047e-8 │ 6.00047e-8 │
+│ Runtime unhalted [s] │ 3.51109e-5 │ 3.56718e-5 │ 3.43643e-5 │
+│          Clock [MHz] │    3549.63 │    3556.43 │    3539.92 │
+│                  CPI │    1.24824 │    1.15829 │    1.13876 │
+│         DP [MFLOP/s] │    449.965 │    449.965 │    449.965 │
+└──────────────────────┴────────────┴────────────┴────────────┘
+
+````
+
+Multiple groups are supported as well.
+
+````julia
+@perfmon_marker ["FLOPS_DP", "CPI"] begin
+        @marker "exponential" exp(3.141)
+end
+````
+
+````
+
+Region: exponential, Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │  96747.0 │
+│             MAX_CPU_CLOCK │  66518.0 │
+│      RETIRED_INSTRUCTIONS │   4198.0 │
+│       CPU_CLOCKS_UNHALTED │   7550.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     10.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 2.00016e-8 │
+│ Runtime unhalted [s] │ 3.94917e-5 │
+│          Clock [MHz] │    3563.12 │
+│                  CPI │    1.79848 │
+│         DP [MFLOP/s] │    499.961 │
+└──────────────────────┴────────────┘
+
+Region: exponential, Group: CPI
+┌──────────────────────┬──────────┐
+│                Event │ Thread 1 │
+├──────────────────────┼──────────┤
+│     ACTUAL_CPU_CLOCK │  51461.0 │
+│        MAX_CPU_CLOCK │  35207.0 │
+│ RETIRED_INSTRUCTIONS │   3667.0 │
+│  CPU_CLOCKS_UNHALTED │   4703.0 │
+│         RETIRED_UOPS │   4755.0 │
+└──────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 3.02065e-8 │
+│ Runtime unhalted [s] │ 1.91974e-6 │
+│          Clock [MHz] │    3580.81 │
+│                  CPI │    1.28252 │
+│  CPI (based on uops) │   0.989064 │
+│                  IPC │   0.779715 │
+└──────────────────────┴────────────┘
 
 ````
 

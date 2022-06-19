@@ -62,8 +62,8 @@ import .MarkerFile
 export MarkerFile
 include("marker.jl")
 import .Marker
-import .Marker: marker, @marker, @parallelmarker
-export Marker, marker, @marker, @parallelmarker
+import .Marker: marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
+export Marker, marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
 include("topology_gpu.jl")
 include("nvmon.jl")
 import .NvMon
