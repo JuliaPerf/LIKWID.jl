@@ -1,15 +1,36 @@
+
+Group: FLOPS_DP
+┌───────────────────────────┬───────────┐
+│                     Event │  Thread 1 │
+├───────────────────────────┼───────────┤
+│          ACTUAL_CPU_CLOCK │ 2.05944e9 │
+│             MAX_CPU_CLOCK │ 1.43169e9 │
+│      RETIRED_INSTRUCTIONS │ 3.43619e9 │
+│       CPU_CLOCKS_UNHALTED │ 2.02681e9 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │ 2.11392e8 │
+│                     MERGE │       0.0 │
+└───────────────────────────┴───────────┘
+┌──────────────────────┬──────────┐
+│               Metric │ Thread 1 │
+├──────────────────────┼──────────┤
+│  Runtime (RDTSC) [s] │ 0.584337 │
+│ Runtime unhalted [s] │ 0.840604 │
+│          Clock [MHz] │  3524.17 │
+│                  CPI │  0.58984 │
+│         DP [MFLOP/s] │  361.764 │
+└──────────────────────┴──────────┘
 Metrics:
 OrderedDict{String, Float64} with 5 entries:
-  "Runtime (RDTSC) [s]" => 0.507666
-  "Runtime unhalted [s]" => 0.730346
-  "Clock [MHz]" => 3524.44
-  "CPI" => 0.558201
-  "DP [MFLOP/s]" => 416.4
+  "Runtime (RDTSC) [s]" => 0.584337
+  "Runtime unhalted [s]" => 0.840604
+  "Clock [MHz]" => 3524.17
+  "CPI" => 0.58984
+  "DP [MFLOP/s]" => 361.764
 Events:
 OrderedDict{String, Float64} with 6 entries:
-  "ACTUAL_CPU_CLOCK" => 1.78931e9
-  "MAX_CPU_CLOCK" => 1.24381e9
-  "RETIRED_INSTRUCTIONS" => 3.17241e9
-  "CPU_CLOCKS_UNHALTED" => 1.77084e9
+  "ACTUAL_CPU_CLOCK" => 2.05944e9
+  "MAX_CPU_CLOCK" => 1.43169e9
+  "RETIRED_INSTRUCTIONS" => 3.43619e9
+  "CPU_CLOCKS_UNHALTED" => 2.02681e9
   "RETIRED_SSE_AVX_FLOPS_ALL" => 2.11392e8
   "MERGE" => 0.0

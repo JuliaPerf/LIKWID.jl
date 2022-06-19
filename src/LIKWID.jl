@@ -3,6 +3,8 @@ import Base.Threads
 using Libdl
 using Unitful
 using OrderedCollections
+using PrettyTables
+
 export OrderedDict
 
 # liblikwid
@@ -49,6 +51,7 @@ include("timer.jl")
 include("thermal.jl")
 include("power.jl")
 include("access.jl")
+include("prettyprinting.jl")
 include("perfmon.jl")
 import .PerfMon
 import .PerfMon: perfmon, @perfmon

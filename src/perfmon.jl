@@ -14,7 +14,8 @@ using ..LIKWID:
     get_processor_ids,
     get_processor_id,
     pinthreads,
-    pinthread
+    pinthread,
+    print_results
 
 """
     init(cpuid_or_cpuids)
@@ -544,7 +545,7 @@ julia> metrics, events = perfmon(("FLOPS_DP", "MEM1")) do
        end;
 ```
 """
-function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true)
+function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, finalize=true, print=true)
     cpuids = cpuids isa Integer ? [cpuids] : cpuids
     autopin && _perfmon_autopin(cpuids)
     PerfMon.init(cpuids)
@@ -558,7 +559,14 @@ function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true)
     end
     metrics_results = PerfMon.get_metric_results()
     event_results = PerfMon.get_event_results()
-    PerfMon.finalize()
+    if print
+        gid_lastgroup = PerfMon.get_id_of_active_group()
+        groupids = reverse(gid_lastgroup .- (0:length(groups)-1))
+        for gid in groupids
+            print_results(gid)
+        end
+    end
+    finalize && PerfMon.finalize()
     metrics_results, event_results
 end
 

@@ -26,14 +26,10 @@ saxpy!(z, a, x, y);
 # Let's now use LIKWID to count the **actually** performed FLOPs for this computation!
 # Concretely, we measure the FLOPS_SP performance group, in which "SP" stands for "single precision".
 using LIKWID
-metrics, events = @perfmon "FLOPS_SP" saxpy!(z, a, x, y)
+metrics, events = @perfmon "FLOPS_SP" saxpy!(z, a, x, y);
 
-# That was easy. Let's see what we got and take a look at all measured (derived) metrics and (raw) events
-first(metrics["FLOPS_SP"])
-#
-first(events["FLOPS_SP"])
-
-# Among all those entries, the event "RETIRED\_SSE\_AVX\_FLOPS\_ALL" is the one that we care
+# That was easy. Let's see what we got.
+# Among all those results, the event "RETIRED\_SSE\_AVX\_FLOPS\_ALL" is the one that we care
 # about since it indicates the number of performed FLOPs.
 NFLOPs_actual = first(events["FLOPS_SP"])["RETIRED_SSE_AVX_FLOPS_ALL"]
 

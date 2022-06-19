@@ -1,1 +1,1 @@
-julia --project=../.. -t4 -E 'push!(LOAD_PATH, "../../.."); using Literate; Literate.markdown("counting_flops.jl", "."; execute=true, repo_root_url="https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/tutorials")'
+julia --project=../.. -t1 -E 'push!(LOAD_PATH, "../../.."); using Literate; Literate.markdown("counting_flops.jl", "."; execute=true, repo_root_url="https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/tutorials")'
