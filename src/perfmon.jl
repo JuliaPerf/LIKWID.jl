@@ -529,44 +529,89 @@ Group: FLOPS_DP
 ┌───────────────────────────┬───────────┐
 │                     Event │  Thread 1 │
 ├───────────────────────────┼───────────┤
-│          ACTUAL_CPU_CLOCK │ 2.07325e8 │
-│             MAX_CPU_CLOCK │ 1.44131e8 │
-│      RETIRED_INSTRUCTIONS │ 2.93765e8 │
-│       CPU_CLOCKS_UNHALTED │ 2.05366e8 │
-│ RETIRED_SSE_AVX_FLOPS_ALL │    4969.0 │
+│          ACTUAL_CPU_CLOCK │ 2.32582e8 │
+│             MAX_CPU_CLOCK │ 1.61685e8 │
+│      RETIRED_INSTRUCTIONS │ 3.12775e8 │
+│       CPU_CLOCKS_UNHALTED │ 2.29064e8 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │    4964.0 │
 │                     MERGE │       0.0 │
 └───────────────────────────┴───────────┘
 ┌──────────────────────┬───────────┐
 │               Metric │  Thread 1 │
 ├──────────────────────┼───────────┤
-│  Runtime (RDTSC) [s] │ 0.0588037 │
-│ Runtime unhalted [s] │ 0.0846231 │
-│          Clock [MHz] │   3524.17 │
-│                  CPI │  0.699081 │
-│         DP [MFLOP/s] │ 0.0845015 │
+│  Runtime (RDTSC) [s] │ 0.0659737 │
+│ Runtime unhalted [s] │ 0.0949394 │
+│          Clock [MHz] │   3524.02 │
+│                  CPI │  0.732361 │
+│         DP [MFLOP/s] │ 0.0752421 │
 └──────────────────────┴───────────┘
-
 
 julia> first(metrics["FLOPS_DP"]) # all metrics of the first Julia thread
 OrderedDict{String, Float64} with 5 entries:
-  "Runtime (RDTSC) [s]"  => 8.56091e-6
-  "Runtime unhalted [s]" => 3.22377e-5
-  "Clock [MHz]"          => 3506.47
-  "CPI"                  => 4.78484
-  "DP [MFLOP/s]"         => 116.81
+  "Runtime (RDTSC) [s]"  => 0.0659737
+  "Runtime unhalted [s]" => 0.0949394
+  "Clock [MHz]"          => 3524.02
+  "CPI"                  => 0.732361
+  "DP [MFLOP/s]"         => 0.0752421
 
 julia> first(events["FLOPS_DP"]) # all raw events of the first Julia thread
 OrderedDict{String, Float64} with 6 entries:
-  "ACTUAL_CPU_CLOCK"          => 78974.0
-  "MAX_CPU_CLOCK"             => 55174.0
-  "RETIRED_INSTRUCTIONS"      => 5977.0
-  "CPU_CLOCKS_UNHALTED"       => 28599.0
-  "RETIRED_SSE_AVX_FLOPS_ALL" => 1000.0
+  "ACTUAL_CPU_CLOCK"          => 2.32582e8
+  "MAX_CPU_CLOCK"             => 1.61685e8
+  "RETIRED_INSTRUCTIONS"      => 3.12775e8
+  "CPU_CLOCKS_UNHALTED"       => 2.29064e8
+  "RETIRED_SSE_AVX_FLOPS_ALL" => 4964.0
   "MERGE"                     => 0.0
 
 julia> metrics, events = perfmon(("FLOPS_DP", "MEM1")) do
            x .+ y;
        end;
+
+Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │  85773.0 │
+│             MAX_CPU_CLOCK │  60074.0 │
+│      RETIRED_INSTRUCTIONS │   6605.0 │
+│       CPU_CLOCKS_UNHALTED │  32291.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │   1000.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 9.99103e-6 │
+│ Runtime unhalted [s] │ 3.50123e-5 │
+│          Clock [MHz] │    3497.79 │
+│                  CPI │    4.88887 │
+│         DP [MFLOP/s] │     100.09 │
+└──────────────────────┴────────────┘
+
+Group: MEM1
+┌──────────────────────┬──────────┐
+│                Event │ Thread 1 │
+├──────────────────────┼──────────┤
+│     ACTUAL_CPU_CLOCK │ 185118.0 │
+│        MAX_CPU_CLOCK │ 129042.0 │
+│ RETIRED_INSTRUCTIONS │   6213.0 │
+│  CPU_CLOCKS_UNHALTED │  15122.0 │
+│       DRAM_CHANNEL_0 │    148.0 │
+│       DRAM_CHANNEL_1 │    110.0 │
+│       DRAM_CHANNEL_2 │    319.0 │
+│       DRAM_CHANNEL_3 │    326.0 │
+└──────────────────────┴──────────┘
+┌────────────────────────────────────────────┬────────────┐
+│                                     Metric │   Thread 1 │
+├────────────────────────────────────────────┼────────────┤
+│                        Runtime (RDTSC) [s] │ 6.53034e-6 │
+│                       Runtime unhalted [s] │ 7.55646e-5 │
+│                                Clock [MHz] │    3514.37 │
+│                                        CPI │    2.43393 │
+│ Memory bandwidth (channels 0-3) [MBytes/s] │    8849.77 │
+│ Memory data volume (channels 0-3) [GBytes] │  5.7792e-5 │
+└────────────────────────────────────────────┴────────────┘
+
 ```
 """
 function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, finalize=true, print=true)
@@ -617,6 +662,27 @@ julia> using LIKWID
 julia> x = rand(1000); y = rand(1000);
 
 julia> metrics, events = @perfmon "FLOPS_DP" x .+ y;
+
+Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │  88187.0 │
+│             MAX_CPU_CLOCK │  61789.0 │
+│      RETIRED_INSTRUCTIONS │   6705.0 │
+│       CPU_CLOCKS_UNHALTED │  34181.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │   1000.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 1.08307e-5 │
+│ Runtime unhalted [s] │ 3.59977e-5 │
+│          Clock [MHz] │    3496.42 │
+│                  CPI │    5.09784 │
+│         DP [MFLOP/s] │    92.3302 │
+└──────────────────────┴────────────┘
 
 julia> first(metrics["FLOPS_DP"]) # all metrics of the first Julia thread
 OrderedDict{String, Float64} with 5 entries:
