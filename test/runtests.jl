@@ -46,7 +46,7 @@ if GROUP == "All" || GROUP == "GPU"
 end
 
 @time begin
-    if GROUP == "All" || GROUP == "CPU" || GROUP == "Basics"
+    if GROUP == "All" || GROUP == "CPU"
         @time @safetestset "Topology" begin
             include("topology_test.jl")
         end
@@ -70,6 +70,9 @@ end
     if GROUP == "All" || GROUP == "CPU" || GROUP == "PerfMon"
         @time @safetestset "PerfMon" begin
             include("perfmon_test.jl")
+        end
+        @time @safetestset "PerfMon + Marker API CPU" begin
+            include("perfmon_marker_test.jl")
         end
     end
     if GROUP == "All" || GROUP == "CPU" || GROUP == "Pinning"

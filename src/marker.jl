@@ -94,7 +94,7 @@ This file will be evaluated by `likwid-perfctr`.
 close() = LibLikwid.likwid_markerClose()
 
 """
-Checks whether the Marker API is active, i.e. julia has been started under `likwid-perfctr -C ... -g ... -m`.
+Checks whether the Marker API is active (by checking if the `LIKWID_MODE` environment variable has been set).
 """
 isactive() = !isnothing(get(ENV, "LIKWID_MODE", nothing))
 
@@ -219,6 +219,34 @@ function prepare_marker_dynamic(groups; cpuids=get_processor_ids(), markerfile=j
     return nothing
 end
 
+function _save_env_vars()
+    threads = get(ENV, "LIKWID_THREADS", nothing)
+    fp = get(ENV, "LIKWID_FILEPATH", nothing)
+    mode = get(ENV, "LIKWID_MODE", nothing)
+    force = get(ENV, "LIKWID_FORCE", nothing)
+    debug = get(ENV, "LIKWID_DEBUG", nothing)
+    events = get(ENV, "LIKWID_EVENTS", nothing)
+    return (threads, fp, mode, force, debug, events)
+end
+
+function _set_or_unset(key, value)
+    if isnothing(value)
+        delete!(ENV, key)
+    else
+        ENV[key] = value
+    end
+end
+
+function _restore_env_vars(x)
+    _set_or_unset("LIKWID_THREADS", x[1])
+    _set_or_unset("LIKWID_FILEPATH", x[2])
+    _set_or_unset("LIKWID_MODE", x[3])
+    _set_or_unset("LIKWID_FORCE", x[4])
+    _set_or_unset("LIKWID_DEBUG", x[5])
+    _set_or_unset("LIKWID_EVENTS", x[6])
+    return nothing
+end
+
 """
     init_dynamic(group_or_groups; kwargs...)
 Initialize the full Marker API from within the current Julia session (i.e. no `likwird-perfctr` necessary).
@@ -310,6 +338,7 @@ Region: exponential, Group: FLOPS_DP
 function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, keep=false, kwargs...)
     cpuids = cpuids isa Integer ? [cpuids] : cpuids
     autopin && PerfMon._perfmon_autopin(cpuids)
+    env_vars_before = _save_env_vars()
     Marker.init_dynamic(group_or_groups; cpuids=cpuids, kwargs...)
     PerfMon.init(cpuids)
     markerfile = LIKWID.LIKWID_FILEPATH()
@@ -323,6 +352,7 @@ function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=
     _print_markerfile(markerfile)
     PerfMon.finalize()
     !keep && rm(markerfile)
+    _restore_env_vars(env_vars_before)
     return nothing
 end
 

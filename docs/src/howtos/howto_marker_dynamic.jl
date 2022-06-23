@@ -7,16 +7,6 @@
 # running on multiple Julia threads using LIKWID from within Julia (i.e. without using `likwid-perfctr ...`).
 # You can simply start Julia with `julia -t N`.
 #
-# ## Preparation
-#
-# As always, it's absolutely necessary to pin the Julia threads to specific cores.
-# Otherwise, the threads might migrate to different cores and our hardware performance
-# counter measurements are meaningless. Let's pin the Julia threads to the first `nthreads()` cores.
-using LIKWID
-using Base.Threads: @threads, nthreads
-@assert nthreads() > 1 # hide
-LIKWID.pinthreads(0:nthreads()-1)
-
 # ## Measurement
 
 # We consider the following simple function designed to do trivial floating point computations.
@@ -28,6 +18,9 @@ function do_flops(a, b, c, num_flops)
 end
 
 # Let's run a computation and monitor the performance via the marker API, concretely [`@perfmon_marker`](@ref) and [`@marker`](@ref).
+using LIKWID
+using Base.Threads: @threads, nthreads
+
 @perfmon_marker "FLOPS_DP" begin
     NUM_FLOPS = 100_000_000
     a = 1.8
