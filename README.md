@@ -46,9 +46,6 @@ end
 saxpy!(z, a, x, y); # warmup
 
 metrics, events = @perfmon "FLOPS_DP" saxpy!(z, a, x, y); # double-precision floating point ops.
-
-NFLOPs = Int(first(events["FLOPS_DP"])["RETIRED_SSE_AVX_FLOPS_ALL"]) # number of FLOPs
-println("Number of performed FLOPs: ", NFLOPs)
 ```
 
 Output:
@@ -73,8 +70,6 @@ Group: FLOPS_DP
 │                  CPI │    2.23752 │
 │         DP [MFLOP/s] │     2604.0 │
 └──────────────────────┴────────────┘
-
-Number of performed FLOPs: 20000.0
 ```
 
 ## Resources
