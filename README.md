@@ -34,44 +34,44 @@ Please check out [the documentation](https://juliaperf.github.io/LIKWID.jl/dev/)
 ```julia
 using LIKWID
 
-const N = 10_000
-const a = 3.141
-const x = rand(Float32, N)
-const y = rand(Float32, N)
-const z = zeros(Float32, N)
+N = 10_000
+a = 3.141
+x = rand(N)
+y = rand(N)
+z = zeros(N)
 
 function saxpy!(z, a, x, y)
     z .= a .* x .+ y
 end
 saxpy!(z, a, x, y); # warmup
 
-metrics, events = @perfmon "FLOPS_SP" saxpy!(z, a, x, y); # single-precision floating point ops.
+metrics, events = @perfmon "FLOPS_DP" saxpy!(z, a, x, y); # double-precision floating point ops.
 
-NFLOPs = Int(first(events["FLOPS_SP"])["RETIRED_SSE_AVX_FLOPS_ALL"]) # number of FLOPs
+NFLOPs = Int(first(events["FLOPS_DP"])["RETIRED_SSE_AVX_FLOPS_ALL"]) # number of FLOPs
 println("Number of performed FLOPs: ", NFLOPs)
 ```
 
 Output:
 ```
-Group: FLOPS_SP
+Group: FLOPS_DP
 ┌───────────────────────────┬──────────┐
 │                     Event │ Thread 1 │
 ├───────────────────────────┼──────────┤
-│          ACTUAL_CPU_CLOCK │  70451.0 │
-│             MAX_CPU_CLOCK │  61691.0 │
-│      RETIRED_INSTRUCTIONS │  20140.0 │
-│       CPU_CLOCKS_UNHALTED │  25047.0 │
+│          ACTUAL_CPU_CLOCK │  73956.0 │
+│             MAX_CPU_CLOCK │  51548.0 │
+│      RETIRED_INSTRUCTIONS │  10357.0 │
+│       CPU_CLOCKS_UNHALTED │  23174.0 │
 │ RETIRED_SSE_AVX_FLOPS_ALL │  20000.0 │
 │                     MERGE │      0.0 │
 └───────────────────────────┴──────────┘
 ┌──────────────────────┬────────────┐
 │               Metric │   Thread 1 │
 ├──────────────────────┼────────────┤
-│  Runtime (RDTSC) [s] │ 7.67072e-6 │
-│ Runtime unhalted [s] │ 2.87574e-5 │
-│          Clock [MHz] │    2797.71 │
-│                  CPI │    1.24364 │
-│         SP [MFLOP/s] │    2607.32 │
+│  Runtime (RDTSC) [s] │ 7.68048e-6 │
+│ Runtime unhalted [s] │  3.0188e-5 │
+│          Clock [MHz] │     3514.8 │
+│                  CPI │    2.23752 │
+│         DP [MFLOP/s] │     2604.0 │
 └──────────────────────┴────────────┘
 
 Number of performed FLOPs: 20000.0
