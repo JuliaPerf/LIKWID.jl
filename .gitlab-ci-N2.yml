@@ -9,6 +9,7 @@ julia/1.7-N2:
   variables:
     SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p fpga --exclusive"
     JULIA_NUM_THREADS: "12"
+    GROUP: "CPU" # run only CPU tests (no GPU available as of now)
   rules:
     # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'

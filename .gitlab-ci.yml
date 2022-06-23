@@ -63,6 +63,7 @@ julia/1.6:
     CUDA_MODULE: cuda/11.0
     JULIA_CUDA_USE_BINARYBUILDER: "false"
     JULIA_NUM_THREADS: "12"
+    GROUP: "All" # run all tests, i.e. CPU + GPU
   rules:
     # - changes:
     #   - "README.md"
@@ -102,6 +103,7 @@ julia/1.7:
     CUDA_MODULE: cuda/11.0
     JULIA_CUDA_USE_BINARYBUILDER: "false"
     JULIA_NUM_THREADS: "12"
+    GROUP: "All" # run all tests, i.e. CPU + GPU
   rules:
     # - changes:
     #   - "README.md"
@@ -139,6 +141,7 @@ julia/nightly:
     CUDA_MODULE: cuda/11.0
     JULIA_CUDA_USE_BINARYBUILDER: "false"
     JULIA_NUM_THREADS: "12"
+    GROUP: "All" # run all tests, i.e. CPU + GPU
   needs:
     job: build-likwid
   rules:
