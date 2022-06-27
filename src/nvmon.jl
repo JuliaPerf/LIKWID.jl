@@ -407,6 +407,8 @@ Note that
 **Keyword arguments:**
 * `gpuids` (default: first GPU): specify the GPUs to be monitored
 
+**Note: This is an experimental feature and might change or be dropped any time!**
+
 # Example
 ```julia
 julia> using LIKWID
@@ -448,6 +450,8 @@ end
     @nvmon group_or_groups codeblock
 
 See also: [`nvmon`](@ref)
+
+**Note: This is an experimental feature and might change or be dropped any time!**
 
 # Example
 ```
