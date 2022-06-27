@@ -1,7 +1,7 @@
 # LIKWID - Like I Knew What I'm Doing
 
 [LIKWID.jl](https://github.com/JuliaPerf/LIKWID.jl) is a Julia wrapper for the 
-performance monitoring and benchmarking suite [LIKWID](https://github.com/RRZE-HPC/likwid).
+performance monitoring and benchmarking suite [LIKWID](https://github.com/RRZE-HPC/likwid). It is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) and, originally, the [MIT JuliaLab](https://julia.mit.edu/).
 
 ## Installation
 

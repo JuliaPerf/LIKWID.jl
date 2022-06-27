@@ -1,1 +1,1 @@
-julia --project=../.. -t 10 -E 'push!(LOAD_PATH, "../../.."); using Literate; Literate.markdown("howto_perfmon.jl", "."; execute=true, repo_root_url="https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos")'
+julia --project=../.. -t 3 -E 'push!(LOAD_PATH, "../../.."); using Literate; Literate.markdown("howto_perfmon.jl", "."; execute=true, repo_root_url="https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos")'

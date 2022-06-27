@@ -82,4 +82,4 @@ Group: FLOPS_DP
 
 ## Creators
 
-LIKWID.jl is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) within the german, national HPC initiative [NHR](https://www.nhr-gs.de/) and the [MIT JuliaLab](https://julia.mit.edu/).
+LIKWID.jl is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) and, originally, the [MIT JuliaLab](https://julia.mit.edu/).
