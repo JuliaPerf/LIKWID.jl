@@ -69,3 +69,22 @@ metrics, events = perfmon("FLOPS_DP"; cpuids=[0,1], autopin=false, print=false) 
     ## code goes here...
     saxpy!(z, a, x, y)
 end;
+
+# ## GPU
+
+#md # !!! warning
+#md #     Experimental
+
+using LIKWID
+using CUDA
+
+N = 10_000
+a = 3.141f0 # Float32
+x = CUDA.rand(Float32, N)
+y = CUDA.rand(Float32, N)
+z = CUDA.zeros(Float32, N)
+
+saxpy!(z, a, x, y) = z .= a .* x .+ y
+saxpy!(z, a, x, y); # warmup
+
+metrics, events = @nvmon "FLOPS_SP" saxpy!(z, a, x, y);

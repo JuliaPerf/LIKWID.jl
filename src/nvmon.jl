@@ -1,7 +1,7 @@
 module NvMon
 
 using ..LIKWID:
-    LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology
+    LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology, OrderedDict, _print_nvmon_results
 
 isinitialized() = nvmon_initialized[]
 
@@ -316,7 +316,7 @@ levels correspond to performance groups, gpus, and metrics (in this order).
 """
 function get_metric_results(group, gpuid::Integer)
     groupid = group isa Integer ? group : get_id_of_group(group)
-    perfmon_initialized[] || return nothing
+    nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     _check_groupid(gpuid) || return nothing
     nmetrics = get_number_of_metrics(groupid)
@@ -324,10 +324,11 @@ function get_metric_results(group, gpuid::Integer)
     for metricid in 1:nmetrics
         metric = get_name_of_metric(groupid, metricid)
         d[metric] = get_last_metric(groupid, metricid, gpuid)
+        # d[metric] = get_metric(groupid, metricid, gpuid)
     end
     return d
 end
-get_metric_results(groupid::Integer) = get_metric_results.(groupid, 1:get_number_of_threads())
+get_metric_results(groupid::Integer) = get_metric_results.(groupid, 1:get_number_of_gpus())
 get_metric_results(groupname::AbstractString) = get_metric_results(get_id_of_group(groupname))
 
 function get_metric_results(group, metric, gpuid::Integer)
@@ -335,7 +336,7 @@ function get_metric_results(group, metric, gpuid::Integer)
     metricid = metric isa Integer ? metric : get_id_of_metric(groupid, metric)
     return get_last_metric(groupid, metricid, gpuid)
 end
-get_metric_results(group, metric) = get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_threads())
+get_metric_results(group, metric) = get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_gpus())
 
 """
   `get_metric_results()`
@@ -365,18 +366,19 @@ Retrieve the results of monitored events. Same as [`get_metric_results`](@ref) b
 """
 function get_event_results(group, gpuid::Integer)
     groupid = group isa Integer ? group : get_id_of_group(group)
-    perfmon_initialized[] || return nothing
+    nvmon_initialized[] || return nothing
     _check_groupid(groupid) || return nothing
     _check_gpuid(gpuid) || return nothing
     nevents = get_number_of_events(groupid)
     d = OrderedDict{String,Float64}()
     for eventid in 1:nevents
         event = get_name_of_event(groupid, eventid)
-        d[event] = get_last_event(groupid, eventid, gpuid)
+        # d[event] = get_last_event(groupid, eventid, gpuid)
+        d[event] = get_last_result(groupid, eventid, gpuid)
     end
     return d
 end
-get_event_results(groupid::Integer) = get_event_results.(groupid, 1:get_number_of_threads())
+get_event_results(groupid::Integer) = get_event_results.(groupid, 1:get_number_of_gpus())
 get_event_results(groupname::AbstractString) = get_event_results(get_id_of_group(groupname))
 
 function get_event_results(group, event, gpuid::Integer)
@@ -384,7 +386,7 @@ function get_event_results(group, event, gpuid::Integer)
     eventid = event isa Integer ? event : get_id_of_event(groupid, event)
     return get_last_event(groupid, eventid, gpuid)
 end
-get_event_results(group, event) = get_event_results.(Ref(group), Ref(event), 1:get_number_of_threads())
+get_event_results(group, event) = get_event_results.(Ref(group), Ref(event), 1:get_number_of_gpus())
 
 function get_event_results()
     ngrps = get_number_of_groups()
@@ -420,7 +422,7 @@ julia> metrics, events = nvmon("FLOPS_DP") do
        end;
 ```
 """
-function nvmon(f, group_or_groups; gpuids=0)
+function nvmon(f, group_or_groups; gpuids=0, print=true)
     gpuids = gpuids isa Integer ? [gpuids] : gpuids
     NvMon.init(gpuids)
     groups = group_or_groups isa AbstractString ? (group_or_groups,) : group_or_groups
@@ -433,17 +435,25 @@ function nvmon(f, group_or_groups; gpuids=0)
     end
     metrics_results = NvMon.get_metric_results()
     event_results = NvMon.get_event_results()
-    NvMon.finalize()
-    if group_or_groups isa AbstractString
-        # since we only have one group simplify the result structue
-        metrics_results = metrics_results[group_or_groups]
-        event_results = event_results[group_or_groups]
-        if length(gpuids) == 1 # only one cputhread monitored
-            metrics_results = first(metrics_results)
-            event_results = first(event_results)
+    if print
+        gid_lastgroup = NvMon.get_id_of_active_group()
+        groupids = reverse(gid_lastgroup .- (0:length(groups)-1))
+        for gid in groupids
+            _print_nvmon_results(gid)
         end
     end
-    metrics_results, event_results
+    NvMon.finalize()
+    # if group_or_groups isa AbstractString
+    #     # since we only have one group simplify the result structue
+    #     metrics_results = metrics_results[group_or_groups]
+    #     event_results = event_results[group_or_groups]
+    #     if length(gpuids) == 1 # only one cputhread monitored
+    #         metrics_results = first(metrics_results)
+    #         event_results = first(event_results)
+    #     end
+    # end
+    return metrics_results, event_results
+    # return event_results
 end
 
 """

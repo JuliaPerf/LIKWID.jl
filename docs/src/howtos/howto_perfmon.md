@@ -53,21 +53,21 @@ Group: FLOPS_DP
 ┌───────────────────────────┬──────────┬──────────┬──────────┐
 │                     Event │ Thread 1 │ Thread 2 │ Thread 3 │
 ├───────────────────────────┼──────────┼──────────┼──────────┤
-│          ACTUAL_CPU_CLOCK │ 687714.0 │ 184029.0 │ 204089.0 │
-│             MAX_CPU_CLOCK │ 480077.0 │ 236107.0 │ 167067.0 │
-│      RETIRED_INSTRUCTIONS │ 135713.0 │ 101920.0 │ 108457.0 │
-│       CPU_CLOCKS_UNHALTED │ 133810.0 │  65675.0 │  70501.0 │
+│          ACTUAL_CPU_CLOCK │ 594353.0 │ 172690.0 │ 219724.0 │
+│             MAX_CPU_CLOCK │ 398790.0 │ 225764.0 │ 143752.0 │
+│      RETIRED_INSTRUCTIONS │  67624.0 │  80827.0 │  85597.0 │
+│       CPU_CLOCKS_UNHALTED │ 161793.0 │  63454.0 │  71502.0 │
 │ RETIRED_SSE_AVX_FLOPS_ALL │   6668.0 │   6666.0 │   6666.0 │
 │                     MERGE │      0.0 │      0.0 │      0.0 │
 └───────────────────────────┴──────────┴──────────┴──────────┘
 ┌──────────────────────┬─────────────┬────────────┬────────────┐
 │               Metric │    Thread 1 │   Thread 2 │   Thread 3 │
 ├──────────────────────┼─────────────┼────────────┼────────────┤
-│  Runtime (RDTSC) [s] │  4.66796e-5 │ 4.66796e-5 │ 4.66796e-5 │
-│ Runtime unhalted [s] │ 0.000280697 │ 7.51132e-5 │ 8.33009e-5 │
-│          Clock [MHz] │     3509.68 │    1909.62 │    2992.95 │
-│                  CPI │    0.985978 │   0.644378 │   0.650036 │
-│         DP [MFLOP/s] │     142.846 │    142.803 │    142.803 │
+│  Runtime (RDTSC) [s] │  5.23601e-5 │ 5.23601e-5 │ 5.23601e-5 │
+│ Runtime unhalted [s] │ 0.000264663 │ 7.68981e-5 │ 9.78422e-5 │
+│          Clock [MHz] │     3346.97 │    1717.77 │    3432.53 │
+│                  CPI │     2.39254 │   0.785059 │   0.835333 │
+│         DP [MFLOP/s] │     127.349 │    127.311 │    127.311 │
 └──────────────────────┴─────────────┴────────────┴────────────┘
 
 ````
@@ -80,7 +80,7 @@ metrics["FLOPS_DP"][1]["DP [MFLOP/s]"]
 ````
 
 ````
-142.84618968452162
+127.34884328126886
 ````
 
 Here, `"FLOPS_DP` is the performance group, `1` indicated the first Julia thread, and `"DP [MFLOP/s]` is a LIKWID metric.
@@ -110,22 +110,22 @@ Group: FLOPS_DP
 ┌───────────────────────────┬──────────┬──────────┐
 │                     Event │ Thread 1 │ Thread 2 │
 ├───────────────────────────┼──────────┼──────────┤
-│          ACTUAL_CPU_CLOCK │ 388430.0 │ 207768.0 │
-│             MAX_CPU_CLOCK │ 270063.0 │ 170692.0 │
-│      RETIRED_INSTRUCTIONS │ 116777.0 │ 115387.0 │
-│       CPU_CLOCKS_UNHALTED │ 129366.0 │  80826.0 │
+│          ACTUAL_CPU_CLOCK │ 805504.0 │ 677456.0 │
+│             MAX_CPU_CLOCK │ 548820.0 │ 451058.0 │
+│      RETIRED_INSTRUCTIONS │  64537.0 │ 103995.0 │
+│       CPU_CLOCKS_UNHALTED │ 181393.0 │ 120942.0 │
 │ RETIRED_SSE_AVX_FLOPS_ALL │   6668.0 │   6666.0 │
 │                     MERGE │      0.0 │      0.0 │
 └───────────────────────────┴──────────┴──────────┘
-┌──────────────────────┬─────────────┬────────────┐
-│               Metric │    Thread 1 │   Thread 2 │
-├──────────────────────┼─────────────┼────────────┤
-│  Runtime (RDTSC) [s] │  4.45796e-5 │ 4.45796e-5 │
-│ Runtime unhalted [s] │ 0.000158541 │ 8.48025e-5 │
-│          Clock [MHz] │     3523.85 │    2982.19 │
-│                  CPI │      1.1078 │   0.700478 │
-│         DP [MFLOP/s] │     149.575 │     149.53 │
-└──────────────────────┴─────────────┴────────────┘
+┌──────────────────────┬─────────────┬─────────────┐
+│               Metric │    Thread 1 │    Thread 2 │
+├──────────────────────┼─────────────┼─────────────┤
+│  Runtime (RDTSC) [s] │ 0.000189612 │ 0.000189612 │
+│ Runtime unhalted [s] │ 0.000358688 │ 0.000301668 │
+│          Clock [MHz] │     3296.01 │     3372.87 │
+│                  CPI │     2.81068 │     1.16296 │
+│         DP [MFLOP/s] │     35.1665 │     35.1559 │
+└──────────────────────┴─────────────┴─────────────┘
 
 ````
 
@@ -136,6 +136,46 @@ metrics, events = perfmon("FLOPS_DP"; cpuids=[0,1], autopin=false, print=false) 
     # code goes here...
     saxpy!(z, a, x, y)
 end;
+````
+
+## GPU
+
+!!! warning
+    Experimental
+
+````julia
+using LIKWID
+using CUDA
+
+N = 10_000
+a = 3.141f0 # Float32
+x = CUDA.rand(Float32, N)
+y = CUDA.rand(Float32, N)
+z = CUDA.zeros(Float32, N)
+
+saxpy!(z, a, x, y) = z .= a .* x .+ y
+saxpy!(z, a, x, y); # warmup
+
+metrics, events = @nvmon "FLOPS_SP" saxpy!(z, a, x, y);
+````
+
+````
+
+Group: FLOPS_SP
+┌────────────────────────────────────────────────────┬─────────┐
+│                                              Event │   GPU 1 │
+├────────────────────────────────────────────────────┼─────────┤
+│ SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM │     0.0 │
+│ SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM │     0.0 │
+│ SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM │ 10000.0 │
+└────────────────────────────────────────────────────┴─────────┘
+┌─────────────────────┬────────────┐
+│              Metric │      GPU 1 │
+├─────────────────────┼────────────┤
+│ Runtime (RDTSC) [s] │ 1.84467e10 │
+│        SP [MFLOP/s] │ 1.0842e-12 │
+└─────────────────────┴────────────┘
+
 ````
 
 ---

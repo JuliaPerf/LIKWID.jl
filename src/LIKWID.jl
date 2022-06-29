@@ -75,6 +75,13 @@ import .GPUMarker: gpumarker, @gpumarker
 export GPUMarker, gpumarker, @gpumarker
 include("frequency.jl")
 
+function __init__()
+    if gpusupport()
+        init_topology_gpu()
+    end
+    return nothing
+end
+
 function init(; gpu=false)
     Marker.init()
     init_topology()

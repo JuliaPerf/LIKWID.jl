@@ -73,3 +73,37 @@ function _print_markerfile(markerfile::AbstractString)
     end
     return nothing
 end
+
+
+"""
+Print result tables etc. for the given group ids.
+"""
+function _print_nvmon_results(gid=NvMon.get_id_of_active_group())
+    NvMon.isinitialized() || NvMon.init()
+    ## extract event and metric results
+    nevents = NvMon.get_number_of_events(gid)
+    nmetrics = NvMon.get_number_of_metrics(gid)
+    ngpus = NvMon.get_number_of_gpus()
+    events = Matrix(undef, nevents, ngpus + 1)
+    metrics = Matrix(undef, nmetrics, ngpus + 1)
+
+    for gpuid in 1:ngpus
+        for eid in 1:nevents
+            events[eid, 1] = NvMon.get_name_of_event(gid, eid)
+            events[eid, gpuid+1] = _zeroifnothing(NvMon.get_result(gid, eid, gpuid))
+        end
+        for mid in 1:nmetrics
+            metrics[mid, 1] = NvMon.get_name_of_metric(gid, mid)
+            metrics[mid, gpuid+1] = _zeroifnothing(NvMon.get_metric(gid, mid, gpuid))
+        end
+    end
+
+    ## printing
+    theader = ["GPU $(i)" for i in 1:ngpus]
+    grpname = NvMon.get_name_of_group(gid)
+    print("\nGroup: ")
+    printstyled("$grpname\n"; bold=true)
+    pretty_table(events; header=vcat(["Event"], theader))
+    pretty_table(metrics; header=vcat(["Metric"], theader))
+    return nothing
+end

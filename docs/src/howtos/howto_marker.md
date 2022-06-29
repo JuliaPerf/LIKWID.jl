@@ -229,7 +229,6 @@ Example that demonstrates how to use the GPU marker API:
 # saxpy_gpu.jl
 using LIKWID
 using CUDA
-using LinearAlgebra
 
 @assert CUDA.functional()
 
@@ -290,7 +289,6 @@ Example that demonstrates how to use both the CPU and GPU marker API in one appl
 # saxpy.jl
 using LIKWID
 using CUDA
-using LinearAlgebra
 
 @assert CUDA.functional()
 
