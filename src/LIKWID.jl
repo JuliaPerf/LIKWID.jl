@@ -2,6 +2,10 @@ module LIKWID
 import Base.Threads
 using Libdl
 using Unitful
+using OrderedCollections
+using PrettyTables
+
+export OrderedDict
 
 # liblikwid
 const liblikwid = "liblikwid"
@@ -47,20 +51,36 @@ include("timer.jl")
 include("thermal.jl")
 include("power.jl")
 include("access.jl")
+include("prettyprinting.jl")
 include("perfmon.jl")
+import .PerfMon
+import .PerfMon: perfmon, @perfmon
+export PerfMon, perfmon, @perfmon
 include("misc.jl")
+include("markerfile.jl")
+import .MarkerFile
+export MarkerFile
 include("marker.jl")
 import .Marker
-import .Marker: region, @region
-export Marker, region, @region
-include("markerfile.jl")
+import .Marker: marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
+export Marker, marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
 include("topology_gpu.jl")
 include("nvmon.jl")
+import .NvMon
+import .NvMon: nvmon, @nvmon
+export NvMon, nvmon, @nvmon
 include("marker_gpu.jl")
 import .GPUMarker
-import .GPUMarker: gpuregion, @gpuregion
-export GPUMarker, gpuregion, @gpuregion
+import .GPUMarker: gpumarker, @gpumarker
+export GPUMarker, gpumarker, @gpumarker
 include("frequency.jl")
+
+function __init__()
+    if gpusupport()
+        init_topology_gpu()
+    end
+    return nothing
+end
 
 function init(; gpu=false)
     Marker.init()
@@ -68,10 +88,13 @@ function init(; gpu=false)
     init_numa()
     init_affinity()
     PerfMon.init()
-    HPM.init()
     Timer.init()
-    Power.init()
-    Freq.init()
+    if LIKWID.accessmode() == LIKWID.LibLikwid.ACCESSMODE_DAEMON
+        HPM.init()
+        Power.init()
+        # init_thermal(0)
+        Freq.init()
+    end
     if gpu && gpusupport()
         GPUMarker.init()
         init_topology_gpu()

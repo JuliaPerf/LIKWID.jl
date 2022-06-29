@@ -91,7 +91,7 @@ function isactive()
 end
 
 """
-    gpuregion(f, regiontag::AbstractString)
+    gpumarker(f, regiontag::AbstractString)
 Adds a LIKWID GPU marker region around the execution of the given function `f` using [`GPUMarker.startregion`](@ref),
 [`GPUMarker.stopregion`](@ref) under the hood.
 Note that `LIKWID.GPUMarker.init()` and `LIKWID.GPUMarker.close()` must be called before and after, respectively.
@@ -102,19 +102,19 @@ julia> using LIKWID, CUDA
 
 julia> GPUMarker.init()
 
-julia> gpuregion("sleeping...") do
+julia> gpumarker("sleeping...") do
            sleep(1)
        end
 true
 
-julia> gpuregion(()->CUDA.rand(100), "create rand vec")
+julia> gpumarker(()->CUDA.rand(100), "create rand vec")
 true
 
 julia> GPUMarker.close()
 
 ```
 """
-function gpuregion(f, regiontag::AbstractString)
+function gpumarker(f, regiontag::AbstractString)
     GPUMarker.startregion(regiontag)
     f()
     return GPUMarker.stopregion(regiontag)
@@ -129,17 +129,17 @@ julia> using LIKWID, CUDA
 
 julia> GPUMarker.init()
 
-julia> @gpuregion "sleeping..." sleep(1)
+julia> @gpumarker "sleeping..." sleep(1)
 true
 
-julia> @gpuregion "create rand vec" CUDA.rand(100)
+julia> @gpumarker "create rand vec" CUDA.rand(100)
 true
 
 julia> GPUMarker.close()
 
 ```
 """
-macro gpuregion(regiontag, expr)
+macro gpumarker(regiontag, expr)
     q = quote
         LIKWID.GPUMarker.startregion($regiontag)
         $(expr)

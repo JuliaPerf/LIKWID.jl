@@ -69,6 +69,8 @@ function get_gpu_topology()
     return gputopo[]
 end
 
+num_gpus() = get_gpu_topology().numDevices
+
 "Finalize LIKWIDs GPU topology module."
 function finalize_topology_gpu()
     LibLikwid.topology_gpu_finalize()

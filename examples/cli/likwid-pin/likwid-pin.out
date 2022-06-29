@@ -1,0 +1,12 @@
+[pthread wrapper] 
+[pthread wrapper] MAIN -> 0
+[pthread wrapper] PIN_MASK: 0->3  1->5  2->7  
+[pthread wrapper] SKIP MASK: 0xFFFFFFFFFFFFFFE1
+	threadid 22932433409792 -> SKIP 
+	threadid 22932169971456 -> hwthread 3 - OK
+	threadid 22932154644224 -> hwthread 5 - OK
+	threadid 22932139316992 -> hwthread 7 - OK
+Thread: 1, CPU: 0
+Thread: 2, CPU: 3
+Thread: 4, CPU: 7
+Thread: 3, CPU: 5

@@ -1,0 +1,1 @@
+julia --project=../../.. -t4 perfmon_threads_convenience.jl > perfmon_threads_convenience.out

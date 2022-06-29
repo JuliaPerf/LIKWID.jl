@@ -4,28 +4,29 @@ stages:
   - test-devel
   - documentation
 
-# This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa'
+# This job builds LIKWID with NVIDIA interface on the Testcluster node 'medusa' @ FAU
 # The build result is stored as artifact for the test jobs
 build-likwid:
   stage: build
   tags:
     - testcluster
-  only:
-    - main
-    - pushes
-    - tags
-    - external_pull_requests
-#   rules:
-#     - changes:
-#       - "README.md"
-#       when: never
-#     - when: always
+  rules:
+    - if: '$CI_COMMIT_TAG' # trigger on tags
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH' # trigger on commits
+    - when: never # don't run otherwise
   variables:
     SLURM_NODELIST: medusa
     LIKWID_MODULE: likwid/5.2-dev
     LIKWID_VERSION: 5.2.0
     CUDA_MODULE: cuda/11.0
-  script: 
+  script:
+      - echo $CI_PIPELINE_SOURCE
       - module load "$LIKWID_MODULE" "$CUDA_MODULE"
       - export LIKWID_PREFIX=$(realpath $(dirname $(which likwid-topology))/..)
       - module unload "$LIKWID_MODULE"
@@ -62,6 +63,7 @@ julia/1.6:
     CUDA_MODULE: cuda/11.0
     JULIA_CUDA_USE_BINARYBUILDER: "false"
     JULIA_NUM_THREADS: "12"
+    GROUP: "All" # run all tests, i.e. CPU + GPU
   rules:
     # - changes:
     #   - "README.md"
@@ -80,6 +82,9 @@ julia/1.6:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
+    - likwid-topology
+    - likwid-perfctr -i
+    - likwid-perfctr -a
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.6.2-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test(; coverage = true);'
@@ -98,6 +103,7 @@ julia/1.7:
     CUDA_MODULE: cuda/11.0
     JULIA_CUDA_USE_BINARYBUILDER: "false"
     JULIA_NUM_THREADS: "12"
+    GROUP: "All" # run all tests, i.e. CPU + GPU
   rules:
     # - changes:
     #   - "README.md"
@@ -116,6 +122,9 @@ julia/1.7:
     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
   script:
     - module load "$CUDA_MODULE"
+    - likwid-topology
+    - likwid-perfctr -i
+    - likwid-perfctr -a
     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
     - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
@@ -132,6 +141,7 @@ julia/nightly:
     CUDA_MODULE: cuda/11.0
     JULIA_CUDA_USE_BINARYBUILDER: "false"
     JULIA_NUM_THREADS: "12"
+    GROUP: "All" # run all tests, i.e. CPU + GPU
   needs:
     job: build-likwid
   rules:
@@ -161,114 +171,47 @@ julia/nightly:
     - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
   allow_failure: true
 
-# Run/Test examples in `examples/`
-julia/1.7-examples:
-  stage: test
-  tags:
-    - testcluster
-  variables:
-    SLURM_NODELIST: medusa # This is required to run the job on the specified node
-    SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
-    LIKWID_VERSION: 5.2.0
-    CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: "false"
-    JULIA_NUM_THREADS: "12"
-  rules:
-    - changes:
-      - "examples/**/*.sh"
-      - "examples/**/*.jl"
-      - "examples/**/*.toml"
-      - ".gitlab-ci.yml"
-      when: on_success
-    - when: never
-  needs:
-    job: build-likwid
-  before_script:
-    - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
-    - make local
-    - cd $CI_PROJECT_DIR
-    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
-    - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
-  script:
-    - module load "$CUDA_MODULE"
-    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
-    - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
-    - export PATH=$PWD/bin:$PATH
-    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
-    - cd examples/perfctr
-    - sh perfctr.sh
-    - cat perfctr.out
-    - sh perfctr_convenience.sh
-    - cat perfctr_convenience.out
-    - cd ../..
-    - cd examples/perfctr_gpu
-    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
-    - sh perfctr_gpu.sh
-    - cat perfctr_gpu.out
-    - sh perfctr_gpu_convenience.sh
-    - cat perfctr_gpu_convenience.out
-    - cd ../..
-    - cd examples/perfmon
-    - sh perfmon.sh
-    - cat perfmon.out
-    - sh Julia-internalMarkerAPI.sh
-    - cat Julia-internalMarkerAPI.out
-    - cat likwid_marker.out
-    - cd ../..
-    - cd examples/perfctr_saxpy
-    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
-    - sh saxpy.sh
-    - cat saxpy.out
-    - cd ../..
-    - cd examples/perfctr_threads
-    - julia --project=. -e 'import Pkg; Pkg.instantiate()'
-    - sh threads.sh
-    - cat threads.out
-    - cd ../..
-    # - bin/julia --color=yes --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test();'
-  allow_failure: true
-
-# LIKWID.jl Documentation
-build-and-deploy:
-  stage: documentation
-  tags:
-    - testcluster
-  variables:
-    SLURM_NODELIST: medusa # This is required to run the job on the specified node
-    SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
-    LIKWID_VERSION: 5.2.0
-    CUDA_MODULE: cuda/11.0
-    JULIA_CUDA_USE_BINARYBUILDER: "false"
-    JULIA_NUM_THREADS: "12"
-  needs:
-    job: build-likwid
-  only:
-    - main
-    - pushes
-    - tags
-    - external_pull_requests
-#   rules:
-#     - changes:
-#       - "README.md"
-#       when: never
-#     - when: always
-  before_script:
-    - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
-    - make local
-    - cd $CI_PROJECT_DIR
-    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
-    - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
-  script:
-    - echo "PATH= $PATH"
-    - echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
-    - echo "CI= $CI"
-    - ls -la
-    - module load "$CUDA_MODULE"
-    - likwid-topology
-    - likwid-perfctr -i
-    - likwid-perfctr -a
-    - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
-    - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
-    - cd docs
-    - ../bin/julia --color=yes build_docs.jl
-  allow_failure: false
+# # LIKWID.jl Documentation
+# build-and-deploy:
+#   stage: documentation
+#   tags:
+#     - testcluster
+#   variables:
+#     SLURM_NODELIST: medusa # This is required to run the job on the specified node
+#     SLURM_CONSTRAINT: hwperf # This allows hardware performance counter access
+#     LIKWID_VERSION: 5.2.0
+#     CUDA_MODULE: cuda/11.0
+#     JULIA_CUDA_USE_BINARYBUILDER: "false"
+#     JULIA_NUM_THREADS: "12"
+#   needs:
+#     job: build-likwid
+#   only:
+#     - main
+#     - pushes
+#     - tags
+#     - external_pull_requests
+# #   rules:
+# #     - changes:
+# #       - "README.md"
+# #       when: never
+# #     - when: always
+#   before_script:
+#     - cd $CI_PROJECT_DIR/likwid-$LIKWID_VERSION
+#     - make local
+#     - cd $CI_PROJECT_DIR
+#     - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$LD_LIBRARY_PATH
+#     - export PATH=$CI_PROJECT_DIR/likwid-$LIKWID_VERSION:$PATH
+#   script:
+#     - echo "PATH= $PATH"
+#     - echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
+#     - echo "CI= $CI"
+#     - ls -la
+#     - module load "$CUDA_MODULE"
+#     - likwid-topology
+#     - likwid-perfctr -i
+#     - likwid-perfctr -a
+#     - wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.1-linux-x86_64.tar.gz
+#     - tar --strip-components=1 -xf julia-1.7.1-linux-x86_64.tar.gz
+#     - cd docs
+#     - ../bin/julia --color=yes build_docs.jl
+#   allow_failure: false

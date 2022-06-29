@@ -29,116 +29,47 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 
 Please check out [the documentation](https://juliaperf.github.io/LIKWID.jl/dev/) to learn how to use LIKWID.jl.
 
-## Example: Marker API (CPU + GPU)
-
-(See [https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfctr_saxpy](https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfctr_saxpy).)
+## Example: Performance Monitoring
 
 ```julia
-# saxpy.jl
 using LIKWID
-using CUDA
-using LinearAlgebra
 
-@assert CUDA.functional()
+N = 10_000
+a = 3.141
+x = rand(N)
+y = rand(N)
+z = zeros(N)
 
-N = 100_000_000
-a = 3.141f0
-z = zeros(Float32, N)
-x = rand(Float32, N)
-y = rand(Float32, N)
-
-z_gpu = CUDA.zeros(Float32, N)
-x_gpu = CUDA.rand(Float32, N)
-y_gpu = CUDA.rand(Float32, N)
-
-function saxpy_cpu!(z,a,x,y)
+function saxpy!(z, a, x, y)
     z .= a .* x .+ y
 end
+saxpy!(z, a, x, y); # warmup
 
-function saxpy_gpu!(z,a,x,y)
-    CUDA.@sync z .= a .* x .+ y
-end
-
-Marker.init()
-GPUMarker.init()
-
-saxpy_cpu!(z,a,x,y)
-@region "saxpy_cpu" saxpy_cpu!(z,a,x,y)
-
-saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@gpuregion "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-
-Marker.close()
-GPUMarker.close()
+metrics, events = @perfmon "FLOPS_DP" saxpy!(z, a, x, y); # double-precision floating point ops.
 ```
 
-Output of `likwid-perfctr -C 0 -g FLOPS_SP -G 0 -W FLOPS_SP -m julia --project=. saxpy.jl`:
+Output:
 ```
-INFO: You are running LIKWID in a cpuset with 1 CPUs. Taking given IDs as logical ID in cpuset
---------------------------------------------------------------------------------
-CPU name:	Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
-CPU type:	Intel Skylake SP processor
-CPU clock:	2.20 GHz
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-Region saxpy_cpu, Group 1: FLOPS_SP
-+-------------------+-------------+
-|    Region Info    | HWThread 10 |
-+-------------------+-------------+
-| RDTSC Runtime [s] |    0.104644 |
-|     call count    |           1 |
-+-------------------+-------------+
-
-+------------------------------------------+---------+-------------+
-|                   Event                  | Counter | HWThread 10 |
-+------------------------------------------+---------+-------------+
-|             INSTR_RETIRED_ANY            |  FIXC0  |    60497320 |
-|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |   300657400 |
-|           CPU_CLK_UNHALTED_REF           |  FIXC2  |   228230300 |
-| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |           0 |
-|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |         111 |
-| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |    25000000 |
-| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |           0 |
-+------------------------------------------+---------+-------------+
-
-+----------------------+-------------+
-|        Metric        | HWThread 10 |
-+----------------------+-------------+
-|  Runtime (RDTSC) [s] |      0.1046 |
-| Runtime unhalted [s] |      0.1367 |
-|      Clock [MHz]     |   2897.9539 |
-|          CPI         |      4.9698 |
-|     SP [MFLOP/s]     |   1911.2503 |
-|   AVX SP [MFLOP/s]   |   1911.2492 |
-|  AVX512 SP [MFLOP/s] |           0 |
-|   Packed [MUOPS/s]   |    238.9062 |
-|   Scalar [MUOPS/s]   |      0.0011 |
-|  Vectorization ratio |     99.9996 |
-+----------------------+-------------+
-
-Region saxpy_gpu, Group 1: FLOPS_SP
-+-------------------+----------+
-|    Region Info    |   GPU 0  |
-+-------------------+----------+
-| RDTSC Runtime [s] | 0.013071 |
-|     call count    |        1 |
-+-------------------+----------+
-
-+----------------------------------------------------+---------+-----------+
-|                        Event                       | Counter |   GPU 0   |
-+----------------------------------------------------+---------+-----------+
-| SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM |   GPU0  |         0 |
-| SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM |   GPU1  |         0 |
-| SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM |   GPU2  | 100000000 |
-+----------------------------------------------------+---------+-----------+
-
-+---------------------+------------+
-|        Metric       |    GPU 0   |
-+---------------------+------------+
-| Runtime (RDTSC) [s] |     0.0131 |
-|     SP [MFLOP/s]    | 15300.8959 |
-+---------------------+------------+
+Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │  73956.0 │
+│             MAX_CPU_CLOCK │  51548.0 │
+│      RETIRED_INSTRUCTIONS │  10357.0 │
+│       CPU_CLOCKS_UNHALTED │  23174.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │  20000.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 7.68048e-6 │
+│ Runtime unhalted [s] │  3.0188e-5 │
+│          Clock [MHz] │     3514.8 │
+│                  CPI │    2.23752 │
+│         DP [MFLOP/s] │     2604.0 │
+└──────────────────────┴────────────┘
 ```
 
 ## Resources
@@ -151,4 +82,4 @@ Region saxpy_gpu, Group 1: FLOPS_SP
 
 ## Creators
 
-LIKWID.jl is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) within the german, national HPC initiative [NHR](https://www.nhr-gs.de/) and the [MIT JuliaLab](https://julia.mit.edu/).
+LIKWID.jl is an effort by the [Paderborn Center for Parallel Computing (PC²)](https://pc2.uni-paderborn.de) and, originally, the [MIT JuliaLab](https://julia.mit.edu/).

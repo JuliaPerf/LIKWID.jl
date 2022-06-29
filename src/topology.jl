@@ -165,3 +165,13 @@ function print_cpu_topology()
     print(stdout[first(idcs):end])
     return nothing
 end
+
+function num_physical_cores()
+    topo = get_cpu_topology()
+    topo.numCoresPerSocket * topo.numSockets
+end
+
+function num_virtual_cores()
+    topo = get_cpu_topology()
+    topo.numCoresPerSocket * topo.numSockets * topo.numThreadsPerCore
+end
