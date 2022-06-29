@@ -7,6 +7,7 @@ using DocThemePC2
 
 const src = "https://github.com/JuliaPerf/LIKWID.jl"
 const ci = get(ENV, "CI", "") == "true"
+const deploy = get(ENV, "DEPLOYDOCS", "") == "true"
 
 # @info "Building Literate.jl documentation"
 # cd(@__DIR__) do
@@ -66,7 +67,7 @@ makedocs(
     format=Documenter.HTML(; collapselevel=1),#, assets = ["assets/favicon.ico"])
 )
 
-if ci
+if ci || deploy
     @info "Deploying documentation to GitHub"
     deploydocs(
         repo = "github.com/JuliaPerf/LIKWID.jl.git",
