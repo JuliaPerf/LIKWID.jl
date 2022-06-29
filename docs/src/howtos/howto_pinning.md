@@ -97,7 +97,7 @@ true
 
 Command-line interface tool for pinning (p)threads. For details, check out the [official documentation](https://github.com/RRZE-HPC/likwid/wiki/Likwid-Pin).
 
-### Important: Mask
+### [Important: Mask](@id pin-mask)
 
 (See [this discussion](https://discourse.julialang.org/t/thread-affinitization-pinning-julia-threads-to-cores/58069/7) on the Julia discourse.)
 
@@ -144,7 +144,7 @@ Thread: 3, CPU: 5
 Thread: 4, CPU: 7
 ```
 
-If you're wondering about the `-s 0xffffffffffffffe1` option, see [Mask](@ref) above.
+If you're wondering about the `-s 0xffffffffffffffe1` option, see [Mask](@ref pin-mask) above.
 
 ---
 

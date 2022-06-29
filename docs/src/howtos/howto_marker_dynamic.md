@@ -2,7 +2,7 @@
 EditURL = "https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos/howto_marker_dynamic.jl"
 ```
 
-# Marker API (CPU): Dynamic Usage
+# [Marker API (CPU): Dynamic Usage](@id howto_marker_dynamic)
 
 !!! warning
     The dynamic marker API usage is currently still experimental.

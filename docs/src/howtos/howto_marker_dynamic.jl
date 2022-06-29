@@ -1,4 +1,4 @@
-# # Marker API (CPU): Dynamic Usage
+# # [Marker API (CPU): Dynamic Usage](@id howto_marker_dynamic)
 #
 # !!! warning
 #     The dynamic marker API usage is currently still experimental.
@@ -35,5 +35,5 @@ end
 
 # Multiple groups are supported as well.
 @perfmon_marker ["FLOPS_DP", "CPI"] begin
-        @marker "exponential" exp(3.141)
+    @marker "exponential" exp(3.141)
 end

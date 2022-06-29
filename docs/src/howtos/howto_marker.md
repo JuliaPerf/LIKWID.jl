@@ -2,7 +2,7 @@
 
 Below we showcase how to use LIKWID's marker API to monitor hardware performance counters for simple SAXPY operations ("single precision `a` times `x` plus `y`" for vectors `x`,`y` and scalar `a`) executed on [CPU](@ref saxpy_cpu), [multiple (CPU) threads](@ref saxpy_threads), [GPU](@ref saxpy_gpu), and [CPU+GPU](@ref saxpy_cpugpu).
 
-## `likwid-perfctr`
+## [`likwid-perfctr`](@id likwid-perfctr)
 
 To use the marker API you need to run Julia under [`likwid-perctr`](https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr) (actually, that's not entirely true, see [here](@ref howto_marker_dynamic) for how to use the marker API dynamically from within a running Julia session). In particular, **you need to use the `-m` option to activate the marker API**, provide `-c <cpuids>` to state the cpu ids (starting at 0!) to monitor, and use `-g <perfgrp>` to specify the performance group that you want to measure. To list the performance groups that are available on your system (that is for your CPU model) you can either use [`PerfMon.supported_groups`](@ref) (or `likwid-perfctr -a` from the command-line).
 
@@ -10,7 +10,7 @@ For example, full commands could look like this:
 * `likwid-perfctr -c 0 -g FLOPS_DP -m julia` (monitoring double precision FLOPS on CPU 0)
 * `likwid-perfctr -c 0-3 -g MEM -m julia` (monitoring memory operations on CPUs 0 to 3)
 
-**Important: It is absolutely crucial that you pin your Julia threads to the cpu threads that you passed to `-c` so that they are actually running on those cpu threads!** While one could, in principle, use LIKWID's `-C` (capitalized) or [`likwid-pin`](@ref) with an appropriate [LIKWID.pinmask](@ref) for this we strongly recommend to use [`JULIA_EXCLUSIVE=1`](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE) for simple compact `0-N` pinning or [`ThreadPinning.jl`](https://github.com/carstenbauer/ThreadPinning.jl) for more fine-grained control. For example, `JULIA_EXCLUSIVE=1 likwid-perfctr -c 0-3 -g MEM -m julia -t 4`.
+**Important: It is absolutely crucial that you pin your Julia threads to the cpu threads that you passed to `-c` so that they are actually running on those cpu threads!** While one could, in principle, use LIKWID's `-C` (capitalized) or [`likwid-pin`](@ref likwid-pin) with an appropriate [mask](@ref pin-mask) for this we strongly recommend to use [`JULIA_EXCLUSIVE=1`](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE) for simple compact `0-N` pinning or [`ThreadPinning.jl`](https://github.com/carstenbauer/ThreadPinning.jl) for more fine-grained control. For example, `JULIA_EXCLUSIVE=1 likwid-perfctr -c 0-3 -g MEM -m julia -t 4`.
 
 (Part of the reason why we discourage using `-C` is that it only works when running Julia with only a single thread but leads to incorrect pinning for `Threads.nthreads() > 1`!)
 
@@ -108,7 +108,7 @@ Region saxpy_cpu, Group 1: FLOPS_SP
 ## [Example: Multithreading](@id saxpy_threads)
 
 !!! warning
-    It is absolutely crucial that you pin the Julia threads to the cores that you are monitoring with LIKWID. [As described above](@ref `likwid-perfctr`), `likwid-perfctr -C ...` (i.e. the capital C option) does not work correctly with Julia! Instead you should use [`JULIA_EXCLUSIVE=1`](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE) or [`ThreadPinning.jl`](https://github.com/carstenbauer/ThreadPinning.jl) for more fine-grained control.
+    It is absolutely crucial that you pin the Julia threads to the cores that you are monitoring with LIKWID. [As described above](@ref likwid-perfctr), `likwid-perfctr -C ...` (i.e. the capital C option) does not work correctly with Julia! Instead you should use [`JULIA_EXCLUSIVE=1`](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE) or [`ThreadPinning.jl`](https://github.com/carstenbauer/ThreadPinning.jl) for more fine-grained control.
 
 ```julia
 # saxpy_threads.jl
