@@ -25,12 +25,12 @@ const deploy = get(ENV, "DEPLOYDOCS", "") == "true"
 DocThemePC2.install(@__DIR__)
 
 @info "Generating Documenter.jl site"
-DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive = true)
+#DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive = true)
 makedocs(
     sitename="LIKWID.jl",
     authors="Carsten Bauer",
     modules=[LIKWID],
-    doctest=ci,
+    doctest=false, #ci
     pages=[
         "LIKWID" => "index.md",
         "Tutorials" => [
