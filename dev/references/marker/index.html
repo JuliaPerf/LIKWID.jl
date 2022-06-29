@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Marker API (CPU) · LIKWID.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><script src="../../../copy.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.svg" alt="LIKWID.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LIKWID.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">LIKWID</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox"/><label class="tocitem" for="menuitem-2"><span class="docs-label">Tutorials</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../tutorials/counting_flops/">Counting FLOPs</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">How-To Guides</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../howtos/howto_perfmon/">Performance Monitoring</a></li><li><a class="tocitem" href="../../howtos/howto_pinning/">Pinning Julia Threads</a></li><li><a class="tocitem" href="../../howtos/howto_marker/">Marker API</a></li><li><a class="tocitem" href="../../howtos/howto_marker_dynamic/">Marker API: Dynamic Usage</a></li><li><a class="tocitem" href="../../howtos/howto_topology/">System Topology</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox" checked/><label class="tocitem" for="menuitem-4"><span class="docs-label">References</span><i class="docs-chevron"></i></label><ul class="collapsed"><li class="is-active"><a class="tocitem" href>Marker API (CPU)</a><ul class="internal"><li><a class="tocitem" href="#Example"><span>Example</span></a></li><li><a class="tocitem" href="#Index"><span>Index</span></a></li></ul></li><li><a class="tocitem" href="../marker_gpu/">Marker API (GPU)</a></li><li><a class="tocitem" href="../topo/">CPU topology</a></li><li><a class="tocitem" href="../perfmon/">Performance monitoring</a></li><li><a class="tocitem" href="../topo_gpu/">GPU topology</a></li><li><a class="tocitem" href="../nvmon/">NVIDIA monitoring</a></li><li><a class="tocitem" href="../timer/">CPU clock timer</a></li><li><a class="tocitem" href="../temperature/">CPU temperature</a></li><li><a class="tocitem" href="../power/">Power / Energy</a></li><li><a class="tocitem" href="../affinity/">Affinity</a></li><li><a class="tocitem" href="../access/">HPM / Access</a></li><li><a class="tocitem" href="../misc/">Miscellaneous</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">References</a></li><li class="is-active"><a href>Marker API (CPU)</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Marker API (CPU)</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaPerf/LIKWID.jl/blob/master/docs/src/references/marker.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Marker-API-(CPU)"><a class="docs-heading-anchor" href="#Marker-API-(CPU)">Marker API (CPU)</a><a id="Marker-API-(CPU)-1"></a><a class="docs-heading-anchor-permalink" href="#Marker-API-(CPU)" title="Permalink"></a></h1><h2 id="Example"><a class="docs-heading-anchor" href="#Example">Example</a><a id="Example-1"></a><a class="docs-heading-anchor-permalink" href="#Example" title="Permalink"></a></h2><p>(See <a href="https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfctr">https://github.com/JuliaPerf/LIKWID.jl/tree/main/examples/perfctr</a>.)</p><pre><code class="language-julia hljs"># perfctr.jl
+using LIKWID
+using LinearAlgebra
+
+Marker.init()
+
+A = rand(128, 64)
+B = rand(64, 128)
+C = zeros(128, 128)
+
+@marker for _ in 1:100
+    mul!(C, A, B)
+end
+
+Marker.close()</code></pre><h3 id="Manual"><a class="docs-heading-anchor" href="#Manual">Manual</a><a id="Manual-1"></a><a class="docs-heading-anchor-permalink" href="#Manual" title="Permalink"></a></h3><pre><code class="language-julia hljs"># perfctr.jl
+using LIKWID
+using LinearAlgebra
+
+Marker.init()
+
+A = rand(128, 64)
+B = rand(64, 128)
+C = zeros(128, 128)
+
+Marker.registerregion(&quot;matmul&quot;) # optional
+Marker.startregion(&quot;matmul&quot;)
+for _ in 1:100
+    mul!(C, A, B)
+end
+Marker.stopregion(&quot;matmul&quot;)
+
+Marker.close()</code></pre><h2 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h2><ul><li><a href="#LIKWID.Marker.close-Tuple{}"><code>LIKWID.Marker.close</code></a></li><li><a href="#LIKWID.Marker.getregion-Tuple{AbstractString}"><code>LIKWID.Marker.getregion</code></a></li><li><a href="#LIKWID.Marker.init-Tuple{}"><code>LIKWID.Marker.init</code></a></li><li><a href="#LIKWID.Marker.init_dynamic-Tuple{Any}"><code>LIKWID.Marker.init_dynamic</code></a></li><li><a href="#LIKWID.Marker.init_nothreads-Tuple{}"><code>LIKWID.Marker.init_nothreads</code></a></li><li><a href="#LIKWID.Marker.isactive-Tuple{}"><code>LIKWID.Marker.isactive</code></a></li><li><a href="#LIKWID.Marker.marker-Tuple{Any, AbstractString}"><code>LIKWID.Marker.marker</code></a></li><li><a href="#LIKWID.Marker.nextgroup-Tuple{}"><code>LIKWID.Marker.nextgroup</code></a></li><li><a href="#LIKWID.Marker.perfmon_marker-Tuple{Any, Any}"><code>LIKWID.Marker.perfmon_marker</code></a></li><li><a href="#LIKWID.Marker.registerregion-Tuple{AbstractString}"><code>LIKWID.Marker.registerregion</code></a></li><li><a href="#LIKWID.Marker.resetregion-Tuple{AbstractString}"><code>LIKWID.Marker.resetregion</code></a></li><li><a href="#LIKWID.Marker.startregion-Tuple{AbstractString}"><code>LIKWID.Marker.startregion</code></a></li><li><a href="#LIKWID.Marker.stopregion-Tuple{AbstractString}"><code>LIKWID.Marker.stopregion</code></a></li><li><a href="#LIKWID.Marker.threadinit-Tuple{}"><code>LIKWID.Marker.threadinit</code></a></li><li><a href="#LIKWID.Marker.@marker-Tuple{Any, Any}"><code>LIKWID.Marker.@marker</code></a></li><li><a href="#LIKWID.Marker.@parallelmarker-Tuple{Any, Any}"><code>LIKWID.Marker.@parallelmarker</code></a></li><li><a href="#LIKWID.Marker.@perfmon_marker-Tuple{Any, Any}"><code>LIKWID.Marker.@perfmon_marker</code></a></li></ul><h3 id="API"><a class="docs-heading-anchor" href="#API">API</a><a id="API-1"></a><a class="docs-heading-anchor-permalink" href="#API" title="Permalink"></a></h3><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.close-Tuple{}" href="#LIKWID.Marker.close-Tuple{}"><code>LIKWID.Marker.close</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Close the connection to the LIKWID Marker API and write out measurement data to file. This file will be evaluated by <code>likwid-perfctr</code>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L90-L93">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.getregion-Tuple{AbstractString}" href="#LIKWID.Marker.getregion-Tuple{AbstractString}"><code>LIKWID.Marker.getregion</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">getregion(regiontag::AbstractString, [num_events]) -&gt; nevents, events, time, count</code></pre><p>Get the intermediate results of the region identified by <code>regiontag</code>. On success, it returns     * <code>nevents</code>: the number of events in the current group,     * <code>events</code>: a list with all the aggregated event results,     * <code>time</code>: the measurement time for the region and     * <code>count</code>: the number of calls.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L53-L60">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.init-Tuple{}" href="#LIKWID.Marker.init-Tuple{}"><code>LIKWID.Marker.init</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Initialize the Marker API, assuming that julia is running under <code>likwid-perfctr</code>. Must be called previous to all other functions.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L5-L7">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.init_dynamic-Tuple{Any}" href="#LIKWID.Marker.init_dynamic-Tuple{Any}"><code>LIKWID.Marker.init_dynamic</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">init_dynamic(group_or_groups; kwargs...)</code></pre><p>Initialize the full Marker API from within the current Julia session (i.e. no <code>likwird-perfctr</code> necessary). A performance group, e.g. &quot;FLOPS_DP&quot;, must be provided as the first argument.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L250-L254">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.init_nothreads-Tuple{}" href="#LIKWID.Marker.init_nothreads-Tuple{}"><code>LIKWID.Marker.init_nothreads</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Initialize the Marker API only on the main thread (assuming that julia is running under <code>likwid-perfctr</code>). <code>LIKWID.Marker.threadinit()</code> must be called manually.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L16-L18">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.isactive-Tuple{}" href="#LIKWID.Marker.isactive-Tuple{}"><code>LIKWID.Marker.isactive</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Checks whether the Marker API is active (by checking if the <code>LIKWID_MODE</code> environment variable has been set).</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L96-L98">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.marker-Tuple{Any, AbstractString}" href="#LIKWID.Marker.marker-Tuple{Any, AbstractString}"><code>LIKWID.Marker.marker</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">marker(f, regiontag::AbstractString)</code></pre><p>Adds a LIKWID marker region around the execution of the given function <code>f</code> using <a href="#LIKWID.Marker.startregion-Tuple{AbstractString}"><code>Marker.startregion</code></a>, <a href="#LIKWID.Marker.stopregion-Tuple{AbstractString}"><code>Marker.stopregion</code></a> under the hood. Note that <code>LIKWID.Marker.init()</code> and <code>LIKWID.Marker.close()</code> must be called before and after, respectively.</p><p><strong>Examples</strong></p><pre><code class="language-julia hljs">julia&gt; using LIKWID
+
+julia&gt; Marker.init()
+
+julia&gt; marker(&quot;sleeping...&quot;) do
+           sleep(1)
+       end
+true
+
+julia&gt; marker(()-&gt;rand(100), &quot;create rand vec&quot;)
+true
+
+julia&gt; Marker.close()
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L101-L124">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.nextgroup-Tuple{}" href="#LIKWID.Marker.nextgroup-Tuple{}"><code>LIKWID.Marker.nextgroup</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Switch to the next event set in a round-robin fashion. If you have set only one event set on the command line, this function performs no operation.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L75-L78">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.perfmon_marker-Tuple{Any, Any}" href="#LIKWID.Marker.perfmon_marker-Tuple{Any, Any}"><code>LIKWID.Marker.perfmon_marker</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">perfmon_marker(f, group_or_groups[; kwargs...])</code></pre><p>Monitor performance groups in marked areas (see <a href="#LIKWID.Marker.@marker-Tuple{Any, Any}"><code>@marker</code></a>) while executing the given function <code>f</code> on one or multiple Julia threads.</p><p><strong>This is an experimental feature!</strong></p><p>Note that</p><ul><li><code>Marker.init_dynamic</code>, <code>Marker.init</code>, <code>Marker.close</code>, and <code>PerfMon.finalize</code> are called automatically</li><li>the measurement of multiple performance groups is sequential and requires multiple executions of <code>f</code>!</li></ul><p><strong>Keyword arguments:</strong></p><ul><li><code>cpuids</code> (default: currently used CPU threads): specify the CPU threads (~ cores) to be monitored</li><li><code>autopin</code> (default: <code>true</code>): automatically pin Julia threads to the CPU threads (~ cores) they are currently running on (to avoid migration and wrong results).</li><li><code>keep</code> (default: <code>false</code>): keep the temporarily created marker file</li></ul><p><strong>Example</strong></p><pre><code class="language-julia hljs">julia&gt; using LIKWID
+
+julia&gt; perfmon_marker(&quot;FLOPS_DP&quot;) do
+           # only the marked regions are monitored!
+           NUM_FLOPS = 100_000_000
+           a = 1.8
+           b = 3.2
+           c = 1.3
+           @marker &quot;calc_flops&quot; for _ in 1:NUM_FLOPS
+                c = a * b + c
+            end
+           z = a*b+c
+           @marker &quot;exponential&quot; exp(z)
+           sin(c)
+       end
+
+Region: calc_flops, Group: FLOPS_DP
+┌───────────────────────────┬───────────┐
+│                     Event │  Thread 1 │
+├───────────────────────────┼───────────┤
+│          ACTUAL_CPU_CLOCK │ 3.00577e8 │
+│             MAX_CPU_CLOCK │ 2.08917e8 │
+│      RETIRED_INSTRUCTIONS │ 3.00005e8 │
+│       CPU_CLOCKS_UNHALTED │ 3.00067e8 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     1.0e8 │
+│                     MERGE │       0.0 │
+└───────────────────────────┴───────────┘
+┌──────────────────────┬───────────┐
+│               Metric │  Thread 1 │
+├──────────────────────┼───────────┤
+│  Runtime (RDTSC) [s] │ 0.0852431 │
+│ Runtime unhalted [s] │  0.122687 │
+│          Clock [MHz] │   3524.84 │
+│                  CPI │   1.00021 │
+│         DP [MFLOP/s] │   1173.12 │
+└──────────────────────┴───────────┘
+
+Region: exponential, Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │  85696.0 │
+│             MAX_CPU_CLOCK │  59192.0 │
+│      RETIRED_INSTRUCTIONS │   5072.0 │
+│       CPU_CLOCKS_UNHALTED │   6013.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     27.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 2.60005e-7 │
+│ Runtime unhalted [s] │ 3.49786e-5 │
+│          Clock [MHz] │    3546.95 │
+│                  CPI │    1.18553 │
+│         DP [MFLOP/s] │    103.844 │
+└──────────────────────┴────────────┘
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L260-L337">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.registerregion-Tuple{AbstractString}" href="#LIKWID.Marker.registerregion-Tuple{AbstractString}"><code>LIKWID.Marker.registerregion</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Register a region with name <code>regiontag</code> to the Marker API. On success, <code>true</code> is returned.</p><p>This is an optional function to reduce the overhead of region registration at <code>Marker.startregion</code>. If you don&#39;t call <code>registerregion</code>, the registration is done at <code>startregion</code>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L26-L31">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.resetregion-Tuple{AbstractString}" href="#LIKWID.Marker.resetregion-Tuple{AbstractString}"><code>LIKWID.Marker.resetregion</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Reset the values stored using the region name <code>regiontag</code>. On success, <code>true</code> is returned.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L81-L84">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.startregion-Tuple{AbstractString}" href="#LIKWID.Marker.startregion-Tuple{AbstractString}"><code>LIKWID.Marker.startregion</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Start measurements under the name <code>regiontag</code>. On success, <code>true</code> is returned.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L37-L39">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.stopregion-Tuple{AbstractString}" href="#LIKWID.Marker.stopregion-Tuple{AbstractString}"><code>LIKWID.Marker.stopregion</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Stop measurements under the name <code>regiontag</code>. On success, <code>true</code> is returned.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L45-L47">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.threadinit-Tuple{}" href="#LIKWID.Marker.threadinit-Tuple{}"><code>LIKWID.Marker.threadinit</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Add the current thread to the Marker API.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L21-L23">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.@marker-Tuple{Any, Any}" href="#LIKWID.Marker.@marker-Tuple{Any, Any}"><code>LIKWID.Marker.@marker</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>Convenience macro for flanking code with <a href="#LIKWID.Marker.startregion-Tuple{AbstractString}"><code>Marker.startregion</code></a> and <a href="#LIKWID.Marker.stopregion-Tuple{AbstractString}"><code>Marker.stopregion</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia hljs">julia&gt; using LIKWID
+
+julia&gt; Marker.init()
+
+julia&gt; @marker &quot;sleeping...&quot; sleep(1)
+true
+
+julia&gt; @marker &quot;create rand vec&quot; rand(100)
+true
+
+julia&gt; Marker.close()
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L131-L149">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.@parallelmarker-Tuple{Any, Any}" href="#LIKWID.Marker.@parallelmarker-Tuple{Any, Any}"><code>LIKWID.Marker.@parallelmarker</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>Convenience macro for flanking code with <a href="#LIKWID.Marker.startregion-Tuple{AbstractString}"><code>Marker.startregion</code></a> and <a href="#LIKWID.Marker.stopregion-Tuple{AbstractString}"><code>Marker.stopregion</code></a> on all threads separately.</p><p><strong>Examples</strong></p><pre><code class="language-julia hljs">julia&gt; using LIKWID
+
+julia&gt; Marker.init()
+
+julia&gt; @parallelmarker begin
+           Threads.@thread :static for i in 1:Threads.nthreads()
+               # thread-local computation
+           end
+       end
+
+julia&gt; Marker.close()
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L159-L177">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LIKWID.Marker.@perfmon_marker-Tuple{Any, Any}" href="#LIKWID.Marker.@perfmon_marker-Tuple{Any, Any}"><code>LIKWID.Marker.@perfmon_marker</code></a> — <span class="docstring-category">Macro</span></header><section><div><pre><code class="language-julia hljs">@perfmon_marker group_or_groups codeblock</code></pre><p><strong>This is an experimental feature!</strong></p><p>See also: <a href="#LIKWID.Marker.perfmon_marker-Tuple{Any, Any}"><code>perfmon_marker</code></a></p><p><strong>Example</strong></p><pre><code class="language-julia hljs">julia&gt; using LIKWID
+
+julia&gt; @perfmon_marker &quot;FLOPS_DP&quot; begin
+           @marker &quot;exponential&quot; exp(3.141)
+       end
+
+Region: exponential, Group: FLOPS_DP
+┌───────────────────────────┬──────────┐
+│                     Event │ Thread 1 │
+├───────────────────────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │ 115146.0 │
+│             MAX_CPU_CLOCK │  78547.0 │
+│      RETIRED_INSTRUCTIONS │   4208.0 │
+│       CPU_CLOCKS_UNHALTED │   7112.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │     10.0 │
+│                     MERGE │      0.0 │
+└───────────────────────────┴──────────┘
+┌──────────────────────┬────────────┐
+│               Metric │   Thread 1 │
+├──────────────────────┼────────────┤
+│  Runtime (RDTSC) [s] │ 3.02056e-8 │
+│ Runtime unhalted [s] │ 4.70008e-5 │
+│          Clock [MHz] │     3591.4 │
+│                  CPI │    1.69011 │
+│         DP [MFLOP/s] │    331.064 │
+└──────────────────────┴────────────┘
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/JuliaPerf/LIKWID.jl/blob/c74cd8847c203ab5fb78600a9b69f26d87ffbdb3/src/marker.jl#L359-L396">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../howtos/howto_topology/">« System Topology</a><a class="docs-footer-nextpage" href="../marker_gpu/">Marker API (GPU) »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.11 on <span class="colophon-date" title="Wednesday 29 June 2022 17:04">Wednesday 29 June 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
