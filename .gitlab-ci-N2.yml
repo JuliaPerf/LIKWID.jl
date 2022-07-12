@@ -41,8 +41,6 @@ build-and-deploy:
   variables:
     SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p fpga --exclusive"
     JULIA_NUM_THREADS: "12"
-  needs:
-    job: julia/1.7-N2
   script:
     - ml reset
     - ml tools/likwid/5.2.1-GCC-11.2.0
