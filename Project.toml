@@ -1,7 +1,7 @@
 name = "LIKWID"
 uuid = "bf22376a-e803-4184-b2ed-56326e3bff83"
 authors = ["Carsten Bauer <crstnbr@gmail.com>", "Valentin Churavy <v.churavy@gmail.com>"]
-version = "0.3.2"
+version = "0.4.0"
 
 [deps]
 CEnum = "fa961155-64e5-5f13-b03f-caf6b980ea82"
