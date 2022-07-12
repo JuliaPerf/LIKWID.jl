@@ -335,7 +335,7 @@ Region: exponential, Group: FLOPS_DP
 
 ```
 """
-function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, keep=false, kwargs...)
+function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, keep=false, print=true, kwargs...)
     cpuids = cpuids isa Integer ? [cpuids] : cpuids
     autopin && PerfMon._perfmon_autopin(cpuids)
     env_vars_before = _save_env_vars()
@@ -349,7 +349,9 @@ function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=
         Marker.nextgroup()
     end
     Marker.close()
-    _print_markerfile(markerfile)
+    # PerfMon.finalize()
+    # PerfMon.init(cpuids)
+    print && _print_markerfile(markerfile)
     PerfMon.finalize()
     !keep && rm(markerfile)
     _restore_env_vars(env_vars_before)
