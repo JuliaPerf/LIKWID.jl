@@ -4,8 +4,12 @@
 
 <br>
 
+[ci-img]: https://git.uni-paderborn.de/pc2-ci/julia/LIKWID-jl/badges/main/pipeline.svg?key_text=CI@PC2
+[ci-url]: https://git.uni-paderborn.de/pc2-ci/julia/LIKWID-jl/-/pipelines
+
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaperf.github.io/LIKWID.jl/dev/)
-[![Build Status](https://github.com/JuliaPerf/LIKWID.jl/workflows/CI/badge.svg)](https://github.com/JuliaPerf/LIKWID.jl/actions)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaperf.github.io/LIKWID.jl/stable/)
+[![][ci-img]][ci-url]
 [![Build Status](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg?key_text=NHR@FAU&key_width=70)](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/-/pipelines)
 [![codecov](https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/main/graph/badge.svg?token=Ze61CbGoO5)](https://codecov.io/gh/JuliaPerf/LIKWID.jl)
 ![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
