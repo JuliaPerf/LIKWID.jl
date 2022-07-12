@@ -49,10 +49,14 @@ end
 
 function _check_likwid_gpusupport()
     # Set `ZES_ENABLE_SYSMAN` to work around https://github.com/open-mpi/ompi/issues/10142
-    withenv("ZES_ENABLE_SYSMAN" => "1") do
-        dlopen(liblikwid) do handle
-            return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+    try
+        withenv("ZES_ENABLE_SYSMAN" => "1") do
+            dlopen(liblikwid) do handle
+                return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+            end
         end
+    catch err
+        return false
     end
 end
 
