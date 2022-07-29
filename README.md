@@ -18,6 +18,10 @@
 
 LIKWID.jl is a Julia wrapper for the performance monitoring and benchmarking suite [LIKWID](https://github.com/RRZE-HPC/likwid).
 
+<p>
+❗❗ <b>JuliaCon2022 Video Demonstration</b>: https://www.youtube.com/watch?v=l2fTNfEDPC0 ❗❗
+</p>
+
 ## Installation
 
 Prerequisites:
