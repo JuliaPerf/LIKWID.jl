@@ -9,7 +9,7 @@ julia/1.8-N1:
   tags:
     - bauerc-noctua
   variables:
-    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p gpu --exclusive"
+    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 40 -t 00:15:00 -A pc2-mitarbeiter -p all --exclusive"
     JULIA_NUM_THREADS: "12"
     GROUP: "CPU" # run only CPU tests (no GPU available as of now)
   rules:
@@ -39,7 +39,7 @@ build-and-deploy:
   tags:
     - bauerc-noctua
   variables:
-    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p fpga --exclusive"
+    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 40 -t 00:15:00 -A pc2-mitarbeiter -p all --exclusive"
     JULIA_NUM_THREADS: "12"
   needs:
     job: julia/1.8-N1
