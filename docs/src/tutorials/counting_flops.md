@@ -30,61 +30,65 @@ Preparing some random input we can perform the `saxpy!` operation as per usual (
 ````julia
 const N = 10_000
 const a = 3.141
-const x = rand(Float32, N)
-const y = rand(Float32, N)
-const z = zeros(Float32, N)
+const x = rand(N)
+const y = rand(N)
+const z = zeros(N)
 
 saxpy!(z, a, x, y);
 ````
 
 Let's now use LIKWID to count the **actually** performed FLOPs for this computation!
-Concretely, we measure the FLOPS_SP performance group, in which "SP" stands for "single precision".
+Concretely, we measure the FLOPS_DP performance group, in which "DP" stands for "double precision".
 
 ````julia
 using LIKWID
-metrics, events = @perfmon "FLOPS_SP" saxpy!(z, a, x, y);
+metrics, events = @perfmon "FLOPS_DP" saxpy!(z, a, x, y);
 ````
 
 ````
 
-Group: FLOPS_SP
-┌───────────────────────────┬──────────┐
-│                     Event │ Thread 1 │
-├───────────────────────────┼──────────┤
-│          ACTUAL_CPU_CLOCK │  75640.0 │
-│             MAX_CPU_CLOCK │  55762.0 │
-│      RETIRED_INSTRUCTIONS │  20140.0 │
-│       CPU_CLOCKS_UNHALTED │  27097.0 │
-│ RETIRED_SSE_AVX_FLOPS_ALL │  20000.0 │
-│                     MERGE │      0.0 │
-└───────────────────────────┴──────────┘
+Group: FLOPS_DP
+┌──────────────────────────────────────────┬──────────┐
+│                                    Event │ Thread 1 │
+├──────────────────────────────────────────┼──────────┤
+│                        INSTR_RETIRED_ANY │  11761.0 │
+│                    CPU_CLK_UNHALTED_CORE │ 135189.0 │
+│                     CPU_CLK_UNHALTED_REF │  97920.0 │
+│ FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE │      0.0 │
+│      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE │      0.0 │
+│ FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE │   5000.0 │
+│ FP_ARITH_INST_RETIRED_512B_PACKED_DOUBLE │      0.0 │
+└──────────────────────────────────────────┴──────────┘
 ┌──────────────────────┬────────────┐
 │               Metric │   Thread 1 │
 ├──────────────────────┼────────────┤
-│  Runtime (RDTSC) [s] │ 7.46982e-6 │
-│ Runtime unhalted [s] │ 3.08736e-5 │
-│          Clock [MHz] │    3323.36 │
-│                  CPI │    1.34543 │
-│         SP [MFLOP/s] │    2677.44 │
+│  Runtime (RDTSC) [s] │  8.6735e-5 │
+│ Runtime unhalted [s] │ 5.64666e-5 │
+│          Clock [MHz] │    3305.37 │
+│                  CPI │    11.4947 │
+│         DP [MFLOP/s] │    230.587 │
+│     AVX DP [MFLOP/s] │    230.587 │
+│  AVX512 DP [MFLOP/s] │        0.0 │
+│     Packed [MUOPS/s] │    57.6468 │
+│     Scalar [MUOPS/s] │        0.0 │
+│  Vectorization ratio │      100.0 │
 └──────────────────────┴────────────┘
 
 ````
 
 That was easy. Let's see what we got.
-Among all those results, the event "RETIRED\_SSE\_AVX\_FLOPS\_ALL" is the one that we care
-about since it indicates the number of performed FLOPs.
+Among all those results, for computing the total number of FLOPs we care about the metrics "DP [MFLOP/s]", which gives the MFLOPs per second,
+and "Runtime (RDTSC) [s]", which indicates the total runtime. By multiplying the two we get the desired total number of FLOPs.
 
 ````julia
-NFLOPs_actual = first(events["FLOPS_SP"])["RETIRED_SSE_AVX_FLOPS_ALL"]
+flops_per_second = first(metrics["FLOPS_DP"])["DP [MFLOP/s]"] * 1e6
+runtime = first(metrics["FLOPS_DP"])["Runtime (RDTSC) [s]"]
+NFLOPs_actual = round(Int, flops_per_second * runtime)
 ````
 
 ````
-20000.0
+20000
 ````
-
-!!! note
-    Unfortunately, as CPUs can be very different the relevant event might have a different name
-    on your system. Look out for something with "FLOPS" in `events`.
 
 Let's check whether this number makes sense. Our vectors are of length `N` and for each element
 we perform two FLOPs in the SAXPY operation: one multiplication and one addition. Hence,
@@ -115,11 +119,13 @@ For convenience, let's wrap the above procedure into a function.
 ````julia
 function count_FLOPs(N)
     a = 3.141
-    x = rand(Float32, N)
-    y = rand(Float32, N)
-    z = zeros(Float32, N)
-    _, events = @perfmon "FLOPS_SP" saxpy!(z, a, x, y)
-    return first(events["FLOPS_SP"])["RETIRED_SSE_AVX_FLOPS_ALL"]
+    x = rand(N)
+    y = rand(N)
+    z = zeros(N)
+    metrics, _ = perfmon(() -> saxpy!(z, a, x, y), "FLOPS_DP"; print=false)
+    flops_per_second = first(metrics["FLOPS_DP"])["DP [MFLOP/s]"] * 1e6
+    runtime = first(metrics["FLOPS_DP"])["Runtime (RDTSC) [s]"]
+    return round(Int, flops_per_second * runtime)
 end
 ````
 
@@ -140,6 +146,14 @@ true
 Feel free to play around further and apply this knowledge to other operations!
 As an inspiration: How many FLOPs does an `exp.(x)` or `sin.(x)` trigger?
 Does the answer depend on the length of `x`?
+
+## Bonus: Reactive FLOPs Counting
+
+It is a lot of fun to combine the low-level performance monitoring tools of LIKWID.jl with the beautiful
+high-level interface provided by [Pluto.jl](https://github.com/fonsp/Pluto.jl).
+In the following example, we can arbitrarily modify the function `computation` and - through Pluto's **reactivity** - the counted number of FLOPs will automatically update.
+
+![counting_flops_reactive](counting_flops_how.gif)
 
 ---
 

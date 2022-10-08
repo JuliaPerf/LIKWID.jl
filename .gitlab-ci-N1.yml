@@ -1,19 +1,19 @@
 stages:
+  - build
   - test
   - documentation
 
-# This job tests the LIKWID.jl interface with Julia 1.8 on Noctua 2 @ PC2
-julia/1.8-N2:
+# This job tests the LIKWID.jl interface with Julia 1.8 on Noctua 1 @ PC2
+julia/1.8-N1:
   stage: test
   tags:
-    - bauerc-noctua2
+    - bauerc-noctua
   variables:
-    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p fpga --exclusive"
+    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p gpu --exclusive"
     JULIA_NUM_THREADS: "12"
     GROUP: "CPU" # run only CPU tests (no GPU available as of now)
   rules:
     # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_TAG' # trigger on tags
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
@@ -37,12 +37,12 @@ julia/1.8-N2:
 build-and-deploy:
   stage: documentation
   tags:
-    - bauerc-noctua2
+    - bauerc-noctua
   variables:
     SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 128 -t 00:15:00 -A pc2-mitarbeiter -p fpga --exclusive"
     JULIA_NUM_THREADS: "12"
   needs:
-    job: julia/1.8-N2
+    job: julia/1.8-N1
   script:
     - ml reset
     - ml tools/likwid/5.2.1-GCC-11.2.0
