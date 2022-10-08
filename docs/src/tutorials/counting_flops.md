@@ -8,8 +8,8 @@ Have you ever wondered how many floating point operations (FLOPs) a certain bloc
 e.g. a Julia function, has *actually* triggered in a CPU core? With LIKWID.jl you can readily
 answer this question!
 
-Let's consider a simple example: [SAXPY](https://www.netlib.org/lapack/explore-html/df/d28/group__single__blas__level1_gad2a52de0e32a6fc111931ece9b39726c.html).
-The abbreviation SAXPY stands for single-precision (`Float32`) `a` times `x` plus `y`, i.e. the computation
+Let's consider a simple example: [daxpy](https://netlib.org/lapack/explore-html/de/da4/group__double__blas__level1_ga8f99d6a644d3396aa32db472e0cfc91c.html#ga8f99d6a644d3396aa32db472e0cfc91c).
+The abbreviation daxpy stands for double-precision (`Float64`) `a` times `x` plus `y`, i.e. the computation
 
 ```math
 z = a \cdot x + y
@@ -18,14 +18,14 @@ z = a \cdot x + y
 Of course, we can readily write this as a Julia function.
 
 ````julia
-saxpy!(z, a, x, y) = z .= a .* x .+ y
+daxpy!(z, a, x, y) = z .= a .* x .+ y
 ````
 
 ````
-saxpy! (generic function with 1 method)
+daxpy! (generic function with 1 method)
 ````
 
-Preparing some random input we can perform the `saxpy!` operation as per usual (we're suppressing the unimportant output below).
+Preparing some random input we can perform the `daxpy!` operation as per usual (we're suppressing the unimportant output below).
 
 ````julia
 const N = 10_000
@@ -34,7 +34,7 @@ const x = rand(N)
 const y = rand(N)
 const z = zeros(N)
 
-saxpy!(z, a, x, y);
+daxpy!(z, a, x, y);
 ````
 
 Let's now use LIKWID to count the **actually** performed FLOPs for this computation!
@@ -42,7 +42,7 @@ Concretely, we measure the FLOPS_DP performance group, in which "DP" stands for 
 
 ````julia
 using LIKWID
-metrics, events = @perfmon "FLOPS_DP" saxpy!(z, a, x, y);
+metrics, events = @perfmon "FLOPS_DP" daxpy!(z, a, x, y);
 ````
 
 ````
@@ -51,9 +51,9 @@ Group: FLOPS_DP
 ┌──────────────────────────────────────────┬──────────┐
 │                                    Event │ Thread 1 │
 ├──────────────────────────────────────────┼──────────┤
-│                        INSTR_RETIRED_ANY │  11761.0 │
-│                    CPU_CLK_UNHALTED_CORE │ 135189.0 │
-│                     CPU_CLK_UNHALTED_REF │  97920.0 │
+│                        INSTR_RETIRED_ANY │  11759.0 │
+│                    CPU_CLK_UNHALTED_CORE │ 133737.0 │
+│                     CPU_CLK_UNHALTED_REF │  88320.0 │
 │ FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE │      0.0 │
 │      FP_ARITH_INST_RETIRED_SCALAR_DOUBLE │      0.0 │
 │ FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE │   5000.0 │
@@ -62,14 +62,14 @@ Group: FLOPS_DP
 ┌──────────────────────┬────────────┐
 │               Metric │   Thread 1 │
 ├──────────────────────┼────────────┤
-│  Runtime (RDTSC) [s] │  8.6735e-5 │
-│ Runtime unhalted [s] │ 5.64666e-5 │
-│          Clock [MHz] │    3305.37 │
-│                  CPI │    11.4947 │
-│         DP [MFLOP/s] │    230.587 │
-│     AVX DP [MFLOP/s] │    230.587 │
+│  Runtime (RDTSC) [s] │ 7.18004e-5 │
+│ Runtime unhalted [s] │ 5.58628e-5 │
+│          Clock [MHz] │    3625.11 │
+│                  CPI │    11.3732 │
+│         DP [MFLOP/s] │     278.55 │
+│     AVX DP [MFLOP/s] │     278.55 │
 │  AVX512 DP [MFLOP/s] │        0.0 │
-│     Packed [MUOPS/s] │    57.6468 │
+│     Packed [MUOPS/s] │    69.6375 │
 │     Scalar [MUOPS/s] │        0.0 │
 │  Vectorization ratio │      100.0 │
 └──────────────────────┴────────────┘
@@ -91,7 +91,7 @@ NFLOPs_actual = round(Int, flops_per_second * runtime)
 ````
 
 Let's check whether this number makes sense. Our vectors are of length `N` and for each element
-we perform two FLOPs in the SAXPY operation: one multiplication and one addition. Hence,
+we perform two FLOPs in the daxpy operation: one multiplication and one addition. Hence,
 our expectation is
 
 ````julia
@@ -122,7 +122,7 @@ function count_FLOPs(N)
     x = rand(N)
     y = rand(N)
     z = zeros(N)
-    metrics, _ = perfmon(() -> saxpy!(z, a, x, y), "FLOPS_DP"; print=false)
+    metrics, _ = perfmon(() -> daxpy!(z, a, x, y), "FLOPS_DP"; print=false)
     flops_per_second = first(metrics["FLOPS_DP"])["DP [MFLOP/s]"] * 1e6
     runtime = first(metrics["FLOPS_DP"])["Runtime (RDTSC) [s]"]
     return round(Int, flops_per_second * runtime)
