@@ -53,7 +53,7 @@ function daxpy!(z, a, x, y)
 end
 daxpy!(z, a, x, y); # warmup
 
-metrics, events = @perfmon "FLOPS_DP" saxpy!(z, a, x, y); # double-precision floating point ops.
+metrics, events = @perfmon "FLOPS_DP" daxpy!(z, a, x, y); # double-precision floating point ops.
 ```
 
 Output:
