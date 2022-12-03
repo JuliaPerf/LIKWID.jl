@@ -79,6 +79,12 @@ function __init__()
     if gpusupport()
         init_topology_gpu()
     end
+    if LIKWID.accessmode() == ACCESSMODE_PERF &&
+        !haskey(ENV, "LIKWID_PERF_PID")
+        pid = getpid()
+        @debug "Setting environment variable LIKWID_PERF_PID" pid
+        ENV["LIKWID_PERF_PID"] = pid
+    end
     return nothing
 end
 
