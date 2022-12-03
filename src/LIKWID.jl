@@ -79,7 +79,7 @@ function __init__()
     if gpusupport()
         init_topology_gpu()
     end
-    if LIKWID.accessmode() == ACCESSMODE_PERF &&
+    if accessmode() == LibLikwid.ACCESSMODE_PERF &&
         !haskey(ENV, "LIKWID_PERF_PID")
         pid = getpid()
         @debug "Setting environment variable LIKWID_PERF_PID" pid
@@ -95,7 +95,7 @@ function init(; gpu=false)
     init_affinity()
     PerfMon.init()
     Timer.init()
-    if LIKWID.accessmode() == LIKWID.LibLikwid.ACCESSMODE_DAEMON
+    if accessmode() == LibLikwid.ACCESSMODE_DAEMON
         HPM.init()
         Power.init()
         # init_thermal(0)
