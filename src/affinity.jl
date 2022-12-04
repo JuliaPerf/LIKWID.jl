@@ -81,19 +81,25 @@ Returns the ID of the currently executing CPU via `glibc`s `sched_getcpu` functi
 get_processor_id_glibc() = Int(@ccall sched_getcpu()::Cint)
 
 """
+    pinprocess(cpuid::Integer)
+
 Pins the current process to the CPU given as `cpuid`.
+Returns true on success.
 """
 function pinprocess(cpuid::Integer)
     ret = LibLikwid.likwid_pinProcess(cpuid)
-    return ret == 0
+    return ret == 1 # In contrast to other APIs uses 1 as success
 end
 
 """
+    pinthread(cpuid::Integer)
+
 Pins the current thread to the CPU given as `cpuid`.
+Returns true on success.
 """
 function pinthread(cpuid::Integer)
     ret = LibLikwid.likwid_pinThread(cpuid)
-    return ret == 0
+    return ret == 1 # In contrast to other APIs uses 1 as success
 end
 
 """
