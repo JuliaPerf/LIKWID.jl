@@ -11,6 +11,8 @@ export OrderedDict
 const liblikwid = "liblikwid"
 include("LibLikwid.jl")
 
+const perf_paranoid_path = "/proc/sys/kernel/perf_event_paranoid"
+
 # Julia types
 include("types.jl")
 
@@ -75,27 +77,23 @@ import .GPUMarker: gpumarker, @gpumarker
 export GPUMarker, gpumarker, @gpumarker
 include("frequency.jl")
 
-const perf_paranoid_path = "/proc/sys/kernel/perf_event_paranoid"
-
-function perf_event_paranoid()
-    open(perf_paranoid_path, "r") do io
-        parse(Int, readline(io))
-    end
-end
-
 function __init__()
-    if gpusupport()
-        init_topology_gpu()
-    end
-    if accessmode() == LibLikwid.ACCESSMODE_PERF && ispath(perf_paranoid_path)
-        perf_paranoid = perf_event_paranoid()
-        uid = Libc.getuid()
-        @debug "/proc/sys/kernel/perf_event_paranoid is set to" perf_paranoid uid
-        if perf_paranoid > 0 && uid != 0 && !haskey(ENV, "LIKWID_PERF_PID")
-            pid = getpid()
-            @debug "Setting environment variable LIKWID_PERF_PID" pid
-            ENV["LIKWID_PERF_PID"] = pid
+    if liblikwid_available()
+        if gpusupport()
+            init_topology_gpu()
         end
+        if accessmode() == LibLikwid.ACCESSMODE_PERF && ispath(perf_paranoid_path)
+            perf_paranoid = perf_event_paranoid()
+            uid = Libc.getuid()
+            @debug "/proc/sys/kernel/perf_event_paranoid is set to" perf_paranoid uid
+            if perf_paranoid > 0 && uid != 0 && !haskey(ENV, "LIKWID_PERF_PID")
+                pid = getpid()
+                @debug "Setting environment variable LIKWID_PERF_PID" pid
+                ENV["LIKWID_PERF_PID"] = pid
+            end
+        end
+    else
+        @warn("The library `liblikwid`` couldn't be found. Don't expect anything to work.", liblikwid)
     end
     return nothing
 end
