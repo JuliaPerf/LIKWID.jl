@@ -76,6 +76,10 @@ Query the access mode used by LIKWID, i.e. either
 """
 accessmode() = LIKWID.get_configuration().daemonMode
 
+function liblikwid_available()
+    return Libdl.find_library(liblikwid) != ""
+end
+
 "Run a Cmd object, returning the stdout & stderr contents plus the exit code"
 function _execute(cmd::Cmd)
     out = Pipe()
@@ -261,3 +265,12 @@ LIKWID_MODE(mode) = ENV["LIKWID_MODE"] = mode;
 LIKWID_EVENTS(eventstr::AbstractString) = ENV["LIKWID_EVENTS"] = eventstr;
 LIKWID_THREADS(cpustr::AbstractString) = ENV["LIKWID_THREADS"] = cpustr;
 LIKWID_MPI_CONNECT(x::AbstractString) = ENV["LIKWID_MPI_CONNECT"] = x;
+
+"""
+Query the paranoia level of the performance events system
+"""
+function perf_event_paranoid()
+    open(perf_paranoid_path, "r") do io
+        parse(Int, readline(io))
+    end
+end
