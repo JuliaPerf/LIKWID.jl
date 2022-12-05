@@ -75,8 +75,10 @@ import .GPUMarker: gpumarker, @gpumarker
 export GPUMarker, gpumarker, @gpumarker
 include("frequency.jl")
 
+const perf_paranoid_path = "/proc/sys/kernel/perf_event_paranoid"
+
 function perf_event_paranoid()
-    open("/proc/sys/kernel/perf_event_paranoid", "r") do io
+    open(perf_paranoid_path, "r") do io
         parse(Int, readline(io))
     end
 end
@@ -85,7 +87,7 @@ function __init__()
     if gpusupport()
         init_topology_gpu()
     end
-    if accessmode() == LibLikwid.ACCESSMODE_PERF
+    if accessmode() == LibLikwid.ACCESSMODE_PERF && ispath(perf_paranoid_path)
         perf_paranoid = perf_event_paranoid()
         uid = Libc.getuid()
         @debug "/proc/sys/kernel/perf_event_paranoid is set to" perf_paranoid uid
