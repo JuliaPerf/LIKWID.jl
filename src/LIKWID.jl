@@ -4,11 +4,11 @@ using Libdl
 using Unitful
 using OrderedCollections
 using PrettyTables
-
-export OrderedDict
+using Preferences
 
 # liblikwid
-const liblikwid = "liblikwid"
+include("preferences.jl")
+const liblikwid = @load_preference("liblikwid", "liblikwid")
 include("LibLikwid.jl")
 
 const perf_paranoid_path = "/proc/sys/kernel/perf_event_paranoid"
@@ -57,24 +57,19 @@ include("prettyprinting.jl")
 include("perfmon.jl")
 import .PerfMon
 import .PerfMon: perfmon, @perfmon
-export PerfMon, perfmon, @perfmon
 include("misc.jl")
 include("markerfile.jl")
 import .MarkerFile
-export MarkerFile
 include("marker.jl")
 import .Marker
 import .Marker: marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
-export Marker, marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
 include("topology_gpu.jl")
 include("nvmon.jl")
 import .NvMon
 import .NvMon: nvmon, @nvmon
-export NvMon, nvmon, @nvmon
 include("marker_gpu.jl")
 import .GPUMarker
 import .GPUMarker: gpumarker, @gpumarker
-export GPUMarker, gpumarker, @gpumarker
 include("frequency.jl")
 
 function __init__()
@@ -136,5 +131,12 @@ function finalize(; gpu=true)
     end
     return nothing
 end
+
+export OrderedDict
+export PerfMon, perfmon, @perfmon
+export MarkerFile
+export Marker, marker, @marker, @parallelmarker, perfmon_marker, @perfmon_marker
+export NvMon, nvmon, @nvmon
+export GPUMarker, gpumarker, @gpumarker
 
 end

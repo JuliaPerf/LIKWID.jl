@@ -60,6 +60,7 @@ makedocs(
             "Affinity" => "references/affinity.md",
             "HPM / Access" => "references/access.md",
             "Miscellaneous" => "references/misc.md",
+            "Preferences" => "references/preferences.md",
         ],
     ],
     # assets = ["assets/custom.css", "assets/custom.js"]
