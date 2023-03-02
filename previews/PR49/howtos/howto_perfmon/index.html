@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Performance Monitoring · LIKWID.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.svg" alt="LIKWID.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LIKWID.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">LIKWID</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox"/><label class="tocitem" for="menuitem-2"><span class="docs-label">Tutorials</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../tutorials/counting_flops/">Counting FLOPs</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox" checked/><label class="tocitem" for="menuitem-3"><span class="docs-label">How-To Guides</span><i class="docs-chevron"></i></label><ul class="collapsed"><li class="is-active"><a class="tocitem" href>Performance Monitoring</a><ul class="internal"><li><a class="tocitem" href="#CPU"><span>CPU</span></a></li><li><a class="tocitem" href="#GPU"><span>GPU</span></a></li></ul></li><li><a class="tocitem" href="../howto_pinning/">Pinning Julia Threads</a></li><li><a class="tocitem" href="../howto_marker/">Marker API</a></li><li><a class="tocitem" href="../howto_marker_dynamic/">Marker API: Dynamic Usage</a></li><li><a class="tocitem" href="../howto_topology/">System Topology</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">References</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../references/marker/">Marker API (CPU)</a></li><li><a class="tocitem" href="../../references/marker_gpu/">Marker API (GPU)</a></li><li><a class="tocitem" href="../../references/topo/">CPU topology</a></li><li><a class="tocitem" href="../../references/perfmon/">Performance monitoring</a></li><li><a class="tocitem" href="../../references/topo_gpu/">GPU topology</a></li><li><a class="tocitem" href="../../references/nvmon/">NVIDIA monitoring</a></li><li><a class="tocitem" href="../../references/timer/">CPU clock timer</a></li><li><a class="tocitem" href="../../references/temperature/">CPU temperature</a></li><li><a class="tocitem" href="../../references/power/">Power / Energy</a></li><li><a class="tocitem" href="../../references/affinity/">Affinity</a></li><li><a class="tocitem" href="../../references/access/">HPM / Access</a></li><li><a class="tocitem" href="../../references/misc/">Miscellaneous</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">How-To Guides</a></li><li class="is-active"><a href>Performance Monitoring</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Performance Monitoring</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos/howto_perfmon.jl" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Performance-Monitoring"><a class="docs-heading-anchor" href="#Performance-Monitoring">Performance Monitoring</a><a id="Performance-Monitoring-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Monitoring" title="Permalink"></a></h1><p>Below we describe how one can use LIKWID.jl to measure the performance of a piece of Julia code on a hardware level.</p><h2 id="CPU"><a class="docs-heading-anchor" href="#CPU">CPU</a><a id="CPU-1"></a><a class="docs-heading-anchor-permalink" href="#CPU" title="Permalink"></a></h2><h3 id="perfmon_macro"><a class="docs-heading-anchor" href="#perfmon_macro">The <code>@perfmon</code> macro</a><a id="perfmon_macro-1"></a><a class="docs-heading-anchor-permalink" href="#perfmon_macro" title="Permalink"></a></h3><p>The macro <a href="../../references/perfmon/#LIKWID.PerfMon.@perfmon-Tuple{Any, Any}"><code>@perfmon</code></a> is the easiest tool to use for <strong>perf</strong>ormance <strong>mon</strong>itoring. You need to provide two things:</p><ol><li>the performance group(s) that you&#39;re interested in and</li><li>the piece of Julia code to be analyzed.</li></ol><p>As for the first, you can use <code>PerfMon.supported_groups</code> to get a list of the performance groups available on your system. The most common ones, that should also be available on most systems, are FLOPS<em>DP and FLOPS</em>SP for obtaining information about double- and single-precision floating point operations.</p><p>As for point 2, pretty much every Julia code is syntactically valid, i.e. you can call a function or use, e.g., <code>begin ... end</code> to setup monitoring of a block of code. However, it is important to realize that, by default, <code>@perfmon</code> will only monitor the CPU threads (&quot;cores&quot;) associated with Julia threads and, for example, does not realiably provide information about computations happening on separate BLAS threads. To monitor the latter, one can try to use <a href="#perfmon_function">the <code>perfmon</code> function</a> instead.</p><pre><code class="language-julia hljs">using LIKWID
+using Base.Threads
+
+N = 10_000
+a = 3.141
+x = rand(N)
+y = rand(N)
+z = zeros(N)
+
+function saxpy!(z, a, x, y)
+    @threads :static for i in eachindex(z)
+        z[i] = a * x[i] + y[i]
+    end
+    return z
+end
+saxpy!(z, a, x, y); # warmup
+
+metrics, events = @perfmon &quot;FLOPS_DP&quot; saxpy!(z, a, x, y);</code></pre><pre><code class="nohighlight hljs">
+Group: FLOPS_DP
+┌───────────────────────────┬──────────┬──────────┬──────────┐
+│                     Event │ Thread 1 │ Thread 2 │ Thread 3 │
+├───────────────────────────┼──────────┼──────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │ 594353.0 │ 172690.0 │ 219724.0 │
+│             MAX_CPU_CLOCK │ 398790.0 │ 225764.0 │ 143752.0 │
+│      RETIRED_INSTRUCTIONS │  67624.0 │  80827.0 │  85597.0 │
+│       CPU_CLOCKS_UNHALTED │ 161793.0 │  63454.0 │  71502.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │   6668.0 │   6666.0 │   6666.0 │
+│                     MERGE │      0.0 │      0.0 │      0.0 │
+└───────────────────────────┴──────────┴──────────┴──────────┘
+┌──────────────────────┬─────────────┬────────────┬────────────┐
+│               Metric │    Thread 1 │   Thread 2 │   Thread 3 │
+├──────────────────────┼─────────────┼────────────┼────────────┤
+│  Runtime (RDTSC) [s] │  5.23601e-5 │ 5.23601e-5 │ 5.23601e-5 │
+│ Runtime unhalted [s] │ 0.000264663 │ 7.68981e-5 │ 9.78422e-5 │
+│          Clock [MHz] │     3346.97 │    1717.77 │    3432.53 │
+│                  CPI │     2.39254 │   0.785059 │   0.835333 │
+│         DP [MFLOP/s] │     127.349 │    127.311 │    127.311 │
+└──────────────────────┴─────────────┴────────────┴────────────┘
+</code></pre><p>Apart from printing, the monitoring results are provided in form of the nested data structures <code>metrics</code> and <code>events</code>. For example, the FLOPS (floating point operations per second) can be queried as follows,</p><pre><code class="language-julia hljs">metrics[&quot;FLOPS_DP&quot;][1][&quot;DP [MFLOP/s]&quot;]</code></pre><pre><code class="nohighlight hljs">127.34884328126886</code></pre><p>Here, <code>&quot;FLOPS_DP</code> is the performance group, <code>1</code> indicated the first Julia thread, and <code>&quot;DP [MFLOP/s]</code> is a LIKWID metric.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>To ensure a reliable monitoring process, <code>@perfmon</code> will automatically pin the Julia threads to the CPU threads they are currently running on (to avoid migration).</p></div></div><h3 id="perfmon_function"><a class="docs-heading-anchor" href="#perfmon_function">The <code>perfmon</code> function</a><a id="perfmon_function-1"></a><a class="docs-heading-anchor-permalink" href="#perfmon_function" title="Permalink"></a></h3><p>If you need more fine-grained control, you should use the <a href="../../references/perfmon/#LIKWID.PerfMon.perfmon-Tuple{Any, Any}"><code>perfmon</code></a> function instead of <a href="#perfmon_macro">the <code>@perfmon</code> macro</a>. Among other things, it allows one to</p><ol><li>disable automatic thread-pinning via <code>autopin=false</code>,</li><li>manually indicate the CPU threads (&quot;cores&quot;) to be monitored through the <code>cpuids</code> keyword argument</li><li>suppress printing via <code>print=false</code>.</li></ol><pre><code class="language-julia hljs"># since we&#39;ll have autopin=false, we must manually ensure that computations run on the
+# cpu threads / cores that we&#39;re monitoring!
+LIKWID.pinthreads([0,1,2])
+metrics, events = perfmon(() -&gt; saxpy!(z, a, x, y), &quot;FLOPS_DP&quot;; cpuids=[0,1], autopin=false);</code></pre><pre><code class="nohighlight hljs">
+Group: FLOPS_DP
+┌───────────────────────────┬──────────┬──────────┐
+│                     Event │ Thread 1 │ Thread 2 │
+├───────────────────────────┼──────────┼──────────┤
+│          ACTUAL_CPU_CLOCK │ 805504.0 │ 677456.0 │
+│             MAX_CPU_CLOCK │ 548820.0 │ 451058.0 │
+│      RETIRED_INSTRUCTIONS │  64537.0 │ 103995.0 │
+│       CPU_CLOCKS_UNHALTED │ 181393.0 │ 120942.0 │
+│ RETIRED_SSE_AVX_FLOPS_ALL │   6668.0 │   6666.0 │
+│                     MERGE │      0.0 │      0.0 │
+└───────────────────────────┴──────────┴──────────┘
+┌──────────────────────┬─────────────┬─────────────┐
+│               Metric │    Thread 1 │    Thread 2 │
+├──────────────────────┼─────────────┼─────────────┤
+│  Runtime (RDTSC) [s] │ 0.000189612 │ 0.000189612 │
+│ Runtime unhalted [s] │ 0.000358688 │ 0.000301668 │
+│          Clock [MHz] │     3296.01 │     3372.87 │
+│                  CPI │     2.81068 │     1.16296 │
+│         DP [MFLOP/s] │     35.1665 │     35.1559 │
+└──────────────────────┴─────────────┴─────────────┘
+</code></pre><p>Note that Julia&#39;s <code>do</code> syntax can often be useful here.</p><pre><code class="language-julia hljs">metrics, events = perfmon(&quot;FLOPS_DP&quot;; cpuids=[0,1], autopin=false, print=false) do
+    # code goes here...
+    saxpy!(z, a, x, y)
+end;</code></pre><h2 id="GPU"><a class="docs-heading-anchor" href="#GPU">GPU</a><a id="GPU-1"></a><a class="docs-heading-anchor-permalink" href="#GPU" title="Permalink"></a></h2><div class="admonition is-warning"><header class="admonition-header">Warning</header><div class="admonition-body"><p>Experimental</p></div></div><pre><code class="language-julia hljs">using LIKWID
+using CUDA
+
+N = 10_000
+a = 3.141f0 # Float32
+x = CUDA.rand(Float32, N)
+y = CUDA.rand(Float32, N)
+z = CUDA.zeros(Float32, N)
+
+saxpy!(z, a, x, y) = z .= a .* x .+ y
+saxpy!(z, a, x, y); # warmup
+
+metrics, events = @nvmon &quot;FLOPS_SP&quot; saxpy!(z, a, x, y);</code></pre><pre><code class="nohighlight hljs">
+Group: FLOPS_SP
+┌────────────────────────────────────────────────────┬─────────┐
+│                                              Event │   GPU 1 │
+├────────────────────────────────────────────────────┼─────────┤
+│ SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM │     0.0 │
+│ SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM │     0.0 │
+│ SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM │ 10000.0 │
+└────────────────────────────────────────────────────┴─────────┘
+┌─────────────────────┬────────────┐
+│              Metric │      GPU 1 │
+├─────────────────────┼────────────┤
+│ Runtime (RDTSC) [s] │ 1.84467e10 │
+│        SP [MFLOP/s] │ 1.0842e-12 │
+└─────────────────────┴────────────┘
+</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../tutorials/counting_flops/">« Counting FLOPs</a><a class="docs-footer-nextpage" href="../howto_pinning/">Pinning Julia Threads »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 2 March 2023 09:27">Thursday 2 March 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
