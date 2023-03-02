@@ -4,7 +4,7 @@ _zeroifnothing(x) = x
 """
 Print result tables etc. for the given group ids.
 """
-function _print_perfmon_results(gid=PerfMon.get_id_of_active_group())
+function _print_perfmon_results(gid = PerfMon.get_id_of_active_group())
     PerfMon.isinitialized() || PerfMon.init()
     ## extract event and metric results
     nevents = PerfMon.get_number_of_events(gid)
@@ -16,11 +16,11 @@ function _print_perfmon_results(gid=PerfMon.get_id_of_active_group())
     for tid in 1:ngrpthreads
         for eid in 1:nevents
             events[eid, 1] = PerfMon.get_name_of_event(gid, eid)
-            events[eid, tid+1] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
+            events[eid, tid + 1] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
         end
         for mid in 1:nmetrics
             metrics[mid, 1] = PerfMon.get_name_of_metric(gid, mid)
-            metrics[mid, tid+1] = _zeroifnothing(PerfMon.get_metric(gid, mid, tid))
+            metrics[mid, tid + 1] = _zeroifnothing(PerfMon.get_metric(gid, mid, tid))
         end
     end
 
@@ -28,9 +28,9 @@ function _print_perfmon_results(gid=PerfMon.get_id_of_active_group())
     theader = ["Thread $(i)" for i in 1:ngrpthreads]
     grpname = PerfMon.get_name_of_group(gid)
     print("\nGroup: ")
-    printstyled("$grpname\n"; bold=true)
-    pretty_table(events; header=vcat(["Event"], theader))
-    pretty_table(metrics; header=vcat(["Metric"], theader))
+    printstyled("$grpname\n"; bold = true)
+    pretty_table(events; header = vcat(["Event"], theader))
+    pretty_table(metrics; header = vcat(["Metric"], theader))
     return nothing
 end
 
@@ -53,32 +53,33 @@ function _print_markerfile(markerfile::AbstractString)
             # events
             for eid in 1:rnevents
                 events[eid, 1] = PerfMon.get_name_of_event(rgid, eid)
-                events[eid, tid+1] = _zeroifnothing(MarkerFile.regionresult(rid, eid, tid))
+                events[eid, tid + 1] = _zeroifnothing(MarkerFile.regionresult(rid, eid,
+                                                                              tid))
             end
             # metrics
             for mid in 1:rnmetrics
                 metrics[mid, 1] = PerfMon.get_name_of_metric(rgid, mid)
-                metrics[mid, tid+1] = _zeroifnothing(MarkerFile.regionmetric(rid, mid, tid))
+                metrics[mid, tid + 1] = _zeroifnothing(MarkerFile.regionmetric(rid, mid,
+                                                                               tid))
             end
         end
         ## printing
         theader = ["Thread $(i)" for i in 1:rnthreads]
         grpname = PerfMon.get_name_of_group(rgid)
         print("\nRegion: ")
-        printstyled("$rname, "; bold=true)
+        printstyled("$rname, "; bold = true)
         print("Group: ")
-        printstyled("$grpname\n"; bold=true)
-        pretty_table(events; header=vcat(["Event"], theader))
-        pretty_table(metrics; header=vcat(["Metric"], theader))
+        printstyled("$grpname\n"; bold = true)
+        pretty_table(events; header = vcat(["Event"], theader))
+        pretty_table(metrics; header = vcat(["Metric"], theader))
     end
     return nothing
 end
 
-
 """
 Print result tables etc. for the given group ids.
 """
-function _print_nvmon_results(gid=NvMon.get_id_of_active_group())
+function _print_nvmon_results(gid = NvMon.get_id_of_active_group())
     NvMon.isinitialized() || NvMon.init()
     ## extract event and metric results
     nevents = NvMon.get_number_of_events(gid)
@@ -90,11 +91,11 @@ function _print_nvmon_results(gid=NvMon.get_id_of_active_group())
     for gpuid in 1:ngpus
         for eid in 1:nevents
             events[eid, 1] = NvMon.get_name_of_event(gid, eid)
-            events[eid, gpuid+1] = _zeroifnothing(NvMon.get_result(gid, eid, gpuid))
+            events[eid, gpuid + 1] = _zeroifnothing(NvMon.get_result(gid, eid, gpuid))
         end
         for mid in 1:nmetrics
             metrics[mid, 1] = NvMon.get_name_of_metric(gid, mid)
-            metrics[mid, gpuid+1] = _zeroifnothing(NvMon.get_metric(gid, mid, gpuid))
+            metrics[mid, gpuid + 1] = _zeroifnothing(NvMon.get_metric(gid, mid, gpuid))
         end
     end
 
@@ -102,8 +103,8 @@ function _print_nvmon_results(gid=NvMon.get_id_of_active_group())
     theader = ["GPU $(i)" for i in 1:ngpus]
     grpname = NvMon.get_name_of_group(gid)
     print("\nGroup: ")
-    printstyled("$grpname\n"; bold=true)
-    pretty_table(events; header=vcat(["Event"], theader))
-    pretty_table(metrics; header=vcat(["Metric"], theader))
+    printstyled("$grpname\n"; bold = true)
+    pretty_table(events; header = vcat(["Event"], theader))
+    pretty_table(metrics; header = vcat(["Metric"], theader))
     return nothing
 end

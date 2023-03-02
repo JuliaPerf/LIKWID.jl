@@ -11,7 +11,7 @@ using IterTools
     @test NvMon.get_number_of_gpus() ≥ 1
     @test NvMon.get_number_of_groups() == 0
     groups = NvMon.supported_groups(0)
-    @test typeof(groups) == Dict{String,LIKWID.GroupInfoCompact}
+    @test typeof(groups) == Dict{String, LIKWID.GroupInfoCompact}
     grpinfo = first(groups)[2]
     gname = grpinfo.name
     gsinfo = grpinfo.shortinfo

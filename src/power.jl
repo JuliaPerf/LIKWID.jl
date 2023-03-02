@@ -1,7 +1,8 @@
 module Power
 
 using ..LIKWID:
-    LibLikwid, power_initialized, topo_initialized, _powerinfo, powerinfo, TurboBoost, PowerDomain, PowerInfo, init_topology
+                LibLikwid, power_initialized, topo_initialized, _powerinfo, powerinfo,
+                TurboBoost, PowerDomain, PowerInfo, init_topology
 using Unitful
 
 const POWER_DOMAIN_SUPPORT_STATUS = UInt64(1) << 0
@@ -42,42 +43,35 @@ end
 
 function _build_jl_power()
     pi = _powerinfo[]
-    tb = TurboBoost(
-        pi.turbo.numSteps, unsafe_wrap(Array, pi.turbo.steps, pi.turbo.numSteps)
-    )
-    pds = ntuple(
-        i -> begin
-            p = pi.domains[i]
-            PowerDomain(
-                p.type,
-                p.type,
-                p.supportFlags,
-                p.energyUnit,
-                p.tdp,
-                p.minPower,
-                p.maxPower,
-                p.maxTimeWindow,
-                !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_INFO),
-                !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_STATUS),
-                !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_PERF),
-                !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_POLICY),
-                !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_LIMIT),
-            )
-        end,
-        5,
-    )
-    powerinfo[] = PowerInfo(
-        pi.baseFrequency,
-        pi.minFrequency,
-        tb,
-        pi.hasRAPL,
-        pi.powerUnit,
-        pi.timeUnit,
-        pi.uncoreMinFreq,
-        pi.uncoreMaxFreq,
-        pi.perfBias,
-        pds,
-    )
+    tb = TurboBoost(pi.turbo.numSteps,
+                    unsafe_wrap(Array, pi.turbo.steps, pi.turbo.numSteps))
+    pds = ntuple(i -> begin
+                     p = pi.domains[i]
+                     PowerDomain(p.type,
+                                 p.type,
+                                 p.supportFlags,
+                                 p.energyUnit,
+                                 p.tdp,
+                                 p.minPower,
+                                 p.maxPower,
+                                 p.maxTimeWindow,
+                                 !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_INFO),
+                                 !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_STATUS),
+                                 !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_PERF),
+                                 !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_POLICY),
+                                 !iszero(p.supportFlags & POWER_DOMAIN_SUPPORT_LIMIT))
+                 end,
+                 5)
+    powerinfo[] = PowerInfo(pi.baseFrequency,
+                            pi.minFrequency,
+                            tb,
+                            pi.hasRAPL,
+                            pi.powerUnit,
+                            pi.timeUnit,
+                            pi.uncoreMinFreq,
+                            pi.uncoreMaxFreq,
+                            pi.perfBias,
+                            pds)
     return nothing
 end
 
@@ -144,7 +138,7 @@ julia> LIKWID.Power.measure(; cpuid=0, domainid=0) do
 15.13702392578125 μJ
 ```
 """
-function measure(f; cpuid::Integer=0, domainid::Integer)
+function measure(f; cpuid::Integer = 0, domainid::Integer)
     init(cpuid) || error("Couldn't init LIKWIDs power module.")
     try
         p_start = start_power(cpuid, domainid)

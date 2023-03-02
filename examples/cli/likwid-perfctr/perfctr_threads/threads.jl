@@ -7,10 +7,10 @@ using Base.Threads: nthreads, @threads
 @assert nthreads() > 1 # multithreading
 
 # Julia threads must be pinned!
-LIKWID.pinthreads(0:nthreads()-1)
+LIKWID.pinthreads(0:(nthreads() - 1))
 
 using ThreadPinning
-threadinfo(; color=false)
+threadinfo(; color = false)
 
 const N = 100_000_000
 const a = 3.141f0
@@ -29,7 +29,7 @@ Marker.init()
 results = Vector{Float64}(undef, Threads.nthreads())
 Threads.@threads :static for i in 1:Threads.nthreads()
     LIKWID.Marker.startregion("flop")
-    results[i] = 3.12*4.34
+    results[i] = 3.12 * 4.34
     LIKWID.Marker.stopregion("flop")
 end
 

@@ -8,5 +8,5 @@ push!(LOAD_PATH, joinpath(@__DIR__, ".."))
 println("+++ :julia: Fixing Doctests")
 using Documenter
 using LIKWID
-DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID); recursive=true)
-doctest(LIKWID, fix=true)
+DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID); recursive = true)
+doctest(LIKWID, fix = true)

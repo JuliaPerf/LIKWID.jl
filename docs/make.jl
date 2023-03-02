@@ -26,53 +26,50 @@ DocThemePC2.install(@__DIR__)
 
 @info "Generating Documenter.jl site"
 #DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive = true)
-makedocs(
-    sitename="LIKWID.jl",
-    authors="Carsten Bauer",
-    modules=[LIKWID],
-    doctest=false, #ci
-    pages=[
-        "LIKWID" => "index.md",
-        "Tutorials" => [
-            "Counting FLOPs" => "tutorials/counting_flops.md",
-        ],
-        "How-To Guides" => [
-            "Performance Monitoring" => "howtos/howto_perfmon.md",
-            "Pinning Julia Threads" => "howtos/howto_pinning.md",
-            "Marker API" => "howtos/howto_marker.md",
-            "Marker API: Dynamic Usage" => "howtos/howto_marker_dynamic.md",
-            "System Topology" => "howtos/howto_topology.md",
-        ],
-        # "Examples" => [
-        #     "Using the Marker API" => "examples/saxpy.md",
-        #     "Monitoring performance" => "examples/perfmon.md",
-        # ],
-        "References" => [
-            "Marker API (CPU)" => "references/marker.md",
-            "Marker API (GPU)" => "references/marker_gpu.md",
-            "CPU topology" => "references/topo.md",
-            "Performance monitoring" => "references/perfmon.md",
-            "GPU topology" => "references/topo_gpu.md",
-            "NVIDIA monitoring" => "references/nvmon.md",
-            "CPU clock timer" => "references/timer.md",
-            "CPU temperature" => "references/temperature.md",
-            "Power / Energy" => "references/power.md",
-            "Affinity" => "references/affinity.md",
-            "HPM / Access" => "references/access.md",
-            "Miscellaneous" => "references/misc.md",
-        ],
-    ],
-    # assets = ["assets/custom.css", "assets/custom.js"]
-    repo="https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
-    format=Documenter.HTML(; collapselevel=1),#, assets = ["assets/favicon.ico"])
-)
+makedocs(sitename = "LIKWID.jl",
+         authors = "Carsten Bauer",
+         modules = [LIKWID],
+         doctest = false, #ci
+         pages = [
+             "LIKWID" => "index.md",
+             "Tutorials" => [
+                 "Counting FLOPs" => "tutorials/counting_flops.md",
+             ],
+             "How-To Guides" => [
+                 "Performance Monitoring" => "howtos/howto_perfmon.md",
+                 "Pinning Julia Threads" => "howtos/howto_pinning.md",
+                 "Marker API" => "howtos/howto_marker.md",
+                 "Marker API: Dynamic Usage" => "howtos/howto_marker_dynamic.md",
+                 "System Topology" => "howtos/howto_topology.md",
+             ],
+             # "Examples" => [
+             #     "Using the Marker API" => "examples/saxpy.md",
+             #     "Monitoring performance" => "examples/perfmon.md",
+             # ],
+             "References" => [
+                 "Marker API (CPU)" => "references/marker.md",
+                 "Marker API (GPU)" => "references/marker_gpu.md",
+                 "CPU topology" => "references/topo.md",
+                 "Performance monitoring" => "references/perfmon.md",
+                 "GPU topology" => "references/topo_gpu.md",
+                 "NVIDIA monitoring" => "references/nvmon.md",
+                 "CPU clock timer" => "references/timer.md",
+                 "CPU temperature" => "references/temperature.md",
+                 "Power / Energy" => "references/power.md",
+                 "Affinity" => "references/affinity.md",
+                 "HPM / Access" => "references/access.md",
+                 "Miscellaneous" => "references/misc.md",
+             ],
+         ],
+         # assets = ["assets/custom.css", "assets/custom.js"]
+         repo = "https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
+         format = Documenter.HTML(; collapselevel = 1))
 
 if ci || deploy
     @info "Deploying documentation to GitHub"
-    deploydocs(
-        repo = "github.com/JuliaPerf/LIKWID.jl.git",
-        devbranch = "main",
-        push_preview = true,
-        # target = "site",
-    )
+    deploydocs(repo = "github.com/JuliaPerf/LIKWID.jl.git",
+               devbranch = "main",
+               push_preview = true
+               # target = "site",
+               )
 end

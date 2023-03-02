@@ -25,15 +25,13 @@ function _build_jl_numa()
     _nodes = unsafe_wrap(Array, ni.nodes, nnodes)
     nodes = Vector{NumaNode}(undef, nnodes)
     for (i, n) in enumerate(_nodes)
-        nodes[i] = NumaNode(
-            n.id,
-            n.totalMemory, # kB
-            n.freeMemory, # kB
-            n.numberOfProcessors,
-            unsafe_wrap(Array, n.processors, n.numberOfProcessors),
-            n.numberOfDistances,
-            unsafe_wrap(Array, n.distances, n.numberOfDistances),
-        )
+        nodes[i] = NumaNode(n.id,
+                            n.totalMemory, # kB
+                            n.freeMemory, # kB
+                            n.numberOfProcessors,
+                            unsafe_wrap(Array, n.processors, n.numberOfProcessors),
+                            n.numberOfDistances,
+                            unsafe_wrap(Array, n.distances, n.numberOfDistances))
     end
 
     numainfo[] = NumaTopology(nnodes, nodes)

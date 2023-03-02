@@ -16,9 +16,9 @@ end
 
     topo = LIKWID.get_cpu_topology()
     ncores = topo.numSockets * topo.numCoresPerSocket
-    cpus_firstN = 0:N-1
+    cpus_firstN = 0:(N - 1)
     cpus_firstN_shuffeled = shuffle(cpus_firstN)
-    cpus_rand = shuffle(0:ncores-1)[1:N]
+    cpus_rand = shuffle(0:(ncores - 1))[1:N]
 
     LIKWID.pinthreads(cpus_firstN)
     println("First N: ", LIKWID.get_processor_ids())

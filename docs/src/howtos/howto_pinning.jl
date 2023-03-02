@@ -37,7 +37,7 @@ println("Cores: ", LIKWID.get_processor_ids())
 
 # To pin a thread to a specific core, there is [`LIKWID.pinthread`](@ref).
 # Using `Threads.@threads :static for` like above, we can, for example, pin the `N` Julia threads to the first `N` cores.
-cores_firstN = 0:N-1
+cores_firstN = 0:(N - 1)
 Threads.@threads :static for i in 1:N
     LIKWID.pinthread(cores_firstN[i])
 end
@@ -50,7 +50,6 @@ cores_firstN_shuffeled = shuffle(cores_firstN)
 LIKWID.pinthreads(cores_firstN_shuffeled)
 println("Cores: ", LIKWID.get_processor_ids())
 LIKWID.get_processor_ids() == cores_firstN_shuffeled
-
 
 # ## likwid-pin
 #

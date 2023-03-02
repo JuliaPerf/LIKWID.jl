@@ -109,7 +109,7 @@ function timeit(f)
         f()
         t_stop = stop_clock(t_start)
 
-        return (clock=get_clock(t_stop), cycles=get_clock_cycles(t_stop))
+        return (clock = get_clock(t_stop), cycles = get_clock_cycles(t_stop))
     finally
         finalize()
     end

@@ -10,7 +10,7 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
     @test PerfMon.get_number_of_threads() == 1
     @test PerfMon.get_number_of_groups() == 0
     groups = PerfMon.supported_groups()
-    @test typeof(groups) == Dict{String,LIKWID.GroupInfoCompact}
+    @test typeof(groups) == Dict{String, LIKWID.GroupInfoCompact}
     @show first(groups)
     grpinfo = first(groups)[2]
     gname = grpinfo.name
@@ -82,24 +82,20 @@ const perfgrp = is_github_runner ? "MEM" : "FLOPS_SP"
     metrics, events = perfmon(perfgrp) do
         x .+ y
     end
-    @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
-    @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+    @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+    @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
     metrics, events = perfmon((perfgrp, perfgrp)) do # TODO: don't use same here
         x .+ y
     end
-    @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
-    @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+    @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+    @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
 
     # @perfmon macro
     if is_github_runner
-        metrics, events = @perfmon "MEM" begin
-            x .+ y
-        end
+        metrics, events = @perfmon "MEM" begin x .+ y end
     else
-        metrics, events = @perfmon "FLOPS_SP" begin
-            x .+ y
-        end
+        metrics, events = @perfmon "FLOPS_SP" begin x .+ y end
     end
-    @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
-    @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+    @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+    @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
 end

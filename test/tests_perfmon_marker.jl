@@ -20,7 +20,7 @@ result = @perfmon_marker "FLOPS_DP" begin
     b = 3.2
     c = 1.0
     Threads.@threads :static for tid in 1:N
-        @marker "calc_flops" c = do_flops(c, a, b, NUM_FLOPS)
+        @marker "calc_flops" c=do_flops(c, a, b, NUM_FLOPS)
         sin(b) # not monitored
         @marker "exponential" exp(a)
     end

@@ -1,11 +1,12 @@
 module Marker
 
-using ..LIKWID: LibLikwid, PerfMon, capture_stderr!, get_processor_ids, LIKWID, MarkerFile, _print_markerfile
+using ..LIKWID: LibLikwid, PerfMon, capture_stderr!, get_processor_ids, LIKWID, MarkerFile,
+                _print_markerfile
 
 """
 Initialize the Marker API, assuming that julia is running under `likwid-perfctr`. Must be called previous to all other functions.
 """
-function init(; N=Threads.nthreads())
+function init(; N = Threads.nthreads())
     LibLikwid.likwid_markerInit()
     Threads.@threads :static for i in 1:N
         LibLikwid.likwid_markerThreadInit()
@@ -188,7 +189,9 @@ macro parallelmarker(regiontag, expr)
     return esc(q)
 end
 
-function prepare_marker_dynamic(groups; cpuids=get_processor_ids(), markerfile=joinpath(pwd(), "likwid.markerfile"), force=true, verbosity=0)
+function prepare_marker_dynamic(groups; cpuids = get_processor_ids(),
+                                markerfile = joinpath(pwd(), "likwid.markerfile"),
+                                force = true, verbosity = 0)
     LIKWID.clearenv()
     # the cpu threads to be considered
     if cpuids isa String
@@ -252,9 +255,9 @@ end
 Initialize the full Marker API from within the current Julia session (i.e. no `likwird-perfctr` necessary).
 A performance group, e.g. "FLOPS_DP", must be provided as the first argument.
 """
-function init_dynamic(group_or_groups; cpuids=get_processor_ids(), kwargs...)
+function init_dynamic(group_or_groups; cpuids = get_processor_ids(), kwargs...)
     prepare_marker_dynamic(group_or_groups; cpuids, kwargs...)
-    return init(; N=length(cpuids))
+    return init(; N = length(cpuids))
 end
 
 """
@@ -335,11 +338,12 @@ Region: exponential, Group: FLOPS_DP
 
 ```
 """
-function perfmon_marker(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, keep=false, print=true, kwargs...)
+function perfmon_marker(f, group_or_groups; cpuids = get_processor_ids(), autopin = true,
+                        keep = false, print = true, kwargs...)
     cpuids = cpuids isa Integer ? [cpuids] : cpuids
     autopin && PerfMon._perfmon_autopin(cpuids)
     env_vars_before = _save_env_vars()
-    Marker.init_dynamic(group_or_groups; cpuids=cpuids, kwargs...)
+    Marker.init_dynamic(group_or_groups; cpuids = cpuids, kwargs...)
     PerfMon.init(cpuids)
     markerfile = LIKWID.LIKWID_FILEPATH()
     isfile(markerfile) && rm(markerfile)

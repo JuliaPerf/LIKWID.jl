@@ -1,27 +1,27 @@
 module PerfMon
 
 using ..LIKWID:
-    LibLikwid,
-    perfmon_initialized,
-    topo_initialized,
-    numa_initialized,
-    timer_initialized,
-    init_topology,
-    init_numa,
-    GroupInfoCompact,
-    OrderedDict,
-    perfmon_initialized,
-    get_processor_ids,
-    get_processor_id,
-    pinthreads,
-    pinthread,
-    _print_perfmon_results
+                LibLikwid,
+                perfmon_initialized,
+                topo_initialized,
+                numa_initialized,
+                timer_initialized,
+                init_topology,
+                init_numa,
+                GroupInfoCompact,
+                OrderedDict,
+                perfmon_initialized,
+                get_processor_ids,
+                get_processor_id,
+                pinthreads,
+                pinthread,
+                _print_perfmon_results
 
 """
     init(cpuid_or_cpuids)
 Initialize LIKWID's PerfMon module for the cpu threads with the given ids (starting at 0!).
 """
-function init(cpus::AbstractVector{Int32}=get_processor_ids())
+function init(cpus::AbstractVector{Int32} = get_processor_ids())
     perfmon_initialized[] && finalize()
 
     if !topo_initialized[]
@@ -120,14 +120,12 @@ function supported_groups()
     groups_vec = unsafe_wrap(Array, groups_ref[], ret)
     shorts_vec = unsafe_wrap(Array, shorts_ref[], ret)
     longs_vec = unsafe_wrap(Array, longs_ref[], ret)
-    res = Dict{String,GroupInfoCompact}()
+    res = Dict{String, GroupInfoCompact}()
     for i in 1:ret
         name = unsafe_string(groups_vec[i])
-        res[name] = GroupInfoCompact(
-            name,
-            unsafe_string(shorts_vec[i]),
-            unsafe_string(longs_vec[i]),
-        )
+        res[name] = GroupInfoCompact(name,
+                                     unsafe_string(shorts_vec[i]),
+                                     unsafe_string(longs_vec[i]))
     end
     LibLikwid.perfmon_returnGroups(ret, groups_ref[], shorts_ref[], longs_ref[])
     return res
@@ -168,8 +166,10 @@ end
 "Get the id of the metric with the given name."
 function get_id_of_metric(group, metricname::AbstractString)
     gid = group isa Integer ? group : get_id_of_group(group)
-    r = findfirst(i -> get_name_of_metric(gid, i) == metricname, 1:get_number_of_metrics(gid))
-    isnothing(r) && error("Metric with name \"$(get_name_of_group(gid))\" couldn't be found. Available metrics are: $(list_metrics(gid))")
+    r = findfirst(i -> get_name_of_metric(gid, i) == metricname,
+                  1:get_number_of_metrics(gid))
+    isnothing(r) &&
+        error("Metric with name \"$(get_name_of_group(gid))\" couldn't be found. Available metrics are: $(list_metrics(gid))")
     return r
 end
 
@@ -177,7 +177,8 @@ end
 function get_id_of_event(group, eventname::AbstractString)
     gid = group isa Integer ? group : get_id_of_group(group)
     r = findfirst(i -> get_name_of_event(gid, i) == eventname, 1:get_number_of_events(gid))
-    isnothing(r) && error("Event with name \"$(get_name_of_group(gid))\" couldn't be found. Available events are: $(list_events(gid))")
+    isnothing(r) &&
+        error("Event with name \"$(get_name_of_group(gid))\" couldn't be found. Available events are: $(list_events(gid))")
     return r
 end
 
@@ -413,22 +414,28 @@ function get_metric_results(group, threadid::Integer)
     _check_groupid(groupid) || return nothing
     _check_threadidx(threadid) || return nothing
     nmetrics = get_number_of_metrics(groupid)
-    d = OrderedDict{String,Float64}()
+    d = OrderedDict{String, Float64}()
     for metricid in 1:nmetrics
         metric = get_name_of_metric(groupid, metricid)
         d[metric] = get_last_metric(groupid, metricid, threadid)
     end
     return d
 end
-get_metric_results(groupid::Integer) = get_metric_results.(groupid, 1:get_number_of_threads())
-get_metric_results(groupname::AbstractString) = get_metric_results(get_id_of_group(groupname))
+function get_metric_results(groupid::Integer)
+    get_metric_results.(groupid, 1:get_number_of_threads())
+end
+function get_metric_results(groupname::AbstractString)
+    get_metric_results(get_id_of_group(groupname))
+end
 
 function get_metric_results(group, metric, threadid::Integer)
     groupid = group isa Integer ? group : get_id_of_group(group)
     metricid = metric isa Integer ? metric : get_id_of_metric(groupid, metric)
     return get_last_metric(groupid, metricid, threadid)
 end
-get_metric_results(group, metric) = get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_threads())
+function get_metric_results(group, metric)
+    get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_threads())
+end
 
 """
   `get_metric_results()`
@@ -451,7 +458,7 @@ julia> PerfMon.get_metric_results()["FLOPS_DP"][2]["DP [MFLOP/s]"]
 """
 function get_metric_results()
     ngrps = get_number_of_groups()
-    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    results = OrderedDict{String, Vector{OrderedDict{String, Float64}}}()
     for group in 1:ngrps
         groupname = get_name_of_group(group)
         group_results = get_metric_results(group)
@@ -471,7 +478,7 @@ function get_event_results(group, threadid::Integer)
     _check_groupid(groupid) || return nothing
     _check_threadidx(threadid) || return nothing
     nevents = get_number_of_events(groupid)
-    d = OrderedDict{String,Float64}()
+    d = OrderedDict{String, Float64}()
     for eventid in 1:nevents
         event = get_name_of_event(groupid, eventid)
         d[event] = get_last_event(groupid, eventid, threadid)
@@ -486,11 +493,13 @@ function get_event_results(group, event, threadid::Integer)
     eventid = event isa Integer ? event : get_id_of_event(groupid, event)
     return get_last_event(groupid, eventid, threadid)
 end
-get_event_results(group, event) = get_event_results.(Ref(group), Ref(event), 1:get_number_of_threads())
+function get_event_results(group, event)
+    get_event_results.(Ref(group), Ref(event), 1:get_number_of_threads())
+end
 
 function get_event_results()
     ngrps = get_number_of_groups()
-    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    results = OrderedDict{String, Vector{OrderedDict{String, Float64}}}()
     for group in 1:ngrps
         groupname = get_name_of_group(group)
         group_results = get_event_results(group)
@@ -614,7 +623,8 @@ Group: MEM1
 
 ```
 """
-function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, finalize=true, print=true)
+function perfmon(f, group_or_groups; cpuids = get_processor_ids(), autopin = true,
+                 finalize = true, print = true)
     cpuids = cpuids isa Integer ? [cpuids] : cpuids
     autopin && _perfmon_autopin(cpuids)
     PerfMon.init(cpuids)
@@ -630,7 +640,7 @@ function perfmon(f, group_or_groups; cpuids=get_processor_ids(), autopin=true, f
     event_results = PerfMon.get_event_results()
     if print
         gid_lastgroup = PerfMon.get_id_of_active_group()
-        groupids = reverse(gid_lastgroup .- (0:length(groups)-1))
+        groupids = reverse(gid_lastgroup .- (0:(length(groups) - 1)))
         for gid in groupids
             _print_perfmon_results(gid)
         end

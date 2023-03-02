@@ -20,7 +20,7 @@ const NUM_THREADS = 3;
 
 # Let's pin the first `NUM_THREADS` threads to the first `NUM_THREADS` cores.
 using LIKWID
-cores = 0:NUM_THREADS-1
+cores = 0:(NUM_THREADS - 1)
 @threads :static for tid in 1:NUM_THREADS
     LIKWID.pinthread(cores[tid])
 end
@@ -36,7 +36,7 @@ end
 # We use the `LIKWID.LIKWID_*` functions to set environment variables to configure LIKWID for our
 # monitoring.
 ## use the following threads
-cpustr = join(collect(0:NUM_THREADS-1), ",")
+cpustr = join(collect(0:(NUM_THREADS - 1)), ",")
 LIKWID.LIKWID_THREADS(cpustr)
 ## the location the marker file will be stored
 LIKWID.LIKWID_FILEPATH(joinpath(@__DIR__, "likwid_marker.out"))
@@ -130,18 +130,18 @@ nmetrics = PerfMon.get_number_of_metrics(gid)
 events = Matrix(undef, nevents, NUM_THREADS + 1)
 metrics = Matrix(undef, nmetrics, NUM_THREADS + 1)
 
-for tid in 0:NUM_THREADS-1
-    for eid in 0:nevents-1
-        events[eid+1, 1] = PerfMon.get_name_of_event(gid, eid)
-        events[eid+1, tid+2] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
+for tid in 0:(NUM_THREADS - 1)
+    for eid in 0:(nevents - 1)
+        events[eid + 1, 1] = PerfMon.get_name_of_event(gid, eid)
+        events[eid + 1, tid + 2] = _zeroifnothing(PerfMon.get_result(gid, eid, tid))
     end
-    for mid in 0:nmetrics-1
-        metrics[mid+1, 1] = PerfMon.get_name_of_metric(gid, mid)
-        metrics[mid+1, tid+2] = _zeroifnothing(PerfMon.get_metric(gid, mid, tid))
+    for mid in 0:(nmetrics - 1)
+        metrics[mid + 1, 1] = PerfMon.get_name_of_metric(gid, mid)
+        metrics[mid + 1, tid + 2] = _zeroifnothing(PerfMon.get_metric(gid, mid, tid))
     end
 end
 
 ## printing
-theader = ["Thread $(i)" for i in 0:NUM_THREADS-1]
+theader = ["Thread $(i)" for i in 0:(NUM_THREADS - 1)]
 pretty_table(events; header = vcat(["Event"], theader))
 pretty_table(metrics; header = vcat(["Metric"], theader))

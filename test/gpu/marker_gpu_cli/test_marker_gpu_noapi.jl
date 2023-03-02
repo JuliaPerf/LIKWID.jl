@@ -17,20 +17,20 @@ z_gpu = CUDA.zeros(Float32, N)
 x_gpu = CUDA.rand(Float32, N)
 y_gpu = CUDA.rand(Float32, N)
 
-saxpy_gpu!(z,a,x,y) = CUDA.@sync z .= a .* x .+ y
+saxpy_gpu!(z, a, x, y) = CUDA.@sync z .= a .* x .+ y
 
 # regular workflow
-saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+saxpy_gpu!(z_gpu, a, x_gpu, y_gpu)
 @test !GPUMarker.startregion("saxpy_gpu!")
-saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@test !GPUMarker.stopregion("saxpy_gpu!") 
+saxpy_gpu!(z_gpu, a, x_gpu, y_gpu)
+@test !GPUMarker.stopregion("saxpy_gpu!")
 
 # nextgroup
 @test isnothing(GPUMarker.nextgroup())
 
 # registerregion
-A = CUDA.rand(100,100)
-B = CUDA.rand(100,100)
+A = CUDA.rand(100, 100)
+B = CUDA.rand(100, 100)
 @test !GPUMarker.registerregion("mul")
 @test !GPUMarker.startregion("mul")
 for _ in 1:10
@@ -40,5 +40,3 @@ end
 
 # close
 @test isnothing(GPUMarker.close())
-
-

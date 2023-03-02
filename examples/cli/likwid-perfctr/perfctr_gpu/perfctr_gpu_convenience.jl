@@ -14,8 +14,6 @@ const z = CUDA.zeros(N)
 
 GPUMarker.init()
 
-@gpumarker "saxpy" begin
-    z .= a .* x .* y
-end
+@gpumarker "saxpy" begin z .= a .* x .* y end
 
 GPUMarker.close()

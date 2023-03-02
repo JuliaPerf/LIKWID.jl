@@ -16,13 +16,13 @@ using Test
     @test isinteger(LIKWID.Timer.get_clock_cycles(t))
 
     # convenience functions / macros
-    @test typeof(LIKWID.Timer.@timeit 1 + 3) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
-    @test typeof(LIKWID.Timer.timeit(() -> 1 + 3)) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
-    @test typeof(
-        LIKWID.Timer.timeit() do
-            1 + 3
-        end
-    ) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
+    @test typeof(LIKWID.Timer.@timeit 1 + 3) ==
+          NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
+    @test typeof(LIKWID.Timer.timeit(() -> 1 + 3)) ==
+          NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
+    @test typeof(LIKWID.Timer.timeit() do
+                     1 + 3
+                 end) == NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
 
     @test isnothing(LIKWID.Timer.finalize())
 end

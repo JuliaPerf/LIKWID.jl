@@ -27,22 +27,22 @@ const access_initialized = Ref{Bool}(false)
 const perfmon_initialized = Ref{Bool}(false)
 const gputopo_initialized = Ref{Bool}(false)
 const nvmon_initialized = Ref{Bool}(false)
-const _cputopo = Ref{Union{LibLikwid.CpuTopology,Nothing}}(nothing) # (Julia) API struct
-const cputopo = Ref{Union{CpuTopology,Nothing}}(nothing) # Julia struct
-const _cpuinfo = Ref{Union{LibLikwid.CpuInfo,Nothing}}(nothing) # (Julia) API struct
-const cpuinfo = Ref{Union{CpuInfo,Nothing}}(nothing) # Julia struct
-const _numainfo = Ref{Union{LibLikwid.NumaTopology,Nothing}}(nothing) # (Julia) API struct
-const numainfo = Ref{Union{NumaTopology,Nothing}}(nothing) # Julia struct
-const _affinity = Ref{Union{LibLikwid.AffinityDomains,Nothing}}(nothing) # (Julia) API struct
-const affinity = Ref{Union{AffinityDomains,Nothing}}(nothing) # Julia struct
-const _powerinfo = Ref{Union{LibLikwid.PowerInfo,Nothing}}(nothing) # (Julia) API struct
-const powerinfo = Ref{Union{PowerInfo,Nothing}}(nothing) # Julia struct
-const _config = Ref{Union{LibLikwid.Likwid_Configuration,Nothing}}(nothing) # (Julia) API struct
-const config = Ref{Union{Likwid_Configuration,Nothing}}(nothing) # Julia struct
-const _gputopo = Ref{Union{LibLikwid.GpuTopology,Nothing}}(nothing) # (Julia) API struct
-const gputopo = Ref{Union{GpuTopology,Nothing}}(nothing) # Julia struct
+const _cputopo = Ref{Union{LibLikwid.CpuTopology, Nothing}}(nothing) # (Julia) API struct
+const cputopo = Ref{Union{CpuTopology, Nothing}}(nothing) # Julia struct
+const _cpuinfo = Ref{Union{LibLikwid.CpuInfo, Nothing}}(nothing) # (Julia) API struct
+const cpuinfo = Ref{Union{CpuInfo, Nothing}}(nothing) # Julia struct
+const _numainfo = Ref{Union{LibLikwid.NumaTopology, Nothing}}(nothing) # (Julia) API struct
+const numainfo = Ref{Union{NumaTopology, Nothing}}(nothing) # Julia struct
+const _affinity = Ref{Union{LibLikwid.AffinityDomains, Nothing}}(nothing) # (Julia) API struct
+const affinity = Ref{Union{AffinityDomains, Nothing}}(nothing) # Julia struct
+const _powerinfo = Ref{Union{LibLikwid.PowerInfo, Nothing}}(nothing) # (Julia) API struct
+const powerinfo = Ref{Union{PowerInfo, Nothing}}(nothing) # Julia struct
+const _config = Ref{Union{LibLikwid.Likwid_Configuration, Nothing}}(nothing) # (Julia) API struct
+const config = Ref{Union{Likwid_Configuration, Nothing}}(nothing) # Julia struct
+const _gputopo = Ref{Union{LibLikwid.GpuTopology, Nothing}}(nothing) # (Julia) API struct
+const gputopo = Ref{Union{GpuTopology, Nothing}}(nothing) # Julia struct
 
-const likwid_gpusupport = Ref{Union{Nothing,Bool}}(nothing)
+const likwid_gpusupport = Ref{Union{Nothing, Bool}}(nothing)
 
 # functions
 include("topology.jl")
@@ -93,12 +93,13 @@ function __init__()
             end
         end
     else
-        @warn("The library `liblikwid`` couldn't be found. Don't expect anything to work.", liblikwid)
+        @warn("The library `liblikwid`` couldn't be found. Don't expect anything to work.",
+              liblikwid)
     end
     return nothing
 end
 
-function init(; gpu=false)
+function init(; gpu = false)
     Marker.init()
     init_topology()
     init_numa()
@@ -119,7 +120,7 @@ function init(; gpu=false)
     return nothing
 end
 
-function finalize(; gpu=true)
+function finalize(; gpu = true)
     Marker.close()
     finalize_topology()
     finalize_numa()

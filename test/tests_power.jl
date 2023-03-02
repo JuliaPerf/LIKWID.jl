@@ -34,7 +34,7 @@ else
         @test unit(res) == u"μJ"
 
         # convenience functions / macros
-        res = LIKWID.Power.measure(; cpuid=0, domainid=0) do
+        res = LIKWID.Power.measure(; cpuid = 0, domainid = 0) do
             sleep(0.5)
         end
         @test unit(res) == u"μJ"

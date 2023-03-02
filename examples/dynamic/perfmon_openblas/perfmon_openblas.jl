@@ -8,7 +8,7 @@ const A = rand(1000, 1000)
 const B = rand(1000, 1000)
 const C = zeros(1000, 1000)
 
-metrics, events = perfmon("FLOPS_DP"; cpuids=0:nvcores-1, autopin=false) do
+metrics, events = perfmon("FLOPS_DP"; cpuids = 0:(nvcores - 1), autopin = false) do
     for _ in 1:10
         mul!(C, A, B)
     end

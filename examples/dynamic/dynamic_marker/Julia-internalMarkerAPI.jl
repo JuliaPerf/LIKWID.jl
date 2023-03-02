@@ -54,11 +54,9 @@ function main()
 
     # shouldn't be run under likwid-perfctr
     if haskey(ENV, "LIKWID_PIN")
-        error(
-            "It appears you are running this example with " *
-            "likwid-perfctr. This example is intended to be run alone. " *
-            "Results will be incorrect or missing.",
-        )
+        error("It appears you are running this example with " *
+              "likwid-perfctr. This example is intended to be run alone. " *
+              "Results will be incorrect or missing.")
         exit()
     end
 
@@ -162,14 +160,12 @@ function main()
         group_name = PerfMon.get_name_of_group(gid)
 
         # print basic info
-        @printf(
-            "calc_flops thread %d finished measuring group %s.\nGot %d events, runtime %f s, and call count %d\n",
-            threadid,
-            group_name,
-            nevents,
-            time,
-            count
-        )
+        @printf("calc_flops thread %d finished measuring group %s.\nGot %d events, runtime %f s, and call count %d\n",
+                threadid,
+                group_name,
+                nevents,
+                time,
+                count)
 
         # only allow one thread to print to prevent repeated output.
         if threadid == 1
@@ -181,11 +177,9 @@ function main()
                     # get event name
                     event_name = PerfMon.get_name_of_event(gid, eid)
                     # print results
-                    @printf(
-                        "%40s: %30f\n",
-                        event_name,
-                        _zeroifnothing(PerfMon.get_result(gid, eid, tid))
-                    )
+                    @printf("%40s: %30f\n",
+                            event_name,
+                            _zeroifnothing(PerfMon.get_result(gid, eid, tid)))
                 end
             end
             println()
@@ -258,12 +252,10 @@ function main()
     println("Marker API measured ", nregions, " regions")
     for rid in 1:nregions
         gid = MarkerFile.regiongroup(rid)
-        @printf(
-            "Region %s with %d events and %d metrics\n",
-            MarkerFile.regiontag(rid),
-            MarkerFile.regionevents(rid),
-            MarkerFile.regionmetrics(rid)
-        )
+        @printf("Region %s with %d events and %d metrics\n",
+                MarkerFile.regiontag(rid),
+                MarkerFile.regionevents(rid),
+                MarkerFile.regionmetrics(rid))
     end
     println()
 
@@ -272,15 +264,13 @@ function main()
     println("will not appear, as it was reset after each time it was measured.")
     println()
 
-    @printf(
-        "%6s : %15s : %10s : %6s : %40s : %30s \n",
-        "thread",
-        "region",
-        "group",
-        "type",
-        "result name",
-        "result value"
-    )
+    @printf("%6s : %15s : %10s : %6s : %40s : %30s \n",
+            "thread",
+            "region",
+            "group",
+            "type",
+            "result name",
+            "result value")
 
     # Uncomment the for loop if you'd like to inspect all threads
     tid = 1
@@ -302,15 +292,13 @@ function main()
                 # Get the associated value
                 event_value = MarkerFile.regionresult(rid, eid, tid)
 
-                @printf(
-                    "%6d : %15s : %10s : %6s : %40s : %30f \n",
-                    tid,
-                    region_name,
-                    group_name,
-                    "event",
-                    event_name,
-                    event_value
-                )
+                @printf("%6d : %15s : %10s : %6s : %40s : %30f \n",
+                        tid,
+                        region_name,
+                        group_name,
+                        "event",
+                        event_name,
+                        event_value)
             end
 
             # Get info for each metric
@@ -320,15 +308,13 @@ function main()
                 # Get the associated value
                 metric_value = MarkerFile.regionmetric(rid, mid, tid)
 
-                @printf(
-                    "%6d : %15s : %10s : %6s : %40s : %30f \n",
-                    tid,
-                    region_name,
-                    group_name,
-                    "metric",
-                    metric_name,
-                    metric_value
-                )
+                @printf("%6d : %15s : %10s : %6s : %40s : %30f \n",
+                        tid,
+                        region_name,
+                        group_name,
+                        "metric",
+                        metric_name,
+                        metric_value)
             end
         end
     end

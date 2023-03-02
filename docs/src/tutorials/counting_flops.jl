@@ -51,7 +51,7 @@ function count_FLOPs(N)
     x = rand(N)
     y = rand(N)
     z = zeros(N)
-    metrics, _ = perfmon(() -> daxpy!(z, a, x, y), "FLOPS_DP"; print=false)
+    metrics, _ = perfmon(() -> daxpy!(z, a, x, y), "FLOPS_DP"; print = false)
     flops_per_second = first(metrics["FLOPS_DP"])["DP [MFLOP/s]"] * 1e6
     runtime = first(metrics["FLOPS_DP"])["Runtime (RDTSC) [s]"]
     return round(Int, flops_per_second * runtime)
@@ -63,7 +63,6 @@ count_FLOPs(2 * N) == NFLOPs_expected(2 * N)
 # Feel free to play around further and apply this knowledge to other operations!
 # As an inspiration: How many FLOPs does an `exp.(x)` or `sin.(x)` trigger?
 # Does the answer depend on the length of `x`?
-
 
 # ## Bonus: Reactive FLOPs Counting
 
