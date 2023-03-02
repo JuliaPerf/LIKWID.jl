@@ -36,11 +36,11 @@
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
 -->
 
-*Like I Knew What I am Doing*
-
 | **Documentation**                                                               | **Build Status**                                                                                |  **Quality**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
 | [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][ci-img]][ci-url] [![][ci-fau-img]][ci-fau-url] [![][cov-img]][cov-url] | ![][lifecycle-img] [![][formatcheck-img]][formatcheck-url] |
+
+*Like I Knew What I am Doing*
 
 LIKWID.jl is a Julia wrapper for the performance monitoring and benchmarking suite [LIKWID](https://github.com/RRZE-HPC/likwid).
 
