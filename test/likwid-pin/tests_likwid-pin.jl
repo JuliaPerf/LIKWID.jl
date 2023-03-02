@@ -18,8 +18,8 @@ N = Threads.nthreads()
 
 maskstr = LIKWID.pinmask(N)
 cores_firstN = string("0-", N - 1)
-cores_firstN_shuffled = join(shuffle(0:N-1), ",")
-cores_rand = join(shuffle(0:ncores-1)[1:N], ",")
+cores_firstN_shuffled = join(shuffle(0:(N - 1)), ",")
+cores_rand = join(shuffle(0:(ncores - 1))[1:N], ",")
 
 # LIKWID.finalize()
 # LIKWID.init()

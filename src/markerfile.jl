@@ -58,11 +58,15 @@ regioncount(ridx, tidx) = LibLikwid.perfmon_getCountOfRegion(ridx - 1, tidx - 1)
 """
 Return the call count for the region identified by `ridx`, the event index `eidx` and the thread index `tidx` (all starting at 1).
 """
-regionresult(ridx, eidx, tidx) = LibLikwid.perfmon_getResultOfRegionThread(ridx - 1, eidx - 1, tidx - 1)
+function regionresult(ridx, eidx, tidx)
+    LibLikwid.perfmon_getResultOfRegionThread(ridx - 1, eidx - 1, tidx - 1)
+end
 
 """
 Return the call count for the region identified by `ridx`, the metric index `midx` and the thread index `tidx` (all starting at 1).
 """
-regionmetric(ridx, midx, tidx) = LibLikwid.perfmon_getMetricOfRegionThread(ridx - 1, midx - 1, tidx - 1)
+function regionmetric(ridx, midx, tidx)
+    LibLikwid.perfmon_getMetricOfRegionThread(ridx - 1, midx - 1, tidx - 1)
+end
 
 end # module

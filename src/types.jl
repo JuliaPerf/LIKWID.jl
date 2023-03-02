@@ -160,7 +160,7 @@ struct PowerInfo
     uncoreMinFreq::Float64
     uncoreMaxFreq::Float64
     perfBias::Int
-    domains::NTuple{5,PowerDomain}
+    domains::NTuple{5, PowerDomain}
 end
 
 # struct PowerData
@@ -198,8 +198,8 @@ struct GpuDevice
     compute_capability_major::Int
     compute_capability_minor::Int
     maxThreadsPerBlock::Int
-    maxThreadsDim::NTuple{3,Int}
-    maxGridSize::NTuple{3,Int}
+    maxThreadsDim::NTuple{3, Int}
+    maxGridSize::NTuple{3, Int}
     sharedMemPerBlock::Int
     totalConstantMemory::Int
     simdWidth::Int
@@ -234,20 +234,20 @@ end
 
 # SHOW
 const SHOW_TYPES = Union{
-    CpuTopology,
-    CpuInfo,
-    NumaTopology,
-    NumaNode,
-    AffinityDomain,
-    AffinityDomains,
-    PowerInfo,
-    PowerDomain,
-    TurboBoost,
-    Likwid_Configuration,
-    GroupInfoCompact,
-    GpuTopology,
-    GpuDevice,
-}
+                         CpuTopology,
+                         CpuInfo,
+                         NumaTopology,
+                         NumaNode,
+                         AffinityDomain,
+                         AffinityDomains,
+                         PowerInfo,
+                         PowerDomain,
+                         TurboBoost,
+                         Likwid_Configuration,
+                         GroupInfoCompact,
+                         GpuTopology,
+                         GpuDevice
+                         }
 
 function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
     summary(io, x)
@@ -261,17 +261,16 @@ function Base.show(io::IO, mime::MIME{Symbol("text/plain")}, x::SHOW_TYPES)
            !(T in (NumaNode, AffinityDomain, TurboBoost, GpuDevice))
             print(io, char, " ", field, ": ... (", length(xfield), " elements)")
         elseif field == :totalMemory || field == :freeMemory
-            print(io, char, " ", field, ": ", round(xfield / 1024 / 1024; digits=2), " GB")
+            print(io, char, " ", field, ": ", round(xfield / 1024 / 1024; digits = 2),
+                  " GB")
         elseif T == GpuDevice && field == :mem
-            print(
-                io,
-                char,
-                " ",
-                field,
-                ": ",
-                round(xfield / 1024 / 1024 / 1024; digits=2),
-                " GB",
-            )
+            print(io,
+                  char,
+                  " ",
+                  field,
+                  ": ",
+                  round(xfield / 1024 / 1024 / 1024; digits = 2),
+                  " GB")
         elseif field in (:baseFrequency, :minFrequency, :uncoreMinFreq, :uncoreMaxFreq)
             print(io, char, " ", field, ": ", xfield, " MHz")
         else
@@ -297,8 +296,7 @@ end
 # end
 
 function Base.show(io::IO, x::LibLikwid.TimerData)
-    return print(
-        io, "TimerData(cycles start: $(x.start.int64), cycles stop: $(x.stop.int64))"
-    )
+    return print(io,
+                 "TimerData(cycles start: $(x.start.int64), cycles stop: $(x.stop.int64))")
 end
 Base.show(io::IO, x::LibLikwid.TscCounter) = print(io, x.int64, " (TscCounter)")

@@ -37,7 +37,7 @@ println("Cores: ", coreids)
 
 # To pin a thread to a specific core, there is [`LIKWID.pinthread`](@ref). Using `@threads :static for` like above, we can, for example, pin the `NT` Julia threads to the first `NT` cores:
 ## core numbering starts with zero
-cores_firstNT = 0:NT-1
+cores_firstNT = 0:(NT - 1)
 @threads :static for i in 1:NT
     LIKWID.pinthread(cores_firstNT[i])
 end

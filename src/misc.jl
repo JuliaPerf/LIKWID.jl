@@ -12,7 +12,7 @@ function pinmask(N::Integer)
     return _uint_to_hexmask(~mask) # Invert the mask to only pin Julia threads
 end
 
-_uint_to_hexmask(mask::UInt) = "0x" * string(mask, pad=sizeof(mask) << 1, base=16)
+_uint_to_hexmask(mask::UInt) = "0x" * string(mask, pad = sizeof(mask) << 1, base = 16)
 
 """
 Set the verbosity level of the LIKWID library. Returns `true` on success.
@@ -52,7 +52,7 @@ function _check_likwid_gpusupport()
     try
         withenv("ZES_ENABLE_SYSMAN" => "1") do
             dlopen(liblikwid) do handle
-                return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error=false))
+                return !isnothing(dlsym(handle, :likwid_gpuMarkerInit; throw_error = false))
             end
         end
     catch err
@@ -85,21 +85,22 @@ function _execute(cmd::Cmd)
     out = Pipe()
     err = Pipe()
 
-    process = run(pipeline(ignorestatus(cmd); stdout=out, stderr=err))
+    process = run(pipeline(ignorestatus(cmd); stdout = out, stderr = err))
     close(out.in)
     close(err.in)
 
-    out = (stdout=String(read(out)), stderr=String(read(err)), exitcode=process.exitcode)
+    out = (stdout = String(read(out)), stderr = String(read(err)),
+           exitcode = process.exitcode)
     return out
 end
 
-function _execute_test(cmd::Cmd; print_only_on_fail=true)
+function _execute_test(cmd::Cmd; print_only_on_fail = true)
     out = _execute(cmd)
     hasfailed = !iszero(out[:exitcode]) || (out[:stderr] != "")
     if !print_only_on_fail || hasfailed
         @info("Command: $cmd")
-        @info("stdout:\n" * out[:stdout])
-        @warn("stderr:\n" * out[:stderr])
+        @info("stdout:\n"*out[:stdout])
+        @warn("stderr:\n"*out[:stderr])
     end
     return out[:exitcode] == 0
 end

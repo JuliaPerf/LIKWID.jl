@@ -5,7 +5,7 @@ using Test
     @test LIKWID.setverbosity(0)
     @test LIKWID.pinmask(8) == "0xfffffffffffffe01"
     d = LIKWID.env()
-    @test typeof(d) == Dict{String,String}
+    @test typeof(d) == Dict{String, String}
     for k in keys(d)
         @test startswith(k, "LIKWID")
     end

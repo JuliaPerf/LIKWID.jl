@@ -13,7 +13,7 @@ using CUDA
     @test typeof(gpu) == LIKWID.GpuDevice
     @test typeof(gpu.name) == String
     @test typeof(gpu.mem) == Int
-    @test typeof(gpu.maxThreadsDim) == NTuple{3,Int}
-    @test typeof(gpu.maxGridSize) == NTuple{3,Int}
+    @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
+    @test typeof(gpu.maxGridSize) == NTuple{3, Int}
     @test isnothing(LIKWID.finalize_topology_gpu())
 end

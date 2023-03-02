@@ -10,10 +10,8 @@ const z = zeros(N)
 
 Marker.init()
 
-@marker "saxpy" begin
-    for i in eachindex(x, y)
-        z[i] = a * x[i] * y[i]
-    end
-end
+@marker "saxpy" begin for i in eachindex(x, y)
+    z[i] = a * x[i] * y[i]
+end end
 
 Marker.close()

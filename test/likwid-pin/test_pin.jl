@@ -4,7 +4,7 @@ using Test
 
 if length(ARGS) < 1
     @info("test_pin.jl: No cpustr provided to `test_pin.jl`. Assuming first N cores.")
-    cores = 0:nthreads()-1
+    cores = 0:(nthreads() - 1)
 else
     cpustr = ARGS[1]
     if contains(cpustr, "-")

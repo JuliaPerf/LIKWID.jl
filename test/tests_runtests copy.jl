@@ -124,13 +124,13 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test isinteger(LIKWID.Timer.get_clock_cycles(t))
 
         # convenience functions / macros
-        @test typeof(LIKWID.Timer.@timeit 1 + 3) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
-        @test typeof(LIKWID.Timer.timeit(() -> 1 + 3)) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
-        @test typeof(
-            LIKWID.Timer.timeit() do
-                1 + 3
-            end
-        ) == NamedTuple{(:clock, :cycles),Tuple{Float64,Int64}}
+        @test typeof(LIKWID.Timer.@timeit 1 + 3) ==
+              NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
+        @test typeof(LIKWID.Timer.timeit(() -> 1 + 3)) ==
+              NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
+        @test typeof(LIKWID.Timer.timeit() do
+                         1 + 3
+                     end) == NamedTuple{(:clock, :cycles), Tuple{Float64, Int64}}
 
         @test isnothing(LIKWID.Timer.finalize())
     end
@@ -173,7 +173,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test unit(res) == u"μJ"
 
             # convenience functions / macros
-            res = LIKWID.Power.measure(; cpuid=0, domainid=0) do
+            res = LIKWID.Power.measure(; cpuid = 0, domainid = 0) do
                 sleep(0.5)
             end
             @test unit(res) == u"μJ"
@@ -207,7 +207,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         @test PerfMon.get_number_of_threads() == 1
         @test PerfMon.get_number_of_groups() == 0
         groups = PerfMon.supported_groups()
-        @test typeof(groups) == Dict{String,LIKWID.GroupInfoCompact}
+        @test typeof(groups) == Dict{String, LIKWID.GroupInfoCompact}
         @show first(groups)
         grpinfo = first(groups)[2]
         gname = grpinfo.name
@@ -279,33 +279,29 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
         metrics, events = perfmon(perfgrp) do
             x .+ y
         end
-        @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
-        @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
         metrics, events = perfmon((perfgrp, perfgrp)) do # TODO: don't use same here
             x .+ y
         end
-        @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
-        @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
 
         # @perfmon macro
         if is_github_runner
-            metrics, events = @perfmon "MEM" begin
-                x .+ y
-            end
+            metrics, events = @perfmon "MEM" begin x .+ y end
         else
-            metrics, events = @perfmon "FLOPS_SP" begin
-                x .+ y
-            end
+            metrics, events = @perfmon "FLOPS_SP" begin x .+ y end
         end
-        @test metrics isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
-        @test events isa OrderedDict{String,Vector{OrderedDict{String,Float64}}}
+        @test metrics isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
+        @test events isa OrderedDict{String, Vector{OrderedDict{String, Float64}}}
     end
 
     @testset "Misc" begin
         @test LIKWID.setverbosity(0)
         @test LIKWID.pinmask(8) == "0xfffffffffffffe01"
         d = LIKWID.env()
-        @test typeof(d) == Dict{String,String}
+        @test typeof(d) == Dict{String, String}
         for k in keys(d)
             @test startswith(k, "LIKWID")
         end
@@ -385,8 +381,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             # N==8: 0xfffffffffffffe01
             maskstr = LIKWID.pinmask(N)
             cores_firstN = string("0-", N - 1)
-            cores_firstN_shuffled = join(shuffle(0:N-1), ",")
-            cores_rand = join(shuffle(0:ncores-1)[1:N], ",")
+            cores_firstN_shuffled = join(shuffle(0:(N - 1)), ",")
+            cores_rand = join(shuffle(0:(ncores - 1))[1:N], ",")
 
             @testset "$f" for f in ["test_pin.jl"]
                 withenv("OPENBLAS_NUM_THREADS" => 1) do
@@ -412,8 +408,8 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test typeof(gpu) == LIKWID.GpuDevice
             @test typeof(gpu.name) == String
             @test typeof(gpu.mem) == Int
-            @test typeof(gpu.maxThreadsDim) == NTuple{3,Int}
-            @test typeof(gpu.maxGridSize) == NTuple{3,Int}
+            @test typeof(gpu.maxThreadsDim) == NTuple{3, Int}
+            @test typeof(gpu.maxGridSize) == NTuple{3, Int}
             @test isnothing(LIKWID.finalize_topology_gpu())
         end
 
@@ -424,7 +420,7 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             @test NvMon.get_number_of_gpus() ≥ 1
             @test NvMon.get_number_of_groups() == 0
             groups = NvMon.supported_groups(0)
-            @test typeof(groups) == Dict{String,LIKWID.GroupInfoCompact}
+            @test typeof(groups) == Dict{String, LIKWID.GroupInfoCompact}
             grpinfo = first(groups)[2]
             gname = grpinfo.name
             gsinfo = grpinfo.shortinfo
@@ -509,5 +505,4 @@ exec(cmd::Cmd) = LIKWID._execute_test(cmd)
             end
         end
     end
-
 end

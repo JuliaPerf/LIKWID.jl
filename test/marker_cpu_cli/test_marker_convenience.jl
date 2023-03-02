@@ -14,13 +14,13 @@ z = zeros(Float32, N)
 x = rand(Float32, N)
 y = rand(Float32, N)
 
-saxpy!(z,a,x,y) = z .= a .* x .+ y
+saxpy!(z, a, x, y) = z .= a .* x .+ y
 
-@test @marker "saxpy!" saxpy!(z,a,x,y)
-@test @marker "saxpy!" saxpy!(z,a,x,y)
+@test @marker "saxpy!" saxpy!(z, a, x, y)
+@test @marker "saxpy!" saxpy!(z, a, x, y)
 
-A = rand(100,100)
-B = rand(100,100)
+A = rand(100, 100)
+B = rand(100, 100)
 
 @test @marker "mul" for _ in 1:10
     A * B

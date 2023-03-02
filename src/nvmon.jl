@@ -1,7 +1,8 @@
 module NvMon
 
 using ..LIKWID:
-    LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu, GroupInfoCompact, get_gpu_topology, OrderedDict, _print_nvmon_results
+                LibLikwid, gputopo_initialized, nvmon_initialized, init_topology_gpu,
+                GroupInfoCompact, get_gpu_topology, OrderedDict, _print_nvmon_results
 
 isinitialized() = nvmon_initialized[]
 
@@ -9,7 +10,8 @@ isinitialized() = nvmon_initialized[]
     init(gpuid_or_gpuids)
 Initialize LIKWID's NvMon module for the gpu(s) with the given gpu id(s) (starting at 0!).
 """
-function init(gpus::AbstractVector{Int32}=Int32[i - 1 for i in 1:(get_gpu_topology().numDevices)])
+function init(gpus::AbstractVector{Int32} = Int32[i - 1
+                                                  for i in 1:(get_gpu_topology().numDevices)])
     nvmon_initialized[] && finalize()
 
     if !gputopo_initialized[]
@@ -73,7 +75,7 @@ Dict{String, LIKWID.GroupInfoCompact} with 4 entries:
   "FLOPS_DP" => FLOPS_DP => Double-precision floating point
 ```
 """
-function supported_groups(gpu::Integer=0)
+function supported_groups(gpu::Integer = 0)
     if !gputopo_initialized[]
         init_topology_gpu() || error("Couldn't init gpu topology.")
     end
@@ -93,21 +95,21 @@ function supported_groups(gpu::Integer=0)
     groups_vec = unsafe_wrap(Array, groups_ref[], ret)
     shorts_vec = unsafe_wrap(Array, shorts_ref[], ret)
     longs_vec = unsafe_wrap(Array, longs_ref[], ret)
-    res = Dict{String,GroupInfoCompact}()
+    res = Dict{String, GroupInfoCompact}()
     for i in 1:ret
         name = unsafe_string(groups_vec[i])
-        res[name] = GroupInfoCompact(
-            name,
-            unsafe_string(shorts_vec[i]),
-            unsafe_string(longs_vec[i]),
-        )
+        res[name] = GroupInfoCompact(name,
+                                     unsafe_string(shorts_vec[i]),
+                                     unsafe_string(longs_vec[i]))
     end
     LibLikwid.nvmon_returnGroups(ret, groups_ref[], shorts_ref[], longs_ref[])
     return res
 end
 
 "Checks if the given performance group is available on the given GPU (defaults to the first)."
-isgroupsupported(group, gpu::Integer=0) = !isnothing(findfirst(g -> g.name == group, supported_groups(gpu)))
+function isgroupsupported(group, gpu::Integer = 0)
+    !isnothing(findfirst(g -> g.name == group, supported_groups(gpu)))
+end
 
 """
     add_event_set(estr) -> groupid
@@ -320,7 +322,7 @@ function get_metric_results(group, gpuid::Integer)
     _check_groupid(groupid) || return nothing
     _check_groupid(gpuid) || return nothing
     nmetrics = get_number_of_metrics(groupid)
-    d = OrderedDict{String,Float64}()
+    d = OrderedDict{String, Float64}()
     for metricid in 1:nmetrics
         metric = get_name_of_metric(groupid, metricid)
         d[metric] = get_last_metric(groupid, metricid, gpuid)
@@ -329,14 +331,18 @@ function get_metric_results(group, gpuid::Integer)
     return d
 end
 get_metric_results(groupid::Integer) = get_metric_results.(groupid, 1:get_number_of_gpus())
-get_metric_results(groupname::AbstractString) = get_metric_results(get_id_of_group(groupname))
+function get_metric_results(groupname::AbstractString)
+    get_metric_results(get_id_of_group(groupname))
+end
 
 function get_metric_results(group, metric, gpuid::Integer)
     groupid = group isa Integer ? group : get_id_of_group(group)
     metricid = metric isa Integer ? metric : get_id_of_metric(groupid, metric)
     return get_last_metric(groupid, metricid, gpuid)
 end
-get_metric_results(group, metric) = get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_gpus())
+function get_metric_results(group, metric)
+    get_metric_results.(Ref(group), Ref(metric), 1:get_number_of_gpus())
+end
 
 """
   `get_metric_results()`
@@ -350,7 +356,7 @@ and the values hold the results for all monitored gpus.
 """
 function get_metric_results()
     ngrps = get_number_of_groups()
-    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    results = OrderedDict{String, Vector{OrderedDict{String, Float64}}}()
     for group in 1:ngrps
         groupname = get_name_of_group(group)
         group_results = get_metric_results(group)
@@ -370,7 +376,7 @@ function get_event_results(group, gpuid::Integer)
     _check_groupid(groupid) || return nothing
     _check_gpuid(gpuid) || return nothing
     nevents = get_number_of_events(groupid)
-    d = OrderedDict{String,Float64}()
+    d = OrderedDict{String, Float64}()
     for eventid in 1:nevents
         event = get_name_of_event(groupid, eventid)
         # d[event] = get_last_event(groupid, eventid, gpuid)
@@ -386,11 +392,13 @@ function get_event_results(group, event, gpuid::Integer)
     eventid = event isa Integer ? event : get_id_of_event(groupid, event)
     return get_last_event(groupid, eventid, gpuid)
 end
-get_event_results(group, event) = get_event_results.(Ref(group), Ref(event), 1:get_number_of_gpus())
+function get_event_results(group, event)
+    get_event_results.(Ref(group), Ref(event), 1:get_number_of_gpus())
+end
 
 function get_event_results()
     ngrps = get_number_of_groups()
-    results = OrderedDict{String,Vector{OrderedDict{String,Float64}}}()
+    results = OrderedDict{String, Vector{OrderedDict{String, Float64}}}()
     for group in 1:ngrps
         groupname = get_name_of_group(group)
         group_results = get_event_results(group)
@@ -422,7 +430,7 @@ julia> metrics, events = nvmon("FLOPS_DP") do
        end;
 ```
 """
-function nvmon(f, group_or_groups; gpuids=0, print=true)
+function nvmon(f, group_or_groups; gpuids = 0, print = true)
     gpuids = gpuids isa Integer ? [gpuids] : gpuids
     NvMon.init(gpuids)
     groups = group_or_groups isa AbstractString ? (group_or_groups,) : group_or_groups
@@ -437,7 +445,7 @@ function nvmon(f, group_or_groups; gpuids=0, print=true)
     event_results = NvMon.get_event_results()
     if print
         gid_lastgroup = NvMon.get_id_of_active_group()
-        groupids = reverse(gid_lastgroup .- (0:length(groups)-1))
+        groupids = reverse(gid_lastgroup .- (0:(length(groups) - 1)))
         for gid in groupids
             _print_nvmon_results(gid)
         end

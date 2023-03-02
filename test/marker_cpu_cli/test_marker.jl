@@ -16,20 +16,20 @@ z = zeros(Float32, N)
 x = rand(Float32, N)
 y = rand(Float32, N)
 
-saxpy!(z,a,x,y) = z .= a .* x .+ y
+saxpy!(z, a, x, y) = z .= a .* x .+ y
 
 # regular workflow
-saxpy!(z,a,x,y)
+saxpy!(z, a, x, y)
 @test Marker.startregion("saxpy!")
-saxpy!(z,a,x,y)
+saxpy!(z, a, x, y)
 @test Marker.stopregion("saxpy!")
 
 # nextgroup
 @test isnothing(Marker.nextgroup())
 
 # registerregion
-A = rand(100,100)
-B = rand(100,100)
+A = rand(100, 100)
+B = rand(100, 100)
 @test Marker.registerregion("mul")
 @test Marker.startregion("mul")
 for _ in 1:10

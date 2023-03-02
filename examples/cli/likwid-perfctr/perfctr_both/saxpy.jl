@@ -15,22 +15,22 @@ z_gpu = CUDA.zeros(Float32, N)
 x_gpu = CUDA.rand(Float32, N)
 y_gpu = CUDA.rand(Float32, N)
 
-function saxpy_cpu!(z,a,x,y)
+function saxpy_cpu!(z, a, x, y)
     z .= a .* x .+ y
 end
 
-function saxpy_gpu!(z,a,x,y)
+function saxpy_gpu!(z, a, x, y)
     CUDA.@sync z .= a .* x .+ y
 end
 
 Marker.init()
 GPUMarker.init()
 
-saxpy_cpu!(z,a,x,y)
-@marker "saxpy_cpu" saxpy_cpu!(z,a,x,y)
+saxpy_cpu!(z, a, x, y)
+@marker "saxpy_cpu" saxpy_cpu!(z, a, x, y)
 
-saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
-@gpumarker "saxpy_gpu" saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+saxpy_gpu!(z_gpu, a, x_gpu, y_gpu)
+@gpumarker "saxpy_gpu" saxpy_gpu!(z_gpu, a, x_gpu, y_gpu)
 
 Marker.close()
 GPUMarker.close()

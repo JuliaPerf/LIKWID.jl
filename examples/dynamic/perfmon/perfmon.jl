@@ -20,7 +20,8 @@ PerfMon.stop_counters()
 
 mdict = PerfMon.get_metric_results(groupid, 1)
 display(mdict)
-println(); flush(stdout);
+println();
+flush(stdout);
 edict = PerfMon.get_event_results(groupid, 1)
 display(edict)
 

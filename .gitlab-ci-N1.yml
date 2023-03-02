@@ -3,15 +3,23 @@ stages:
   - test
   - documentation
 
+variables:
+  SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 40 -t 00:15:00 -A pc2-mitarbeiter -p all --exclusive"
+  JULIA_DEPOT_PATH: "/scratch/pc2-mitarbeiter/bauerc/.julia-ci"
+  JULIA_NUM_THREADS: "12"
+  JULIA_1_6: "lang/Julia/1.6.6-linux-x86_64"
+  JULIA_1_8: "lang/JuliaHPC/1.8.5-foss-2022a-CUDA-11.7.0"
+  JULIA_1_9: "lang/JuliaHPC/1.9.0-beta4-foss-2022a-CUDA-11.7.0"
+  LIKWID_MODULE: "tools/likwid/5.2.1-GCC-11.2.0"
+  GROUP: "CPU" # run only CPU tests (no GPU available as of now)
+
+default:
+  tags:
+    - bauerc-noctua
+
 # This job tests the LIKWID.jl interface with Julia 1.8 on Noctua 1 @ PC2
 julia/1.8-N1:
   stage: test
-  tags:
-    - bauerc-noctua
-  variables:
-    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 40 -t 00:15:00 -A pc2-mitarbeiter -p all --exclusive"
-    JULIA_NUM_THREADS: "12"
-    GROUP: "CPU" # run only CPU tests (no GPU available as of now)
   rules:
     # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
@@ -19,15 +27,16 @@ julia/1.8-N1:
       when: never
     - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "external_pull_request_event"'
       when: never
-    - if: '$CI_COMMIT_BRANCH' # trigger on commits
+    - if: "$CI_COMMIT_BRANCH" # trigger on commits
     - when: never # don't run otherwise
     # - if: '$CI_PIPELINE_SOURCE == "push"' # trigger on pushs
     # - if: '$CI_COMMIT_TAG' # trigger on tags? (only needed for docs)
   script:
+    - /bin/bash -l
     - echo $CI_PIPELINE_SOURCE
     - ml reset
-    - ml tools/likwid/5.2.1-GCC-11.2.0
-    - ml lang/JuliaHPC/1.8.2-foss-2022a-linux-x86_64
+    - ml $LIKWID_MODULE
+    - ml $JULIA_1_8
     - likwid-topology
     - likwid-perfctr -i
     - likwid-perfctr -a
@@ -36,17 +45,18 @@ julia/1.8-N1:
 # LIKWID.jl Documentation
 build-and-deploy:
   stage: documentation
-  tags:
-    - bauerc-noctua
-  variables:
-    SCHEDULER_PARAMETERS: "-N 1 -n 1 -c 40 -t 00:15:00 -A pc2-mitarbeiter -p all --exclusive"
-    JULIA_NUM_THREADS: "12"
+  only:
+    - main
+    - pushes
+    - tags
+    - external_pull_requests
   needs:
     job: julia/1.8-N1
   script:
+    - /bin/bash -l
     - ml reset
-    - ml tools/likwid/5.2.1-GCC-11.2.0
-    - ml lang/JuliaHPC/1.8.2-foss-2022a-linux-x86_64
+    - ml $LIKWID_MODULE
+    - ml $JULIA_1_8
     - likwid-topology
     - likwid-perfctr -i
     - likwid-perfctr -a

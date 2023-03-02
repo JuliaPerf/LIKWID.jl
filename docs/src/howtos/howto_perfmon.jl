@@ -61,11 +61,12 @@ metrics["FLOPS_DP"][1]["DP [MFLOP/s]"]
 
 ## since we'll have autopin=false, we must manually ensure that computations run on the
 ## cpu threads / cores that we're monitoring!
-LIKWID.pinthreads([0,1,2])
-metrics, events = perfmon(() -> saxpy!(z, a, x, y), "FLOPS_DP"; cpuids=[0,1], autopin=false);
+LIKWID.pinthreads([0, 1, 2])
+metrics, events = perfmon(() -> saxpy!(z, a, x, y), "FLOPS_DP"; cpuids = [0, 1],
+                          autopin = false);
 
 # Note that Julia's `do` syntax can often be useful here.
-metrics, events = perfmon("FLOPS_DP"; cpuids=[0,1], autopin=false, print=false) do
+metrics, events = perfmon("FLOPS_DP"; cpuids = [0, 1], autopin = false, print = false) do
     ## code goes here...
     saxpy!(z, a, x, y)
 end;

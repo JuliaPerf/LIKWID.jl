@@ -23,15 +23,16 @@ end
 function _build_jl_config()
     c = _config[]
 
-    config[] = Likwid_Configuration(
-        c.configFileName == C_NULL ? "" : unsafe_string(c.configFileName),
-        c.topologyCfgFileName == C_NULL ? "" : unsafe_string(c.topologyCfgFileName),
-        c.daemonPath == C_NULL ? "" : unsafe_string(c.daemonPath),
-        c.groupPath == C_NULL ? "" : unsafe_string(c.groupPath),
-        c.daemonMode,
-        c.maxNumThreads,
-        c.maxNumNodes,
-    )
+    config[] = Likwid_Configuration(c.configFileName == C_NULL ? "" :
+                                    unsafe_string(c.configFileName),
+                                    c.topologyCfgFileName == C_NULL ? "" :
+                                    unsafe_string(c.topologyCfgFileName),
+                                    c.daemonPath == C_NULL ? "" :
+                                    unsafe_string(c.daemonPath),
+                                    c.groupPath == C_NULL ? "" : unsafe_string(c.groupPath),
+                                    c.daemonMode,
+                                    c.maxNumThreads,
+                                    c.maxNumNodes)
     return nothing
 end
 

@@ -24,24 +24,21 @@ function _build_jl_affinity()
     for (i, d) in enumerate(_domains)
         # bstring: http://mike.steinert.ca/bstring/doc/
         bstr = unsafe_load(d.tag)
-        domains[i] = AffinityDomain(
-            unsafe_string(bstr.data),
-            d.numberOfProcessors,
-            d.numberOfCores,
-            unsafe_wrap(Array, d.processorList, d.numberOfProcessors),
-        )
+        domains[i] = AffinityDomain(unsafe_string(bstr.data),
+                                    d.numberOfProcessors,
+                                    d.numberOfCores,
+                                    unsafe_wrap(Array, d.processorList,
+                                                d.numberOfProcessors))
     end
 
-    affinity[] = AffinityDomains(
-        af.numberOfSocketDomains,
-        af.numberOfNumaDomains,
-        af.numberOfProcessorsPerSocket,
-        af.numberOfCacheDomains,
-        af.numberOfCoresPerCache,
-        af.numberOfProcessorsPerCache,
-        ndomains,
-        domains
-    )
+    affinity[] = AffinityDomains(af.numberOfSocketDomains,
+                                 af.numberOfNumaDomains,
+                                 af.numberOfProcessorsPerSocket,
+                                 af.numberOfCacheDomains,
+                                 af.numberOfCoresPerCache,
+                                 af.numberOfProcessorsPerCache,
+                                 ndomains,
+                                 domains)
     return nothing
 end
 

@@ -9,7 +9,7 @@ nvcores = LIKWID.num_virtual_cores()
 
 LIKWID.pinthread(nvcores - 1) # pinning the single Julia thread
 
-PerfMon.init(0:nvcores-1)
+PerfMon.init(0:(nvcores - 1))
 groupid = PerfMon.add_event_set("FLOPS_DP")
 PerfMon.setup_counters(groupid)
 

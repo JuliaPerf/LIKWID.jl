@@ -43,15 +43,13 @@ function bassign(a, b)
 end
 
 function bassignmidstr(a, b, left, len)
-    return ccall(
-        (:bassignmidstr, liblikwid),
-        Cint,
-        (bstring, const_bstring, Cint, Cint),
-        a,
-        b,
-        left,
-        len,
-    )
+    return ccall((:bassignmidstr, liblikwid),
+                 Cint,
+                 (bstring, const_bstring, Cint, Cint),
+                 a,
+                 b,
+                 left,
+                 len)
 end
 
 function bassigncstr(a, str)
@@ -95,34 +93,29 @@ function bcatblk(b, s, len)
 end
 
 function binsert(s1, pos, s2, fill)
-    return ccall(
-        (:binsert, liblikwid),
-        Cint,
-        (bstring, Cint, const_bstring, Cuchar),
-        s1,
-        pos,
-        s2,
-        fill,
-    )
+    return ccall((:binsert, liblikwid),
+                 Cint,
+                 (bstring, Cint, const_bstring, Cuchar),
+                 s1,
+                 pos,
+                 s2,
+                 fill)
 end
 
 function binsertch(s1, pos, len, fill)
-    return ccall(
-        (:binsertch, liblikwid), Cint, (bstring, Cint, Cint, Cuchar), s1, pos, len, fill
-    )
+    return ccall((:binsertch, liblikwid), Cint, (bstring, Cint, Cint, Cuchar), s1, pos, len,
+                 fill)
 end
 
 function breplace(b1, pos, len, b2, fill)
-    return ccall(
-        (:breplace, liblikwid),
-        Cint,
-        (bstring, Cint, Cint, const_bstring, Cuchar),
-        b1,
-        pos,
-        len,
-        b2,
-        fill,
-    )
+    return ccall((:breplace, liblikwid),
+                 Cint,
+                 (bstring, Cint, Cint, const_bstring, Cuchar),
+                 b1,
+                 pos,
+                 len,
+                 b2,
+                 fill)
 end
 
 function bdelete(s1, pos, len)
@@ -130,15 +123,13 @@ function bdelete(s1, pos, len)
 end
 
 function bsetstr(b0, pos, b1, fill)
-    return ccall(
-        (:bsetstr, liblikwid),
-        Cint,
-        (bstring, Cint, const_bstring, Cuchar),
-        b0,
-        pos,
-        b1,
-        fill,
-    )
+    return ccall((:bsetstr, liblikwid),
+                 Cint,
+                 (bstring, Cint, const_bstring, Cuchar),
+                 b0,
+                 pos,
+                 b1,
+                 fill)
 end
 
 function btrunc(b, n)
@@ -150,9 +141,8 @@ function bstricmp(b0, b1)
 end
 
 function bstrnicmp(b0, b1, n)
-    return ccall(
-        (:bstrnicmp, liblikwid), Cint, (const_bstring, const_bstring, Cint), b0, b1, n
-    )
+    return ccall((:bstrnicmp, liblikwid), Cint, (const_bstring, const_bstring, Cint), b0,
+                 b1, n)
 end
 
 function biseqcaseless(b0, b1)
@@ -160,14 +150,12 @@ function biseqcaseless(b0, b1)
 end
 
 function bisstemeqcaselessblk(b0, blk, len)
-    return ccall(
-        (:bisstemeqcaselessblk, liblikwid),
-        Cint,
-        (const_bstring, Ptr{Cvoid}, Cint),
-        b0,
-        blk,
-        len,
-    )
+    return ccall((:bisstemeqcaselessblk, liblikwid),
+                 Cint,
+                 (const_bstring, Ptr{Cvoid}, Cint),
+                 b0,
+                 blk,
+                 len)
 end
 
 function biseq(b0, b1)
@@ -175,9 +163,8 @@ function biseq(b0, b1)
 end
 
 function bisstemeqblk(b0, blk, len)
-    return ccall(
-        (:bisstemeqblk, liblikwid), Cint, (const_bstring, Ptr{Cvoid}, Cint), b0, blk, len
-    )
+    return ccall((:bisstemeqblk, liblikwid), Cint, (const_bstring, Ptr{Cvoid}, Cint), b0,
+                 blk, len)
 end
 
 function biseqcstr(b, s)
@@ -193,43 +180,36 @@ function bstrcmp(b0, b1)
 end
 
 function bstrncmp(b0, b1, n)
-    return ccall(
-        (:bstrncmp, liblikwid), Cint, (const_bstring, const_bstring, Cint), b0, b1, n
-    )
+    return ccall((:bstrncmp, liblikwid), Cint, (const_bstring, const_bstring, Cint), b0, b1,
+                 n)
 end
 
 function binstr(s1, pos, s2)
-    return ccall(
-        (:binstr, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos, s2
-    )
+    return ccall((:binstr, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos,
+                 s2)
 end
 
 function binstrr(s1, pos, s2)
-    return ccall(
-        (:binstrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos, s2
-    )
+    return ccall((:binstrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), s1, pos,
+                 s2)
 end
 
 function binstrcaseless(s1, pos, s2)
-    return ccall(
-        (:binstrcaseless, liblikwid),
-        Cint,
-        (const_bstring, Cint, const_bstring),
-        s1,
-        pos,
-        s2,
-    )
+    return ccall((:binstrcaseless, liblikwid),
+                 Cint,
+                 (const_bstring, Cint, const_bstring),
+                 s1,
+                 pos,
+                 s2)
 end
 
 function binstrrcaseless(s1, pos, s2)
-    return ccall(
-        (:binstrrcaseless, liblikwid),
-        Cint,
-        (const_bstring, Cint, const_bstring),
-        s1,
-        pos,
-        s2,
-    )
+    return ccall((:binstrrcaseless, liblikwid),
+                 Cint,
+                 (const_bstring, Cint, const_bstring),
+                 s1,
+                 pos,
+                 s2)
 end
 
 function bstrchrp(b, c, pos)
@@ -241,51 +221,43 @@ function bstrrchrp(b, c, pos)
 end
 
 function binchr(b0, pos, b1)
-    return ccall(
-        (:binchr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1
-    )
+    return ccall((:binchr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos,
+                 b1)
 end
 
 function binchrr(b0, pos, b1)
-    return ccall(
-        (:binchrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1
-    )
+    return ccall((:binchrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos,
+                 b1)
 end
 
 function bninchr(b0, pos, b1)
-    return ccall(
-        (:bninchr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1
-    )
+    return ccall((:bninchr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos,
+                 b1)
 end
 
 function bninchrr(b0, pos, b1)
-    return ccall(
-        (:bninchrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0, pos, b1
-    )
+    return ccall((:bninchrr, liblikwid), Cint, (const_bstring, Cint, const_bstring), b0,
+                 pos, b1)
 end
 
 function bfindreplace(b, find, repl, pos)
-    return ccall(
-        (:bfindreplace, liblikwid),
-        Cint,
-        (bstring, const_bstring, const_bstring, Cint),
-        b,
-        find,
-        repl,
-        pos,
-    )
+    return ccall((:bfindreplace, liblikwid),
+                 Cint,
+                 (bstring, const_bstring, const_bstring, Cint),
+                 b,
+                 find,
+                 repl,
+                 pos)
 end
 
 function bfindreplacecaseless(b, find, repl, pos)
-    return ccall(
-        (:bfindreplacecaseless, liblikwid),
-        Cint,
-        (bstring, const_bstring, const_bstring, Cint),
-        b,
-        find,
-        repl,
-        pos,
-    )
+    return ccall((:bfindreplacecaseless, liblikwid),
+                 Cint,
+                 (bstring, const_bstring, const_bstring, Cint),
+                 b,
+                 find,
+                 repl,
+                 pos)
 end
 
 struct bstrList
@@ -311,25 +283,21 @@ function bstrListAllocMin(sl, msz)
 end
 
 function bsplit(str, splitChar)
-    return ccall(
-        (:bsplit, liblikwid), Ptr{bstrList}, (const_bstring, Cuchar), str, splitChar
-    )
+    return ccall((:bsplit, liblikwid), Ptr{bstrList}, (const_bstring, Cuchar), str,
+                 splitChar)
 end
 
 function bsplits(str, splitStr)
-    return ccall(
-        (:bsplits, liblikwid), Ptr{bstrList}, (const_bstring, const_bstring), str, splitStr
-    )
+    return ccall((:bsplits, liblikwid), Ptr{bstrList}, (const_bstring, const_bstring), str,
+                 splitStr)
 end
 
 function bsplitstr(str, splitStr)
-    return ccall(
-        (:bsplitstr, liblikwid),
-        Ptr{bstrList},
-        (const_bstring, const_bstring),
-        str,
-        splitStr,
-    )
+    return ccall((:bsplitstr, liblikwid),
+                 Ptr{bstrList},
+                 (const_bstring, const_bstring),
+                 str,
+                 splitStr)
 end
 
 function bjoin(bl, sep)
@@ -337,42 +305,36 @@ function bjoin(bl, sep)
 end
 
 function bsplitcb(str, splitChar, pos, cb, parm)
-    return ccall(
-        (:bsplitcb, liblikwid),
-        Cint,
-        (const_bstring, Cuchar, Cint, Ptr{Cvoid}, Ptr{Cvoid}),
-        str,
-        splitChar,
-        pos,
-        cb,
-        parm,
-    )
+    return ccall((:bsplitcb, liblikwid),
+                 Cint,
+                 (const_bstring, Cuchar, Cint, Ptr{Cvoid}, Ptr{Cvoid}),
+                 str,
+                 splitChar,
+                 pos,
+                 cb,
+                 parm)
 end
 
 function bsplitscb(str, splitStr, pos, cb, parm)
-    return ccall(
-        (:bsplitscb, liblikwid),
-        Cint,
-        (const_bstring, const_bstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}),
-        str,
-        splitStr,
-        pos,
-        cb,
-        parm,
-    )
+    return ccall((:bsplitscb, liblikwid),
+                 Cint,
+                 (const_bstring, const_bstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}),
+                 str,
+                 splitStr,
+                 pos,
+                 cb,
+                 parm)
 end
 
 function bsplitstrcb(str, splitStr, pos, cb, parm)
-    return ccall(
-        (:bsplitstrcb, liblikwid),
-        Cint,
-        (const_bstring, const_bstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}),
-        str,
-        splitStr,
-        pos,
-        cb,
-        parm,
-    )
+    return ccall((:bsplitstrcb, liblikwid),
+                 Cint,
+                 (const_bstring, const_bstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}),
+                 str,
+                 splitStr,
+                 pos,
+                 cb,
+                 parm)
 end
 
 function bpattern(b, len)
@@ -406,9 +368,8 @@ const bNgetc = Ptr{Cvoid}
 const bNread = Ptr{Cvoid}
 
 function bgets(getcPtr, parm, terminator)
-    return ccall(
-        (:bgets, liblikwid), bstring, (bNgetc, Ptr{Cvoid}, Cchar), getcPtr, parm, terminator
-    )
+    return ccall((:bgets, liblikwid), bstring, (bNgetc, Ptr{Cvoid}, Cchar), getcPtr, parm,
+                 terminator)
 end
 
 function bread(readPtr, parm)
@@ -416,33 +377,28 @@ function bread(readPtr, parm)
 end
 
 function bgetsa(b, getcPtr, parm, terminator)
-    return ccall(
-        (:bgetsa, liblikwid),
-        Cint,
-        (bstring, bNgetc, Ptr{Cvoid}, Cchar),
-        b,
-        getcPtr,
-        parm,
-        terminator,
-    )
+    return ccall((:bgetsa, liblikwid),
+                 Cint,
+                 (bstring, bNgetc, Ptr{Cvoid}, Cchar),
+                 b,
+                 getcPtr,
+                 parm,
+                 terminator)
 end
 
 function bassigngets(b, getcPtr, parm, terminator)
-    return ccall(
-        (:bassigngets, liblikwid),
-        Cint,
-        (bstring, bNgetc, Ptr{Cvoid}, Cchar),
-        b,
-        getcPtr,
-        parm,
-        terminator,
-    )
+    return ccall((:bassigngets, liblikwid),
+                 Cint,
+                 (bstring, bNgetc, Ptr{Cvoid}, Cchar),
+                 b,
+                 getcPtr,
+                 parm,
+                 terminator)
 end
 
 function breada(b, readPtr, parm)
-    return ccall(
-        (:breada, liblikwid), Cint, (bstring, bNread, Ptr{Cvoid}), b, readPtr, parm
-    )
+    return ccall((:breada, liblikwid), Cint, (bstring, bNread, Ptr{Cvoid}), b, readPtr,
+                 parm)
 end
 
 mutable struct bStream end
@@ -460,15 +416,13 @@ function bsbufflength(s, sz)
 end
 
 function bsreadln(b, s, terminator)
-    return ccall(
-        (:bsreadln, liblikwid), Cint, (bstring, Ptr{bStream}, Cchar), b, s, terminator
-    )
+    return ccall((:bsreadln, liblikwid), Cint, (bstring, Ptr{bStream}, Cchar), b, s,
+                 terminator)
 end
 
 function bsreadlns(r, s, term)
-    return ccall(
-        (:bsreadlns, liblikwid), Cint, (bstring, Ptr{bStream}, const_bstring), r, s, term
-    )
+    return ccall((:bsreadlns, liblikwid), Cint, (bstring, Ptr{bStream}, const_bstring), r,
+                 s, term)
 end
 
 function bsread(b, s, n)
@@ -476,15 +430,13 @@ function bsread(b, s, n)
 end
 
 function bsreadlna(b, s, terminator)
-    return ccall(
-        (:bsreadlna, liblikwid), Cint, (bstring, Ptr{bStream}, Cchar), b, s, terminator
-    )
+    return ccall((:bsreadlna, liblikwid), Cint, (bstring, Ptr{bStream}, Cchar), b, s,
+                 terminator)
 end
 
 function bsreadlnsa(r, s, term)
-    return ccall(
-        (:bsreadlnsa, liblikwid), Cint, (bstring, Ptr{bStream}, const_bstring), r, s, term
-    )
+    return ccall((:bsreadlnsa, liblikwid), Cint, (bstring, Ptr{bStream}, const_bstring), r,
+                 s, term)
 end
 
 function bsreada(b, s, n)
@@ -500,27 +452,23 @@ function bspeek(r, s)
 end
 
 function bssplitscb(s, splitStr, cb, parm)
-    return ccall(
-        (:bssplitscb, liblikwid),
-        Cint,
-        (Ptr{bStream}, const_bstring, Ptr{Cvoid}, Ptr{Cvoid}),
-        s,
-        splitStr,
-        cb,
-        parm,
-    )
+    return ccall((:bssplitscb, liblikwid),
+                 Cint,
+                 (Ptr{bStream}, const_bstring, Ptr{Cvoid}, Ptr{Cvoid}),
+                 s,
+                 splitStr,
+                 cb,
+                 parm)
 end
 
 function bssplitstrcb(s, splitStr, cb, parm)
-    return ccall(
-        (:bssplitstrcb, liblikwid),
-        Cint,
-        (Ptr{bStream}, const_bstring, Ptr{Cvoid}, Ptr{Cvoid}),
-        s,
-        splitStr,
-        cb,
-        parm,
-    )
+    return ccall((:bssplitstrcb, liblikwid),
+                 Cint,
+                 (Ptr{bStream}, const_bstring, Ptr{Cvoid}, Ptr{Cvoid}),
+                 s,
+                 splitStr,
+                 cb,
+                 parm)
 end
 
 function bseof(s)
@@ -560,16 +508,14 @@ function likwid_markerResetRegion(regionTag)
 end
 
 function likwid_markerGetRegion(regionTag, nr_events, events, time, count)
-    return ccall(
-        (:likwid_markerGetRegion, liblikwid),
-        Cvoid,
-        (Ptr{Cchar}, Ptr{Cint}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cint}),
-        regionTag,
-        nr_events,
-        events,
-        time,
-        count,
-    )
+    return ccall((:likwid_markerGetRegion, liblikwid),
+                 Cvoid,
+                 (Ptr{Cchar}, Ptr{Cint}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cint}),
+                 regionTag,
+                 nr_events,
+                 events,
+                 time,
+                 count)
 end
 
 # no prototype is found for this function at likwid.h:158:13, please use with caution
@@ -650,7 +596,7 @@ struct CpuInfo
     short_name::Ptr{Cchar}
     features::Ptr{Cchar}
     isIntel::Cint
-    architecture::NTuple{20,Cchar}
+    architecture::NTuple{20, Cchar}
     supportUncore::Cint
     supportClientmem::Cint
     featureFlags::UInt64
@@ -754,29 +700,24 @@ function get_numaTopology()
 end
 
 function numa_setInterleaved(processorList, numberOfProcessors)
-    return ccall(
-        (:numa_setInterleaved, liblikwid),
-        Cvoid,
-        (Ptr{Cint}, Cint),
-        processorList,
-        numberOfProcessors,
-    )
+    return ccall((:numa_setInterleaved, liblikwid),
+                 Cvoid,
+                 (Ptr{Cint}, Cint),
+                 processorList,
+                 numberOfProcessors)
 end
 
 function numa_membind(ptr, size, domainId)
-    return ccall(
-        (:numa_membind, liblikwid), Cvoid, (Ptr{Cvoid}, Csize_t, Cint), ptr, size, domainId
-    )
+    return ccall((:numa_membind, liblikwid), Cvoid, (Ptr{Cvoid}, Csize_t, Cint), ptr, size,
+                 domainId)
 end
 
 function numa_setMembind(processorList, numberOfProcessors)
-    return ccall(
-        (:numa_setMembind, liblikwid),
-        Cvoid,
-        (Ptr{Cint}, Cint),
-        processorList,
-        numberOfProcessors,
-    )
+    return ccall((:numa_setMembind, liblikwid),
+                 Cvoid,
+                 (Ptr{Cint}, Cint),
+                 processorList,
+                 numberOfProcessors)
 end
 
 function numa_finalize()
@@ -821,13 +762,11 @@ function affinity_pinProcess(processorId)
 end
 
 function affinity_pinProcesses(cpu_count, processorIds)
-    return ccall(
-        (:affinity_pinProcesses, liblikwid),
-        Cvoid,
-        (Cint, Ptr{Cint}),
-        cpu_count,
-        processorIds,
-    )
+    return ccall((:affinity_pinProcesses, liblikwid),
+                 Cvoid,
+                 (Cint, Ptr{Cint}),
+                 cpu_count,
+                 processorIds)
 end
 
 function affinity_pinThread(processorId)
@@ -850,65 +789,54 @@ function affinity_finalize()
 end
 
 function cpustr_to_cpulist(cpustring, cpulist, length)
-    return ccall(
-        (:cpustr_to_cpulist, liblikwid),
-        Cint,
-        (Ptr{Cchar}, Ptr{Cint}, Cint),
-        cpustring,
-        cpulist,
-        length,
-    )
+    return ccall((:cpustr_to_cpulist, liblikwid),
+                 Cint,
+                 (Ptr{Cchar}, Ptr{Cint}, Cint),
+                 cpustring,
+                 cpulist,
+                 length)
 end
 
 function nodestr_to_nodelist(nodestr, nodes, length)
-    return ccall(
-        (:nodestr_to_nodelist, liblikwid),
-        Cint,
-        (Ptr{Cchar}, Ptr{Cint}, Cint),
-        nodestr,
-        nodes,
-        length,
-    )
+    return ccall((:nodestr_to_nodelist, liblikwid),
+                 Cint,
+                 (Ptr{Cchar}, Ptr{Cint}, Cint),
+                 nodestr,
+                 nodes,
+                 length)
 end
 
 function sockstr_to_socklist(sockstr, sockets, length)
-    return ccall(
-        (:sockstr_to_socklist, liblikwid),
-        Cint,
-        (Ptr{Cchar}, Ptr{Cint}, Cint),
-        sockstr,
-        sockets,
-        length,
-    )
+    return ccall((:sockstr_to_socklist, liblikwid),
+                 Cint,
+                 (Ptr{Cchar}, Ptr{Cint}, Cint),
+                 sockstr,
+                 sockets,
+                 length)
 end
 
 function perfmon_getGroups(groups, shortinfos, longinfos)
-    return ccall(
-        (:perfmon_getGroups, liblikwid),
-        Cint,
-        (Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}),
-        groups,
-        shortinfos,
-        longinfos,
-    )
+    return ccall((:perfmon_getGroups, liblikwid),
+                 Cint,
+                 (Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}),
+                 groups,
+                 shortinfos,
+                 longinfos)
 end
 
 function perfmon_returnGroups(nrgroups, groups, shortinfos, longinfos)
-    return ccall(
-        (:perfmon_returnGroups, liblikwid),
-        Cvoid,
-        (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}),
-        nrgroups,
-        groups,
-        shortinfos,
-        longinfos,
-    )
+    return ccall((:perfmon_returnGroups, liblikwid),
+                 Cvoid,
+                 (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}),
+                 nrgroups,
+                 groups,
+                 shortinfos,
+                 longinfos)
 end
 
 function perfmon_init(nrThreads, threadsToCpu)
-    return ccall(
-        (:perfmon_init, liblikwid), Cint, (Cint, Ptr{Cint}), nrThreads, threadsToCpu
-    )
+    return ccall((:perfmon_init, liblikwid), Cint, (Cint, Ptr{Cint}), nrThreads,
+                 threadsToCpu)
 end
 
 function perfmon_init_maps()
@@ -948,9 +876,8 @@ function perfmon_readGroupCounters(groupId)
 end
 
 function perfmon_readGroupThreadCounters(groupId, threadId)
-    return ccall(
-        (:perfmon_readGroupThreadCounters, liblikwid), Cint, (Cint, Cint), groupId, threadId
-    )
+    return ccall((:perfmon_readGroupThreadCounters, liblikwid), Cint, (Cint, Cint), groupId,
+                 threadId)
 end
 
 function perfmon_switchActiveGroup(new_group)
@@ -962,47 +889,39 @@ function perfmon_finalize()
 end
 
 function perfmon_getResult(groupId, eventId, threadId)
-    return ccall(
-        (:perfmon_getResult, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        groupId,
-        eventId,
-        threadId,
-    )
+    return ccall((:perfmon_getResult, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 groupId,
+                 eventId,
+                 threadId)
 end
 
 function perfmon_getLastResult(groupId, eventId, threadId)
-    return ccall(
-        (:perfmon_getLastResult, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        groupId,
-        eventId,
-        threadId,
-    )
+    return ccall((:perfmon_getLastResult, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 groupId,
+                 eventId,
+                 threadId)
 end
 
 function perfmon_getMetric(groupId, metricId, threadId)
-    return ccall(
-        (:perfmon_getMetric, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        groupId,
-        metricId,
-        threadId,
-    )
+    return ccall((:perfmon_getMetric, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 groupId,
+                 metricId,
+                 threadId)
 end
 
 function perfmon_getLastMetric(groupId, metricId, threadId)
-    return ccall(
-        (:perfmon_getLastMetric, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        groupId,
-        metricId,
-        threadId,
-    )
+    return ccall((:perfmon_getLastMetric, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 groupId,
+                 metricId,
+                 threadId)
 end
 
 function perfmon_getNumberOfGroups()
@@ -1030,15 +949,13 @@ function perfmon_setVerbosity(verbose)
 end
 
 function perfmon_getEventName(groupId, eventId)
-    return ccall(
-        (:perfmon_getEventName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, eventId
-    )
+    return ccall((:perfmon_getEventName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId,
+                 eventId)
 end
 
 function perfmon_getCounterName(groupId, eventId)
-    return ccall(
-        (:perfmon_getCounterName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, eventId
-    )
+    return ccall((:perfmon_getCounterName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId,
+                 eventId)
 end
 
 function perfmon_getGroupName(groupId)
@@ -1046,9 +963,8 @@ function perfmon_getGroupName(groupId)
 end
 
 function perfmon_getMetricName(groupId, metricId)
-    return ccall(
-        (:perfmon_getMetricName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, metricId
-    )
+    return ccall((:perfmon_getMetricName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId,
+                 metricId)
 end
 
 function perfmon_getGroupInfoShort(groupId)
@@ -1102,20 +1018,17 @@ function perfmon_getThreadsOfRegion(region)
 end
 
 function perfmon_getCpulistOfRegion(region, count, cpulist)
-    return ccall(
-        (:perfmon_getCpulistOfRegion, liblikwid),
-        Cint,
-        (Cint, Cint, Ptr{Cint}),
-        region,
-        count,
-        cpulist,
-    )
+    return ccall((:perfmon_getCpulistOfRegion, liblikwid),
+                 Cint,
+                 (Cint, Cint, Ptr{Cint}),
+                 region,
+                 count,
+                 cpulist)
 end
 
 function perfmon_getTimeOfRegion(region, thread)
-    return ccall(
-        (:perfmon_getTimeOfRegion, liblikwid), Cdouble, (Cint, Cint), region, thread
-    )
+    return ccall((:perfmon_getTimeOfRegion, liblikwid), Cdouble, (Cint, Cint), region,
+                 thread)
 end
 
 function perfmon_getCountOfRegion(region, thread)
@@ -1123,25 +1036,21 @@ function perfmon_getCountOfRegion(region, thread)
 end
 
 function perfmon_getResultOfRegionThread(region, event, thread)
-    return ccall(
-        (:perfmon_getResultOfRegionThread, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        region,
-        event,
-        thread,
-    )
+    return ccall((:perfmon_getResultOfRegionThread, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 region,
+                 event,
+                 thread)
 end
 
 function perfmon_getMetricOfRegionThread(region, metricId, threadId)
-    return ccall(
-        (:perfmon_getMetricOfRegionThread, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        region,
-        metricId,
-        threadId,
-    )
+    return ccall((:perfmon_getMetricOfRegionThread, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 region,
+                 metricId,
+                 threadId)
 end
 
 struct GroupInfo
@@ -1161,45 +1070,37 @@ function perfgroup_new(ginfo)
 end
 
 function perfgroup_addEvent(ginfo, counter, event)
-    return ccall(
-        (:perfgroup_addEvent, liblikwid),
-        Cint,
-        (Ptr{GroupInfo}, Ptr{Cchar}, Ptr{Cchar}),
-        ginfo,
-        counter,
-        event,
-    )
+    return ccall((:perfgroup_addEvent, liblikwid),
+                 Cint,
+                 (Ptr{GroupInfo}, Ptr{Cchar}, Ptr{Cchar}),
+                 ginfo,
+                 counter,
+                 event)
 end
 
 function perfgroup_removeEvent(ginfo, counter)
-    return ccall(
-        (:perfgroup_removeEvent, liblikwid),
-        Cvoid,
-        (Ptr{GroupInfo}, Ptr{Cchar}),
-        ginfo,
-        counter,
-    )
+    return ccall((:perfgroup_removeEvent, liblikwid),
+                 Cvoid,
+                 (Ptr{GroupInfo}, Ptr{Cchar}),
+                 ginfo,
+                 counter)
 end
 
 function perfgroup_addMetric(ginfo, mname, mcalc)
-    return ccall(
-        (:perfgroup_addMetric, liblikwid),
-        Cint,
-        (Ptr{GroupInfo}, Ptr{Cchar}, Ptr{Cchar}),
-        ginfo,
-        mname,
-        mcalc,
-    )
+    return ccall((:perfgroup_addMetric, liblikwid),
+                 Cint,
+                 (Ptr{GroupInfo}, Ptr{Cchar}, Ptr{Cchar}),
+                 ginfo,
+                 mname,
+                 mcalc)
 end
 
 function perfgroup_removeMetric(ginfo, mname)
-    return ccall(
-        (:perfgroup_removeMetric, liblikwid),
-        Cvoid,
-        (Ptr{GroupInfo}, Ptr{Cchar}),
-        ginfo,
-        mname,
-    )
+    return ccall((:perfgroup_removeMetric, liblikwid),
+                 Cvoid,
+                 (Ptr{GroupInfo}, Ptr{Cchar}),
+                 ginfo,
+                 mname)
 end
 
 function perfgroup_getEventStr(ginfo)
@@ -1215,13 +1116,11 @@ function perfgroup_getGroupName(ginfo)
 end
 
 function perfgroup_setGroupName(ginfo, groupName)
-    return ccall(
-        (:perfgroup_setGroupName, liblikwid),
-        Cint,
-        (Ptr{GroupInfo}, Ptr{Cchar}),
-        ginfo,
-        groupName,
-    )
+    return ccall((:perfgroup_setGroupName, liblikwid),
+                 Cint,
+                 (Ptr{GroupInfo}, Ptr{Cchar}),
+                 ginfo,
+                 groupName)
 end
 
 function perfgroup_returnGroupName(gname)
@@ -1229,13 +1128,11 @@ function perfgroup_returnGroupName(gname)
 end
 
 function perfgroup_setShortInfo(ginfo, shortInfo)
-    return ccall(
-        (:perfgroup_setShortInfo, liblikwid),
-        Cint,
-        (Ptr{GroupInfo}, Ptr{Cchar}),
-        ginfo,
-        shortInfo,
-    )
+    return ccall((:perfgroup_setShortInfo, liblikwid),
+                 Cint,
+                 (Ptr{GroupInfo}, Ptr{Cchar}),
+                 ginfo,
+                 shortInfo)
 end
 
 function perfgroup_getShortInfo(ginfo)
@@ -1247,13 +1144,11 @@ function perfgroup_returnShortInfo(sinfo)
 end
 
 function perfgroup_setLongInfo(ginfo, longInfo)
-    return ccall(
-        (:perfgroup_setLongInfo, liblikwid),
-        Cint,
-        (Ptr{GroupInfo}, Ptr{Cchar}),
-        ginfo,
-        longInfo,
-    )
+    return ccall((:perfgroup_setLongInfo, liblikwid),
+                 Cint,
+                 (Ptr{GroupInfo}, Ptr{Cchar}),
+                 ginfo,
+                 longInfo)
 end
 
 function perfgroup_getLongInfo(ginfo)
@@ -1265,35 +1160,29 @@ function perfgroup_returnLongInfo(linfo)
 end
 
 function perfgroup_mergeGroups(grp1, grp2)
-    return ccall(
-        (:perfgroup_mergeGroups, liblikwid),
-        Cint,
-        (Ptr{GroupInfo}, Ptr{GroupInfo}),
-        grp1,
-        grp2,
-    )
+    return ccall((:perfgroup_mergeGroups, liblikwid),
+                 Cint,
+                 (Ptr{GroupInfo}, Ptr{GroupInfo}),
+                 grp1,
+                 grp2)
 end
 
 function perfgroup_readGroup(grouppath, architecture, groupname, ginfo)
-    return ccall(
-        (:perfgroup_readGroup, liblikwid),
-        Cint,
-        (Ptr{Cchar}, Ptr{Cchar}, Ptr{Cchar}, Ptr{GroupInfo}),
-        grouppath,
-        architecture,
-        groupname,
-        ginfo,
-    )
+    return ccall((:perfgroup_readGroup, liblikwid),
+                 Cint,
+                 (Ptr{Cchar}, Ptr{Cchar}, Ptr{Cchar}, Ptr{GroupInfo}),
+                 grouppath,
+                 architecture,
+                 groupname,
+                 ginfo)
 end
 
 function perfgroup_customGroup(eventStr, ginfo)
-    return ccall(
-        (:perfgroup_customGroup, liblikwid),
-        Cint,
-        (Ptr{Cchar}, Ptr{GroupInfo}),
-        eventStr,
-        ginfo,
-    )
+    return ccall((:perfgroup_customGroup, liblikwid),
+                 Cint,
+                 (Ptr{Cchar}, Ptr{GroupInfo}),
+                 eventStr,
+                 ginfo)
 end
 
 function perfgroup_returnGroup(ginfo)
@@ -1301,38 +1190,32 @@ function perfgroup_returnGroup(ginfo)
 end
 
 function perfgroup_getGroups(grouppath, architecture, groupnames, groupshort, grouplong)
-    return ccall(
-        (:perfgroup_getGroups, liblikwid),
-        Cint,
-        (
-            Ptr{Cchar},
-            Ptr{Cchar},
-            Ptr{Ptr{Ptr{Cchar}}},
-            Ptr{Ptr{Ptr{Cchar}}},
-            Ptr{Ptr{Ptr{Cchar}}},
-        ),
-        grouppath,
-        architecture,
-        groupnames,
-        groupshort,
-        grouplong,
-    )
+    return ccall((:perfgroup_getGroups, liblikwid),
+                 Cint,
+                 (Ptr{Cchar},
+                  Ptr{Cchar},
+                  Ptr{Ptr{Ptr{Cchar}}},
+                  Ptr{Ptr{Ptr{Cchar}}},
+                  Ptr{Ptr{Ptr{Cchar}}}),
+                 grouppath,
+                 architecture,
+                 groupnames,
+                 groupshort,
+                 grouplong)
 end
 
 function perfgroup_returnGroups(groups, groupnames, groupshort, grouplong)
-    return ccall(
-        (:perfgroup_returnGroups, liblikwid),
-        Cvoid,
-        (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}),
-        groups,
-        groupnames,
-        groupshort,
-        grouplong,
-    )
+    return ccall((:perfgroup_returnGroups, liblikwid),
+                 Cvoid,
+                 (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}),
+                 groups,
+                 groupnames,
+                 groupshort,
+                 grouplong)
 end
 
 struct TscCounter
-    data::NTuple{8,UInt8}
+    data::NTuple{8, UInt8}
 
     TscCounter() = new(ntuple(i -> zero(UInt8), 8))
 end
@@ -1448,7 +1331,7 @@ struct PowerInfo
     uncoreMinFreq::Cdouble
     uncoreMaxFreq::Cdouble
     perfBias::UInt8
-    domains::NTuple{5,PowerDomain}
+    domains::NTuple{5, PowerDomain}
 end
 
 struct PowerData
@@ -1470,33 +1353,28 @@ function get_powerInfo()
 end
 
 function power_read(cpuId, reg, data)
-    return ccall(
-        (:power_read, liblikwid), Cint, (Cint, UInt64, Ptr{UInt32}), cpuId, reg, data
-    )
+    return ccall((:power_read, liblikwid), Cint, (Cint, UInt64, Ptr{UInt32}), cpuId, reg,
+                 data)
 end
 
 function power_tread(socket_fd, cpuId, reg, data)
-    return ccall(
-        (:power_tread, liblikwid),
-        Cint,
-        (Cint, Cint, UInt64, Ptr{UInt32}),
-        socket_fd,
-        cpuId,
-        reg,
-        data,
-    )
+    return ccall((:power_tread, liblikwid),
+                 Cint,
+                 (Cint, Cint, UInt64, Ptr{UInt32}),
+                 socket_fd,
+                 cpuId,
+                 reg,
+                 data)
 end
 
 function power_start(data, cpuId, type)
-    return ccall(
-        (:power_start, liblikwid), Cint, (PowerData_t, Cint, PowerType), data, cpuId, type
-    )
+    return ccall((:power_start, liblikwid), Cint, (PowerData_t, Cint, PowerType), data,
+                 cpuId, type)
 end
 
 function power_stop(data, cpuId, type)
-    return ccall(
-        (:power_stop, liblikwid), Cint, (PowerData_t, Cint, PowerType), data, cpuId, type
-    )
+    return ccall((:power_stop, liblikwid), Cint, (PowerData_t, Cint, PowerType), data,
+                 cpuId, type)
 end
 
 function power_printEnergy(data)
@@ -1508,28 +1386,24 @@ function power_getEnergyUnit(domain)
 end
 
 function power_limitGet(cpuId, domain, power, time)
-    return ccall(
-        (:power_limitGet, liblikwid),
-        Cint,
-        (Cint, PowerType, Ptr{Cdouble}, Ptr{Cdouble}),
-        cpuId,
-        domain,
-        power,
-        time,
-    )
+    return ccall((:power_limitGet, liblikwid),
+                 Cint,
+                 (Cint, PowerType, Ptr{Cdouble}, Ptr{Cdouble}),
+                 cpuId,
+                 domain,
+                 power,
+                 time)
 end
 
 function power_limitSet(cpuId, domain, power, time, doClamping)
-    return ccall(
-        (:power_limitSet, liblikwid),
-        Cint,
-        (Cint, PowerType, Cdouble, Cdouble, Cint),
-        cpuId,
-        domain,
-        power,
-        time,
-        doClamping,
-    )
+    return ccall((:power_limitSet, liblikwid),
+                 Cint,
+                 (Cint, PowerType, Cdouble, Cdouble, Cint),
+                 cpuId,
+                 domain,
+                 power,
+                 time,
+                 doClamping)
 end
 
 function power_limitState(cpuId, domain)
@@ -1549,9 +1423,8 @@ function thermal_read(cpuId, data)
 end
 
 function thermal_tread(socket_fd, cpuId, data)
-    return ccall(
-        (:thermal_tread, liblikwid), Cint, (Cint, Cint, Ptr{UInt32}), socket_fd, cpuId, data
-    )
+    return ccall((:thermal_tread, liblikwid), Cint, (Cint, Cint, Ptr{UInt32}), socket_fd,
+                 cpuId, data)
 end
 
 function memsweep_domain(domainId)
@@ -1559,13 +1432,11 @@ function memsweep_domain(domainId)
 end
 
 function memsweep_threadGroup(processorList, numberOfProcessors)
-    return ccall(
-        (:memsweep_threadGroup, liblikwid),
-        Cvoid,
-        (Ptr{Cint}, Cint),
-        processorList,
-        numberOfProcessors,
-    )
+    return ccall((:memsweep_threadGroup, liblikwid),
+                 Cvoid,
+                 (Ptr{Cint}, Cint),
+                 processorList,
+                 numberOfProcessors)
 end
 
 @cenum CpuFeature::UInt32 begin
@@ -1609,15 +1480,13 @@ function cpuFeatures_name(type)
 end
 
 function cpuFeatures_enable(cpu, type, print)
-    return ccall(
-        (:cpuFeatures_enable, liblikwid), Cint, (Cint, CpuFeature, Cint), cpu, type, print
-    )
+    return ccall((:cpuFeatures_enable, liblikwid), Cint, (Cint, CpuFeature, Cint), cpu,
+                 type, print)
 end
 
 function cpuFeatures_disable(cpu, type, print)
-    return ccall(
-        (:cpuFeatures_disable, liblikwid), Cint, (Cint, CpuFeature, Cint), cpu, type, print
-    )
+    return ccall((:cpuFeatures_disable, liblikwid), Cint, (Cint, CpuFeature, Cint), cpu,
+                 type, print)
 end
 
 function freq_init()
@@ -1713,8 +1582,8 @@ struct GpuDevice
     ccapMajor::Cint
     ccapMinor::Cint
     maxThreadsPerBlock::Cint
-    maxThreadsDim::NTuple{3,Cint}
-    maxGridSize::NTuple{3,Cint}
+    maxThreadsDim::NTuple{3, Cint}
+    maxGridSize::NTuple{3, Cint}
     sharedMemPerBlock::Cint
     totalConstantMemory::Cint
     simdWidth::Cint
@@ -1771,9 +1640,8 @@ function likwid_gpuMarkerClose()
 end
 
 function likwid_gpuMarkerRegisterRegion(regionTag)
-    return ccall(
-        (:likwid_gpuMarkerRegisterRegion, liblikwid), Cint, (Ptr{Cchar},), regionTag
-    )
+    return ccall((:likwid_gpuMarkerRegisterRegion, liblikwid), Cint, (Ptr{Cchar},),
+                 regionTag)
 end
 
 function likwid_gpuMarkerStartRegion(regionTag)
@@ -1789,17 +1657,16 @@ function likwid_gpuMarkerResetRegion(regionTag)
 end
 
 function likwid_gpuMarkerGetRegion(regionTag, nr_gpus, nr_events, events, time, count)
-    return ccall(
-        (:likwid_gpuMarkerGetRegion, liblikwid),
-        Cvoid,
-        (Ptr{Cchar}, Ptr{Cint}, Ptr{Cint}, Ptr{Ptr{Cdouble}}, Ptr{Cdouble}, Ptr{Cint}),
-        regionTag,
-        nr_gpus,
-        nr_events,
-        events,
-        time,
-        count,
-    )
+    return ccall((:likwid_gpuMarkerGetRegion, liblikwid),
+                 Cvoid,
+                 (Ptr{Cchar}, Ptr{Cint}, Ptr{Cint}, Ptr{Ptr{Cdouble}}, Ptr{Cdouble},
+                  Ptr{Cint}),
+                 regionTag,
+                 nr_gpus,
+                 nr_events,
+                 events,
+                 time,
+                 count)
 end
 
 function nvmon_readMarkerFile(filename)
@@ -1825,14 +1692,12 @@ function nvmon_getGpusOfRegion(region)
 end
 
 function nvmon_getGpulistOfRegion(region, count, gpulist)
-    return ccall(
-        (:nvmon_getGpulistOfRegion, liblikwid),
-        Cint,
-        (Cint, Cint, Ptr{Cint}),
-        region,
-        count,
-        gpulist,
-    )
+    return ccall((:nvmon_getGpulistOfRegion, liblikwid),
+                 Cint,
+                 (Cint, Cint, Ptr{Cint}),
+                 region,
+                 count,
+                 gpulist)
 end
 
 function nvmon_getTimeOfRegion(region, gpu)
@@ -1856,25 +1721,21 @@ function nvmon_getEventsOfRegion(region)
 end
 
 function nvmon_getResultOfRegionGpu(region, eventId, gpuId)
-    return ccall(
-        (:nvmon_getResultOfRegionGpu, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        region,
-        eventId,
-        gpuId,
-    )
+    return ccall((:nvmon_getResultOfRegionGpu, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 region,
+                 eventId,
+                 gpuId)
 end
 
 function nvmon_getMetricOfRegionGpu(region, metricId, gpuId)
-    return ccall(
-        (:nvmon_getMetricOfRegionGpu, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        region,
-        metricId,
-        gpuId,
-    )
+    return ccall((:nvmon_getMetricOfRegionGpu, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 region,
+                 metricId,
+                 gpuId)
 end
 
 struct NvmonEventListEntry
@@ -1891,9 +1752,8 @@ end
 const NvmonEventList_t = Ptr{NvmonEventList}
 
 function nvmon_getEventsOfGpu(gpuId, list)
-    return ccall(
-        (:nvmon_getEventsOfGpu, liblikwid), Cint, (Cint, Ptr{NvmonEventList_t}), gpuId, list
-    )
+    return ccall((:nvmon_getEventsOfGpu, liblikwid), Cint, (Cint, Ptr{NvmonEventList_t}),
+                 gpuId, list)
 end
 
 function nvmon_returnEventsOfGpu(list)
@@ -1937,37 +1797,31 @@ function nvmon_setVerbosity(level)
 end
 
 function nvmon_getResult(groupId, eventId, gpuId)
-    return ccall(
-        (:nvmon_getResult, liblikwid), Cdouble, (Cint, Cint, Cint), groupId, eventId, gpuId
-    )
+    return ccall((:nvmon_getResult, liblikwid), Cdouble, (Cint, Cint, Cint), groupId,
+                 eventId, gpuId)
 end
 
 function nvmon_getLastResult(groupId, eventId, gpuId)
-    return ccall(
-        (:nvmon_getLastResult, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        groupId,
-        eventId,
-        gpuId,
-    )
+    return ccall((:nvmon_getLastResult, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 groupId,
+                 eventId,
+                 gpuId)
 end
 
 function nvmon_getMetric(groupId, metricId, gpuId)
-    return ccall(
-        (:nvmon_getMetric, liblikwid), Cdouble, (Cint, Cint, Cint), groupId, metricId, gpuId
-    )
+    return ccall((:nvmon_getMetric, liblikwid), Cdouble, (Cint, Cint, Cint), groupId,
+                 metricId, gpuId)
 end
 
 function nvmon_getLastMetric(groupId, metricId, gpuId)
-    return ccall(
-        (:nvmon_getLastMetric, liblikwid),
-        Cdouble,
-        (Cint, Cint, Cint),
-        groupId,
-        metricId,
-        gpuId,
-    )
+    return ccall((:nvmon_getLastMetric, liblikwid),
+                 Cdouble,
+                 (Cint, Cint, Cint),
+                 groupId,
+                 metricId,
+                 gpuId)
 end
 
 function nvmon_getNumberOfGroups()
@@ -1999,21 +1853,18 @@ function nvmon_getLastTimeOfGroup(groupId)
 end
 
 function nvmon_getEventName(groupId, eventId)
-    return ccall(
-        (:nvmon_getEventName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, eventId
-    )
+    return ccall((:nvmon_getEventName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId,
+                 eventId)
 end
 
 function nvmon_getCounterName(groupId, eventId)
-    return ccall(
-        (:nvmon_getCounterName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, eventId
-    )
+    return ccall((:nvmon_getCounterName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId,
+                 eventId)
 end
 
 function nvmon_getMetricName(groupId, metricId)
-    return ccall(
-        (:nvmon_getMetricName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId, metricId
-    )
+    return ccall((:nvmon_getMetricName, liblikwid), Ptr{Cchar}, (Cint, Cint), groupId,
+                 metricId)
 end
 
 function nvmon_getGroupName(groupId)
@@ -2029,27 +1880,23 @@ function nvmon_getGroupInfoLong(groupId)
 end
 
 function nvmon_getGroups(gpuId, groups, shortinfos, longinfos)
-    return ccall(
-        (:nvmon_getGroups, liblikwid),
-        Cint,
-        (Cint, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}),
-        gpuId,
-        groups,
-        shortinfos,
-        longinfos,
-    )
+    return ccall((:nvmon_getGroups, liblikwid),
+                 Cint,
+                 (Cint, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}, Ptr{Ptr{Ptr{Cchar}}}),
+                 gpuId,
+                 groups,
+                 shortinfos,
+                 longinfos)
 end
 
 function nvmon_returnGroups(nrgroups, groups, shortinfos, longinfos)
-    return ccall(
-        (:nvmon_returnGroups, liblikwid),
-        Cint,
-        (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}),
-        nrgroups,
-        groups,
-        shortinfos,
-        longinfos,
-    )
+    return ccall((:nvmon_returnGroups, liblikwid),
+                 Cint,
+                 (Cint, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}, Ptr{Ptr{Cchar}}),
+                 nrgroups,
+                 groups,
+                 shortinfos,
+                 longinfos)
 end
 
 struct Ctag279
