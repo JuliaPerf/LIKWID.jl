@@ -4,17 +4,43 @@
 
 <br>
 
+[docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
+[docs-dev-url]: https://juliaperf.github.io/LIKWID.jl/dev/
+
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: https://juliaperf.github.io/LIKWID.jl/stable
+
 [ci-img]: https://git.uni-paderborn.de/pc2-ci/julia/LIKWID-jl/badges/main/pipeline.svg?key_text=CI@PC2
 [ci-url]: https://git.uni-paderborn.de/pc2-ci/julia/LIKWID-jl/-/pipelines
 
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaperf.github.io/LIKWID.jl/dev/)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaperf.github.io/LIKWID.jl/stable/)
-[![][ci-img]][ci-url]
-[![Build Status](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg?key_text=NHR@FAU&key_width=70)](https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/-/pipelines)
-[![codecov](https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/main/graph/badge.svg?token=Ze61CbGoO5)](https://codecov.io/gh/JuliaPerf/LIKWID.jl)
-![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
+[ci-fau-img]: https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/badges/main/pipeline.svg?key_text=NHR@FAU&key_width=70
+[ci-fau-url]: https://gitlab.rrze.fau.de/ub55yzis/LIKWID.jl/-/pipelines
+
+[cov-img]: https://codecov.io/gh/JuliaPerf/LIKWID.jl/branch/main/graph/badge.svg?token=Ze61CbGoO5
+[cov-url]: https://codecov.io/gh/JuliaPerf/LIKWID.jl
+
+[lifecycle-img]: https://img.shields.io/badge/lifecycle-maturing-blue.svg
+
+[code-style-img]: https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826
+[code-style-url]: https://github.com/SciML/SciMLStyle
+
+[formatcheck-img]: https://github.com/JuliaPerf/LIKWID.jl/actions/workflows/FormatCheck.yml/badge.svg
+[formatcheck-url]: https://github.com/JuliaPerf/LIKWID.jl/actions/workflows/FormatCheck.yml
+
+<!--
+![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
+![Lifecycle](https://img.shields.io/badge/lifecycle-stable-green.svg)
+![Lifecycle](https://img.shields.io/badge/lifecycle-retired-orange.svg)
+![Lifecycle](https://img.shields.io/badge/lifecycle-archived-red.svg)
+![Lifecycle](https://img.shields.io/badge/lifecycle-dormant-blue.svg)
+![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
+-->
 
 *Like I Knew What I am Doing*
+
+| **Documentation**                                                               | **Build Status**                                                                                |  **Quality**                                                                                |
+|:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
+| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][ci-img]][ci-url] [![][ci-fau-img]][ci-fau-url] [![][cov-img]][cov-url] | ![][lifecycle-img] [![][formatcheck-img]][formatcheck-url] |
 
 LIKWID.jl is a Julia wrapper for the performance monitoring and benchmarking suite [LIKWID](https://github.com/RRZE-HPC/likwid).
 
