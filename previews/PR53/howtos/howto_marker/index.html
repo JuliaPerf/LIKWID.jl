@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Marker API · LIKWID.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.svg" alt="LIKWID.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LIKWID.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">LIKWID</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox"/><label class="tocitem" for="menuitem-2"><span class="docs-label">Tutorials</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../tutorials/counting_flops/">Counting FLOPs</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox" checked/><label class="tocitem" for="menuitem-3"><span class="docs-label">How-To Guides</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../howto_perfmon/">Performance Monitoring</a></li><li><a class="tocitem" href="../howto_pinning/">Pinning Julia Threads</a></li><li class="is-active"><a class="tocitem" href>Marker API</a><ul class="internal"><li><a class="tocitem" href="#likwid-perfctr"><span><code>likwid-perfctr</code></span></a></li><li><a class="tocitem" href="#likwid-perfctr-with-NVIDIA-GPUs"><span><code>likwid-perfctr</code> with NVIDIA GPUs</span></a></li><li><a class="tocitem" href="#saxpy_cpu"><span>Example: CPU</span></a></li><li><a class="tocitem" href="#saxpy_threads"><span>Example: Multithreading</span></a></li><li><a class="tocitem" href="#saxpy_gpu"><span>Example: GPU</span></a></li><li><a class="tocitem" href="#saxpy_cpugpu"><span>Example: CPU+GPU</span></a></li></ul></li><li><a class="tocitem" href="../howto_marker_dynamic/">Marker API: Dynamic Usage</a></li><li><a class="tocitem" href="../howto_topology/">System Topology</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">References</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../references/marker/">Marker API (CPU)</a></li><li><a class="tocitem" href="../../references/marker_gpu/">Marker API (GPU)</a></li><li><a class="tocitem" href="../../references/topo/">CPU topology</a></li><li><a class="tocitem" href="../../references/perfmon/">Performance monitoring</a></li><li><a class="tocitem" href="../../references/topo_gpu/">GPU topology</a></li><li><a class="tocitem" href="../../references/nvmon/">NVIDIA monitoring</a></li><li><a class="tocitem" href="../../references/timer/">CPU clock timer</a></li><li><a class="tocitem" href="../../references/temperature/">CPU temperature</a></li><li><a class="tocitem" href="../../references/power/">Power / Energy</a></li><li><a class="tocitem" href="../../references/affinity/">Affinity</a></li><li><a class="tocitem" href="../../references/access/">HPM / Access</a></li><li><a class="tocitem" href="../../references/misc/">Miscellaneous</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">How-To Guides</a></li><li class="is-active"><a href>Marker API</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Marker API</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaPerf/LIKWID.jl/blob/main/docs/src/howtos/howto_marker.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="How-to-use-the-Marker-API"><a class="docs-heading-anchor" href="#How-to-use-the-Marker-API">How to use the Marker API</a><a id="How-to-use-the-Marker-API-1"></a><a class="docs-heading-anchor-permalink" href="#How-to-use-the-Marker-API" title="Permalink"></a></h1><p>Below we showcase how to use LIKWID&#39;s marker API to monitor hardware performance counters for simple SAXPY operations (&quot;single precision <code>a</code> times <code>x</code> plus <code>y</code>&quot; for vectors <code>x</code>,<code>y</code> and scalar <code>a</code>) executed on <a href="#saxpy_cpu">CPU</a>, <a href="#saxpy_threads">multiple (CPU) threads</a>, <a href="#saxpy_gpu">GPU</a>, and <a href="#saxpy_cpugpu">CPU+GPU</a>.</p><h2 id="likwid-perfctr"><a class="docs-heading-anchor" href="#likwid-perfctr"><code>likwid-perfctr</code></a><a id="likwid-perfctr-1"></a><a class="docs-heading-anchor-permalink" href="#likwid-perfctr" title="Permalink"></a></h2><p>To use the marker API you need to run Julia under <a href="https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr"><code>likwid-perctr</code></a> (actually, that&#39;s not entirely true, see <a href="../howto_marker_dynamic/#howto_marker_dynamic">here</a> for how to use the marker API dynamically from within a running Julia session). In particular, <strong>you need to use the <code>-m</code> option to activate the marker API</strong>, provide <code>-c &lt;cpuids&gt;</code> to state the cpu ids (starting at 0!) to monitor, and use <code>-g &lt;perfgrp&gt;</code> to specify the performance group that you want to measure. To list the performance groups that are available on your system (that is for your CPU model) you can either use <a href="../../references/perfmon/#LIKWID.PerfMon.supported_groups-Tuple{}"><code>PerfMon.supported_groups</code></a> (or <code>likwid-perfctr -a</code> from the command-line).</p><p>For example, full commands could look like this:</p><ul><li><code>likwid-perfctr -c 0 -g FLOPS_DP -m julia</code> (monitoring double precision FLOPS on CPU 0)</li><li><code>likwid-perfctr -c 0-3 -g MEM -m julia</code> (monitoring memory operations on CPUs 0 to 3)</li></ul><p><strong>Important: It is absolutely crucial that you pin your Julia threads to the cpu threads that you passed to <code>-c</code> so that they are actually running on those cpu threads!</strong> While one could, in principle, use LIKWID&#39;s <code>-C</code> (capitalized) or <a href="../howto_pinning/#likwid-pin"><code>likwid-pin</code></a> with an appropriate <a href="../howto_pinning/#pin-mask">mask</a> for this we strongly recommend to use <a href="https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE"><code>JULIA_EXCLUSIVE=1</code></a> for simple compact <code>0-N</code> pinning or <a href="https://github.com/carstenbauer/ThreadPinning.jl"><code>ThreadPinning.jl</code></a> for more fine-grained control. For example, <code>JULIA_EXCLUSIVE=1 likwid-perfctr -c 0-3 -g MEM -m julia -t 4</code>.</p><p>(Part of the reason why we discourage using <code>-C</code> is that it only works when running Julia with only a single thread but leads to incorrect pinning for <code>Threads.nthreads() &gt; 1</code>!)</p><p>For more information on <code>likwid-perfctr</code>, check out the <a href="https://github.com/RRZE-HPC/likwid/wiki/likwid-perfctr">official documentation</a>.</p><h2 id="likwid-perfctr-with-NVIDIA-GPUs"><a class="docs-heading-anchor" href="#likwid-perfctr-with-NVIDIA-GPUs"><code>likwid-perfctr</code> with NVIDIA GPUs</a><a id="likwid-perfctr-with-NVIDIA-GPUs-1"></a><a class="docs-heading-anchor-permalink" href="#likwid-perfctr-with-NVIDIA-GPUs" title="Permalink"></a></h2><p>Works the same way as for CPUs (see above) only that</p><ul><li><code>-G &lt;gpuids&gt;</code> takes the place of <code>-c &lt;cpuids&gt;</code> and</li><li><code>-W &lt;perfgrp&gt;</code> takes the place of <code>-g &lt;perfgrp&gt;</code>.</li></ul><p>To list the performance groups that are available for your GPU you can either use <a href="../../references/nvmon/#LIKWID.NvMon.supported_groups"><code>NvMon.supported_groups</code></a> (or <code>likwid-perfctr -a</code> from the command-line).</p><p>Example call:</p><ul><li><code>likwid-perfctr -G 0 -W FLOPS_SP -m julia</code> would monitor single precision FLOPS on GPU 0</li></ul><p>For more information, check out the <a href="https://github.com/RRZE-HPC/likwid/wiki/LIKWID-and-Nvidia-GPUs">NVIDIA GPU section of the LIKWID documention</a>.</p><h2 id="saxpy_cpu"><a class="docs-heading-anchor" href="#saxpy_cpu">Example: CPU</a><a id="saxpy_cpu-1"></a><a class="docs-heading-anchor-permalink" href="#saxpy_cpu" title="Permalink"></a></h2><p>Example that demonstrates using the CPU marker API.</p><pre><code class="language-julia hljs"># saxpy_cpu.jl
+using LIKWID
+using LinearAlgebra
+
+N = 100_000_000
+a = 3.141f0
+z = zeros(Float32, N)
+x = rand(Float32, N)
+y = rand(Float32, N)
+
+function saxpy_cpu!(z,a,x,y)
+    z .= a .* x .+ y
+end
+
+Marker.init()
+
+saxpy_cpu!(z,a,x,y) # warmup
+@marker &quot;saxpy_cpu&quot; saxpy_cpu!(z,a,x,y)
+
+Marker.close()</code></pre><p>Output of <code>JULIA_EXCLUSIVE=1 likwid-perfctr -c 0 -g FLOPS_SP -m julia saxpy_cpu.jl</code>:</p><pre><code class="nohighlight hljs">Warning: The Marker API requires the application to run on the selected CPUs.
+Warning: likwid-perfctr pins the application only when using the -C command line option.
+Warning: LIKWID assumes that the application does it before the first instrumented code region is started.
+Warning: You can use the string in the environment variable LIKWID_THREADS to pin you application to
+Warning: to the CPUs specified after the -c command line option.
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz
+CPU type:	Intel Skylake SP processor
+CPU clock:	2.39 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region saxpy_cpu, Group 1: FLOPS_SP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.097326 |
+|     call count    |          1 |
++-------------------+------------+
+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |   10850760 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |   69311210 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |          0 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |        111 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |    4805495 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.0973 |
+| Runtime unhalted [s] |     0.0289 |
+|      Clock [MHz]     |     inf    |
+|          CPI         |     6.3877 |
+|     SP [MFLOP/s]     |   395.0039 |
+|   AVX SP [MFLOP/s]   |   395.0028 |
+|  AVX512 SP [MFLOP/s] |          0 |
+|   Packed [MUOPS/s]   |    49.3753 |
+|   Scalar [MUOPS/s]   |     0.0011 |
+|  Vectorization ratio |    99.9977 |
++----------------------+------------+</code></pre><h2 id="saxpy_threads"><a class="docs-heading-anchor" href="#saxpy_threads">Example: Multithreading</a><a id="saxpy_threads-1"></a><a class="docs-heading-anchor-permalink" href="#saxpy_threads" title="Permalink"></a></h2><div class="admonition is-warning"><header class="admonition-header">Warning</header><div class="admonition-body"><p>It is absolutely crucial that you pin the Julia threads to the cores that you are monitoring with LIKWID. <a href="#likwid-perfctr">As described above</a>, <code>likwid-perfctr -C ...</code> (i.e. the capital C option) does not work correctly with Julia! Instead you should use <a href="https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_EXCLUSIVE"><code>JULIA_EXCLUSIVE=1</code></a> or <a href="https://github.com/carstenbauer/ThreadPinning.jl"><code>ThreadPinning.jl</code></a> for more fine-grained control.</p></div></div><pre><code class="language-julia hljs"># saxpy_threads.jl
+using LIKWID
+using LinearAlgebra
+using Base.Threads: nthreads, @threads
+
+# Julia threads must be pinned! Printing the thread affinity.
+@threads :static for tid in 1:nthreads()
+    core = LIKWID.get_processor_id()
+    println(&quot;Thread $tid, Core $core&quot;)
+end
+
+N = 100_000_000
+a = 3.141f0
+zs = [zeros(Float32, N) for _ in 1:nthreads()]
+x = rand(Float32, N)
+y = rand(Float32, N)
+
+function saxpy_cpu!(z, a, x, y)
+    z .= a .* x .+ y
+end
+
+function saxpy_threads(zs, a, x, y)
+    @threads :static for tid in 1:nthreads()
+        @marker &quot;saxpy_cpu!&quot; saxpy_cpu!(zs[tid], a, x, y)
+    end
+end
+
+Marker.init()
+
+saxpy_cpu!(zs[1], a, x, y) # warmup saxpy_cpu
+saxpy_threads(zs, a, x, y)
+
+Marker.close()</code></pre><p>Output for <code>JULIA_EXCLUSIVE=1 likwid-perfctr -c 0-2 -g FLOPS_SP -m julia --project=. -t3 threads.jl</code>:</p><pre><code class="nohighlight hljs">Warning: The Marker API requires the application to run on the selected CPUs.
+Warning: likwid-perfctr pins the application only when using the -C command line option.
+Warning: LIKWID assumes that the application does it before the first instrumented code region is started.
+Warning: You can use the string in the environment variable LIKWID_THREADS to pin you application to
+Warning: to the CPUs specified after the -c command line option.
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
+--------------------------------------------------------------------------------
+Thread 2, Core 1
+Thread 3, Core 2
+Thread 1, Core 0
+--------------------------------------------------------------------------------
+Region saxpy_cpu!, Group 1: FLOPS_SP
++-------------------+------------+------------+------------+
+|    Region Info    | HWThread 0 | HWThread 1 | HWThread 2 |
++-------------------+------------+------------+------------+
+| RDTSC Runtime [s] |   0.146394 |   0.199333 |   0.178488 |
+|     call count    |          1 |          1 |          1 |
++-------------------+------------+------------+------------+
++------------------------------------------+---------+------------+------------+------------+
+|                   Event                  | Counter | HWThread 0 | HWThread 1 | HWThread 2 |
++------------------------------------------+---------+------------+------------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |   46977220 |   47074720 |   47030020 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  383841400 |  399093000 |  382726500 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  343281800 |  403328100 |  386764600 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |          0 |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |          0 |          0 |          0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |   25000000 |   25000000 |   25000000 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |          0 |          0 |
++------------------------------------------+---------+------------+------------+------------+
++-----------------------------------------------+---------+------------+-----------+-----------+--------------+
+|                     Event                     | Counter |     Sum    |    Min    |    Max    |      Avg     |
++-----------------------------------------------+---------+------------+-----------+-----------+--------------+
+|             INSTR_RETIRED_ANY STAT            |  FIXC0  |  141081960 |  46977220 |  47074720 |     47027320 |
+|           CPU_CLK_UNHALTED_CORE STAT          |  FIXC1  | 1165660900 | 382726500 | 399093000 | 3.885536e+08 |
+|           CPU_CLK_UNHALTED_REF STAT           |  FIXC2  | 1133374500 | 343281800 | 403328100 |    377791500 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE STAT |   PMC0  |          0 |         0 |         0 |            0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE STAT   |   PMC1  |          0 |         0 |         0 |            0 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE STAT |   PMC2  |   75000000 |  25000000 |  25000000 |     25000000 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE STAT |   PMC3  |          0 |         0 |         0 |            0 |
++-----------------------------------------------+---------+------------+-----------+-----------+--------------+
++----------------------+------------+------------+------------+
+|        Metric        | HWThread 0 | HWThread 1 | HWThread 2 |
++----------------------+------------+------------+------------+
+|  Runtime (RDTSC) [s] |     0.1464 |     0.1993 |     0.1785 |
+| Runtime unhalted [s] |     0.1163 |     0.1209 |     0.1160 |
+|      Clock [MHz]     |  3689.9336 |  3265.3756 |  3265.5725 |
+|          CPI         |     8.1708 |     8.4779 |     8.1379 |
+|     SP [MFLOP/s]     |  1366.1725 |  1003.3472 |  1120.5229 |
+|   AVX SP [MFLOP/s]   |  1366.1725 |  1003.3472 |  1120.5229 |
+|  AVX512 SP [MFLOP/s] |          0 |          0 |          0 |
+|   Packed [MUOPS/s]   |   170.7716 |   125.4184 |   140.0654 |
+|   Scalar [MUOPS/s]   |          0 |          0 |          0 |
+|  Vectorization ratio |        100 |        100 |        100 |
++----------------------+------------+------------+------------+
++---------------------------+------------+-----------+-----------+-----------+
+|           Metric          |     Sum    |    Min    |    Max    |    Avg    |
++---------------------------+------------+-----------+-----------+-----------+
+|  Runtime (RDTSC) [s] STAT |     0.5242 |    0.1464 |    0.1993 |    0.1747 |
+| Runtime unhalted [s] STAT |     0.3532 |    0.1160 |    0.1209 |    0.1177 |
+|      Clock [MHz] STAT     | 10220.8817 | 3265.3756 | 3689.9336 | 3406.9606 |
+|          CPI STAT         |    24.7866 |    8.1379 |    8.4779 |    8.2622 |
+|     SP [MFLOP/s] STAT     |  3490.0426 | 1003.3472 | 1366.1725 | 1163.3475 |
+|   AVX SP [MFLOP/s] STAT   |  3490.0426 | 1003.3472 | 1366.1725 | 1163.3475 |
+|  AVX512 SP [MFLOP/s] STAT |          0 |         0 |         0 |         0 |
+|   Packed [MUOPS/s] STAT   |   436.2554 |  125.4184 |  170.7716 |  145.4185 |
+|   Scalar [MUOPS/s] STAT   |          0 |         0 |         0 |         0 |
+|  Vectorization ratio STAT |        300 |       100 |       100 |       100 |
++---------------------------+------------+-----------+-----------+-----------+</code></pre><h2 id="saxpy_gpu"><a class="docs-heading-anchor" href="#saxpy_gpu">Example: GPU</a><a id="saxpy_gpu-1"></a><a class="docs-heading-anchor-permalink" href="#saxpy_gpu" title="Permalink"></a></h2><p>Example that demonstrates how to use the GPU marker API:</p><pre><code class="language-julia hljs"># saxpy_gpu.jl
+using LIKWID
+using CUDA
+
+@assert CUDA.functional()
+
+N = 100_000_000
+a = 3.141f0
+z_gpu = CUDA.zeros(Float32, N)
+x_gpu = CUDA.rand(Float32, N)
+y_gpu = CUDA.rand(Float32, N)
+
+function saxpy_gpu!(z,a,x,y)
+    CUDA.@sync z .= a .* x .+ y
+end
+
+GPUMarker.init()
+
+saxpy_gpu!(z_gpu,a,x_gpu,y_gpu) # warmup
+@gpumarker &quot;saxpy_gpu&quot; saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+
+GPUMarker.close()</code></pre><p>Output of <code>likwid-perfctr -G 0 -W FLOPS_SP -m julia saxpy_gpu.jl</code>:</p><pre><code class="nohighlight hljs">--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region saxpy_gpu, Group 1: FLOPS_SP
++-------------------+----------+
+|    Region Info    |   GPU 0  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.010824 |
+|     call count    |        1 |
++-------------------+----------+
++----------------------------------------------------+---------+-----------+
+|                        Event                       | Counter |   GPU 0   |
++----------------------------------------------------+---------+-----------+
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM |   GPU0  |         0 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM |   GPU1  |         0 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM |   GPU2  | 100000000 |
++----------------------------------------------------+---------+-----------+
++---------------------+------------+
+|        Metric       |    GPU 0   |
++---------------------+------------+
+| Runtime (RDTSC) [s] |     0.0108 |
+|     SP [MFLOP/s]    | 18477.1502 |
++---------------------+------------+</code></pre><h2 id="saxpy_cpugpu"><a class="docs-heading-anchor" href="#saxpy_cpugpu">Example: CPU+GPU</a><a id="saxpy_cpugpu-1"></a><a class="docs-heading-anchor-permalink" href="#saxpy_cpugpu" title="Permalink"></a></h2><p>Example that demonstrates how to use both the CPU and GPU marker API in one application.</p><pre><code class="language-julia hljs"># saxpy.jl
+using LIKWID
+using CUDA
+
+@assert CUDA.functional()
+
+N = 100_000_000
+a = 3.141f0
+z = zeros(Float32, N)
+x = rand(Float32, N)
+y = rand(Float32, N)
+
+z_gpu = CUDA.zeros(Float32, N)
+x_gpu = CUDA.rand(Float32, N)
+y_gpu = CUDA.rand(Float32, N)
+
+function saxpy_cpu!(z,a,x,y)
+    z .= a .* x .+ y
+end
+
+function saxpy_gpu!(z,a,x,y)
+    CUDA.@sync z .= a .* x .+ y
+end
+
+Marker.init()
+GPUMarker.init()
+
+saxpy_cpu!(z,a,x,y) # warmup
+@marker &quot;saxpy_cpu&quot; saxpy_cpu!(z,a,x,y)
+
+saxpy_gpu!(z_gpu,a,x_gpu,y_gpu) # warmup
+@gpumarker &quot;saxpy_gpu&quot; saxpy_gpu!(z_gpu,a,x_gpu,y_gpu)
+
+Marker.close()
+GPUMarker.close()</code></pre><p>Output of <code>JULIA_EXCLUSIVE=1 likwid-perfctr -c 0 -g FLOPS_SP -G 0 -W FLOPS_SP -m julia saxpy.jl</code>:</p><pre><code class="nohighlight hljs">Warning: The Marker API requires the application to run on the selected CPUs.
+Warning: likwid-perfctr pins the application only when using the -C command line option.
+Warning: LIKWID assumes that the application does it before the first instrumented code region is started.
+Warning: You can use the string in the environment variable LIKWID_THREADS to pin you application to
+Warning: to the CPUs specified after the -c command line option.
+--------------------------------------------------------------------------------
+CPU name:	Intel(R) Xeon(R) Gold 6246 CPU @ 3.30GHz
+CPU type:	Intel Cascadelake SP processor
+CPU clock:	3.30 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region saxpy_cpu, Group 1: FLOPS_SP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   0.090796 |
+|     call count    |          1 |
++-------------------+------------+
++------------------------------------------+---------+------------+
+|                   Event                  | Counter | HWThread 0 |
++------------------------------------------+---------+------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  |   59866700 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  344927500 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  298780700 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |          0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |        111 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |   25000000 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |          0 |
++------------------------------------------+---------+------------+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     0.0908 |
+| Runtime unhalted [s] |     0.1045 |
+|      Clock [MHz]     |  3809.5859 |
+|          CPI         |     5.7616 |
+|     SP [MFLOP/s]     |  2202.7354 |
+|   AVX SP [MFLOP/s]   |  2202.7341 |
+|  AVX512 SP [MFLOP/s] |          0 |
+|   Packed [MUOPS/s]   |   275.3418 |
+|   Scalar [MUOPS/s]   |     0.0012 |
+|  Vectorization ratio |    99.9996 |
++----------------------+------------+
+Region saxpy_gpu, Group 1: FLOPS_SP
++-------------------+----------+
+|    Region Info    |   GPU 0  |
++-------------------+----------+
+| RDTSC Runtime [s] | 0.010824 |
+|     call count    |        1 |
++-------------------+----------+
++----------------------------------------------------+---------+-----------+
+|                        Event                       | Counter |   GPU 0   |
++----------------------------------------------------+---------+-----------+
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FADD_PRED_ON_SUM |   GPU0  |         0 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FMUL_PRED_ON_SUM |   GPU1  |         0 |
+| SMSP_SASS_THREAD_INST_EXECUTED_OP_FFMA_PRED_ON_SUM |   GPU2  | 100000000 |
++----------------------------------------------------+---------+-----------+
++---------------------+------------+
+|        Metric       |    GPU 0   |
++---------------------+------------+
+| Runtime (RDTSC) [s] |     0.0108 |
+|     SP [MFLOP/s]    | 18477.1502 |
++---------------------+------------+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../howto_pinning/">« Pinning Julia Threads</a><a class="docs-footer-nextpage" href="../howto_marker_dynamic/">Marker API: Dynamic Usage »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 14 March 2023 13:32">Tuesday 14 March 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
