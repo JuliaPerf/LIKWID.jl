@@ -46,7 +46,7 @@ LIKWID.jl is a Julia wrapper for the performance monitoring and benchmarking sui
 
 ## Video
 
-Lightning talk (10 min) given at [JuliaCon 2022](https://juliacon.org/2022/).
+Talk (25 min) given at [JuliaCon 2022](https://juliacon.org/2022/).
 
 [![](https://img.youtube.com/vi/l2fTNfEDPC0/0.jpg)](https://youtu.be/l2fTNfEDPC0)
 
