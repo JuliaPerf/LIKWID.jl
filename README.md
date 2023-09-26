@@ -38,7 +38,7 @@
 
 | **Documentation**                                                               | **Build Status**                                                                                |  **Quality**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][ci-img]][ci-url] [![][ci-fau-img]][ci-fau-url] [![][cov-img]][cov-url] | ![][lifecycle-img] [![][formatcheck-img]][formatcheck-url] |
+| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][ci-img]][ci-url] [![][ci-fau-img]][ci-fau-url] [![][cov-img]][cov-url] | ![][lifecycle-img] |
 
 *Like I Knew What I am Doing*
 
