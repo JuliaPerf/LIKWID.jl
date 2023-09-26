@@ -3,7 +3,6 @@ using Documenter
 using CUDA
 using LIKWID
 using Literate
-using DocThemePC2
 
 const src = "https://github.com/JuliaPerf/LIKWID.jl"
 const ci = get(ENV, "CI", "") == "true"
@@ -21,15 +20,13 @@ const deploy = get(ENV, "DEPLOYDOCS", "") == "true"
 #         repo_root_url = "$src/blob/main/docs") #, codefence = "```@repl 1" => "```")
 # end
 
-@info "Installing DocThemePC2"
-DocThemePC2.install(@__DIR__)
-
 @info "Generating Documenter.jl site"
 #DocMeta.setdocmeta!(LIKWID, :DocTestSetup, :(using LIKWID, CUDA); recursive = true)
 makedocs(sitename = "LIKWID.jl",
          authors = "Carsten Bauer",
          modules = [LIKWID],
          doctest = false, #ci
+         warnonly = true,
          pages = [
              "LIKWID" => "index.md",
              "Tutorials" => [
@@ -63,7 +60,7 @@ makedocs(sitename = "LIKWID.jl",
          ],
          # assets = ["assets/custom.css", "assets/custom.js"]
          repo = "https://github.com/JuliaPerf/LIKWID.jl/blob/{commit}{path}#{line}",
-         format = Documenter.HTML(; collapselevel = 1))
+         format = Documenter.HTML(repolink="https://github.com/JuliaPerf/LIKWID.jl"; collapselevel = 1))
 
 if ci || deploy
     @info "Deploying documentation to GitHub"

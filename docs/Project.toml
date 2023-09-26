@@ -1,6 +1,5 @@
 [deps]
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
-DocThemePC2 = "891028e3-bd96-440d-a0ed-4cea5ae68e00"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
@@ -8,8 +7,7 @@ PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 
 [compat]
 CUDA = "3.4"
-DocThemePC2 = "0.1"
-Documenter = "0.27"
+Documenter = "1"
 DocumenterTools = "0.1"
 Literate = "2.9"
 PrettyTables = "1.2"
