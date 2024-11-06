@@ -60,21 +60,15 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 ```julia
 ] add LIKWID
 ```
-Make sure your `LD_LIBRARY_PATH` includes the directory in which the `likwid` library is placed.
-By default, `likwid` is installed in the `usr/local/lib/` directory.
-You can check via 
+Make sure that `LD_LIBRARY_PATH` includes the directory that contains the `liblikwid` library (`/usr/local/lib` by default). You can check via 
 ```bash
 echo $LD_LIBRARY_PATH
 ```
-if it includes the path to the `likwid` library. If not, you can export it in your `~/.bashrc` or `~/.zshrc` via 
+If it doesn't, put the following into your `~/.bashrc`:
 ```bash
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 ```
-Then, you should be able to call
-```julia
-using LIKWID
-```
-without errors. Note that if you are using Julia from VSCode a restart of VSCode might be required after changes to your shell profile.
+Note that if you are using VSCode a restart might be required to see the changes.
 
 ## Documentation
 
