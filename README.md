@@ -60,13 +60,13 @@ LIKWID.jl is a registered Julia package. Hence, you can simply add it to your Ju
 ```julia
 ] add LIKWID
 ```
-Make sure your `LD_LIBRARY_PATH` includes the directory in which the `LIKWID` library is placed.
-By default, LIKWID is installed in the `usr/local/lib/` directory.
+Make sure your `LD_LIBRARY_PATH` includes the directory in which the `likwid` library is placed.
+By default, `likwid` is installed in the `usr/local/lib/` directory.
 You can check via 
 ```bash
 echo $LD_LIBRARY_PATH
 ```
-if it includes the path to the likwid library. If not, you can export it in your `~/.bashrc` or `~/.zshrc` via 
+if it includes the path to the `likwid` library. If not, you can export it in your `~/.bashrc` or `~/.zshrc` via 
 ```bash
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 ```
