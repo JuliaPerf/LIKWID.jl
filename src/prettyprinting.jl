@@ -29,8 +29,8 @@ function _print_perfmon_results(gid = PerfMon.get_id_of_active_group())
     grpname = PerfMon.get_name_of_group(gid)
     print("\nGroup: ")
     printstyled("$grpname\n"; bold = true)
-    pretty_table(events; header = vcat(["Event"], theader))
-    pretty_table(metrics; header = vcat(["Metric"], theader))
+    pretty_table(events; column_labels = vcat(["Event"], theader))
+    pretty_table(metrics; column_labels = vcat(["Metric"], theader))
     return nothing
 end
 
@@ -70,8 +70,8 @@ function _print_markerfile(markerfile::AbstractString)
         printstyled("$rname, "; bold = true)
         print("Group: ")
         printstyled("$grpname\n"; bold = true)
-        pretty_table(events; header = vcat(["Event"], theader))
-        pretty_table(metrics; header = vcat(["Metric"], theader))
+        pretty_table(events; column_labels = vcat(["Event"], theader))
+        pretty_table(metrics; column_labels = vcat(["Metric"], theader))
     end
     return nothing
 end
@@ -104,7 +104,7 @@ function _print_nvmon_results(gid = NvMon.get_id_of_active_group())
     grpname = NvMon.get_name_of_group(gid)
     print("\nGroup: ")
     printstyled("$grpname\n"; bold = true)
-    pretty_table(events; header = vcat(["Event"], theader))
-    pretty_table(metrics; header = vcat(["Metric"], theader))
+    pretty_table(events; column_labels = vcat(["Event"], theader))
+    pretty_table(metrics; column_labels = vcat(["Metric"], theader))
     return nothing
 end

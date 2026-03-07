@@ -177,8 +177,8 @@ end
 
 # printing
 theader = ["Thread $(i)" for i in 0:NUM_THREADS-1]
-pretty_table(events; header = vcat(["Event"], theader))
-pretty_table(metrics; header = vcat(["Metric"], theader))
+pretty_table(events; column_labels = vcat(["Event"], theader))
+pretty_table(metrics; column_labels = vcat(["Metric"], theader))
 ````
 
 ---
